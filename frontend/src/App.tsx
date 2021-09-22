@@ -2,9 +2,9 @@ import React from "react";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import DashboardPage from "src/pages/Dashboard/DashboardPage";
-import LoginPage from "src/pages/Login/LoginPage";
-import RoomPage from "src/pages/Room/RoomPage";
+import DashboardPage from "src/pages/Dashboard";
+import LoginPage from "src/pages/Login";
+import RoomPage from "src/pages/Room";
 
 import "./App.css";
 

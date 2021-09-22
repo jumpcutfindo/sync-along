@@ -1,6 +1,53 @@
-# Getting Started with Create React App
+# frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), with Yarn as the package manager of choice.
+
+## File Structure
+
+Most of the code lives in the `src` folder and looks like this:
+
+```
+src
++-- api               # hosts base level API configurations that can be used by all pages in the app
+|
++-- assets            # assets folder can contain all the static files such as images, fonts, etc.
+|
++-- components        # shared components used across the entire application
+|
++-- pages             # individual pages seen by users of the app
+```
+
+Most of the code is kept inside the `pages` folder, which hosts a folder for each page. Each folder should contain domain specific code for a given page. For example, if we wanted to have a Login page, then we would hae a folder at `src/pages/Login`, which can host the React component, logic and styles for login-related functionality.
+
+Each subfolder can have the following structure:
+
+```
+src/pages/[feature]
+|
++-- api         # exported API request declarations and api hooks related to a specific feature
+|
++-- assets      # assets folder can contain all the static files for a specific feature
+|
++-- components  # components scoped to a specific feature
+|
++-- hooks       # hooks scoped to a specific feature
+|
++-- utils       # utility functions for a specific feature
+|
++-- index.ts    # entry point for the feature, it should serve as the public API of the given feature and exports everything that should be used outside the feature
+```
+
+Everything from a feature should be exported from the `index.ts` file.
+
+## Minor details
+
+Absolute path resolution has been set up, so instead of having to traverse the directory all the way to where a file is located, we can specify the absolute path starting from the `src`.
+
+For example, to import a page, we could do the following:
+
+```
+import Dashboard from 'src/pages/Dashboard';
+```
 
 ## Available Scripts
 
@@ -12,9 +59,17 @@ Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `yarn test`
+### `yarn lint`
+
+Runs the code through the linter and shows any linting/formatting errors.
+This command does not change any files.
+
+### `yarn format`
+
+Formats code and changes files.
+
+<!--### `yarn test`
 
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
@@ -39,8 +94,4 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+-->
