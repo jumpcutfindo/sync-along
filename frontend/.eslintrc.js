@@ -1,37 +1,34 @@
 module.exports = {
+  root: true,
+  parser: '@typescript-eslint/parser',
+  plugins: ['react', '@typescript-eslint', 'prettier'],
   extends: [
     'airbnb-typescript',
     'airbnb/hooks',
+    'eslint:recommended',
+    'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended'
+    'prettier',
+    'prettier/react',
+    'prettier/@typescript-eslint',
+    'plugin:prettier/recommended',
   ],
-  plugins: ['react', '@typescript-eslint'],
   env: {
     browser: true,
-    es6: true,
+    jasmine: true,
     jest: true,
+    node: true,
   },
-  globals: {
-    Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly',
-  },
-  parser: '@typescript-eslint/parser',
+  // Airbnb's ESLint config requires this
   parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
-    ecmaVersion: 2018,
-    sourceType: 'module',
     project: './tsconfig.json',
   },
   rules: {
-    'linebreak-style': 'off',
-    'prettier/prettier': [
-      'error',
-      {
-        tabWidth: 4,
-        endOfLine: 'auto',
-      },
-    ],
+    // Include .prettierrc.js rules
+    'prettier/prettier': ['error', {}, {usePrettierrc: true}],
+    // We will use TypeScript's types for component props instead
+    'react/prop-types': 'off',
+    // We don't want unused vars
+    '@typescript-eslint/no-unused-vars': ['error'],
   },
-};
+}
