@@ -1,19 +1,8 @@
 import React, { useState } from "react";
 import IntroScreen from "./IntroScreen";
 import RoomScreen from "./RoomScreen";
-
-interface DashboardState {
-    screenState: DashboardScreenState;
-    setScreenState: React.Dispatch<React.SetStateAction<DashboardScreenState>>;
-    isLoggedIn: boolean;
-    setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-enum DashboardScreenState {
-    LOGGED_IN,
-    NOT_LOGGED_IN,
-    IN_ROOM,
-}
+import { DashboardState, DashboardScreenState } from "./DashboardState";
+import DashboardControls from "./Controls/DashboardControls";
 
 const DashboardScreen: React.FC<{ state: DashboardState }> = (props) => {
     const { state } = props;
@@ -66,8 +55,11 @@ const Dashboard: React.FC = () => {
     };
 
     return (
-        <div className="m-auto d-flex">
-            <DashboardScreen state={dashboardState} />
+        <div className="Dashboard m-auto d-flex-column">
+            <div className="DashboardScreen d-flex mb-2">
+                <DashboardScreen state={dashboardState} />
+            </div>
+            <DashboardControls state={dashboardState} />
         </div>
     );
 };

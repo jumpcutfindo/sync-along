@@ -1,6 +1,16 @@
-.Dashboard {
+.DashboardHolder {
   width: 60%;
   height: 75%;
+}
+
+.Dashboard {
+  width: 100%;
+  height: 100%;
+}
+
+.DashboardScreen {
+  width: 100%;
+  height: 100%;
 
   border-radius: 10px;
   background-color: #101D42;
@@ -8,8 +18,17 @@
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.25);
 }
 
+.DashboardControls {
+}
+
+.DashboardNavigation {
+}
+
+.DashboardLogin {
+}
+
 @media screen and (max-width: 1920px) {
-  .Dashboard {
+  .DashboardHolder {
     width: 60%;
     height: 75%;
   }
@@ -17,7 +36,7 @@
 
 
 @media screen and (max-width: 1440px) {
-  .Dashboard {
+  .DashboardHolder {
     width: 80%;
     height: 75%;
   }

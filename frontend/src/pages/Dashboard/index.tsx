@@ -5,7 +5,7 @@ import Dashboard from "./Dashboard";
 
 const DashboardPage: React.FC = () => {
     return (
-        <div className="Dashboard m-auto d-flex">
+        <div className="DashboardHolder m-auto d-flex">
             <Dashboard />
         </div>
     );
