@@ -25,7 +25,7 @@ module.exports = {
   },
   rules: {
     // Include .prettierrc.js rules
-    'prettier/prettier': ['error', {}, {usePrettierrc: true}],
+    'prettier/prettier': ['error', { 'endOfLine': 'auto' }, {usePrettierrc: true}],
     // We will use TypeScript's types for component props instead
     'react/prop-types': 'off',
     // We don't want unused vars

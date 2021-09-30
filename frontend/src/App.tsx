@@ -10,7 +10,7 @@ import "./App.css";
 
 function App() {
     return (
-        <div className="App">
+        <div className="App d-flex">
             <Router>
                 <Switch>
                     <Route path="/login" component={LoginPage} />
