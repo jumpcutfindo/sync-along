@@ -3,9 +3,11 @@ import React from "react";
 // eslint-disable-next-line import/no-named-as-default
 import DashboardState from "../DashboardState";
 
-const LoginButton: React.FC = () => {
+const LoginButton: React.FC<{ onClick: () => void }> = (props) => {
+    const { onClick } = props;
+
     return (
-        <button type="button" className="btn btn-primary">
+        <button type="button" className="btn btn-primary" onClick={onClick}>
             Log In
         </button>
     );
@@ -39,7 +41,7 @@ const DashboardControls: React.FC<{ state: DashboardState }> = (props) => {
                 <PlaylistsButton />
             </div>
             <div className="DashboardLogin d-flex flex-grow-0 justify-content-end">
-                <LoginButton />
+                <LoginButton onClick={() => state.setShowLogin(true)} />
             </div>
         </div>
     );
