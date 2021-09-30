@@ -3,10 +3,16 @@ import IntroScreen from "./IntroScreen";
 import RoomScreen from "./RoomScreen";
 import { DashboardState, DashboardScreenState } from "./DashboardState";
 import DashboardControls from "./Controls/DashboardControls";
+import { LoginModal } from "../Login";
 
 const DashboardScreen: React.FC<{ state: DashboardState }> = (props) => {
     const { state } = props;
 
+    const onClickLogin = () => {
+        state.setShowLogin(true);
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const onLogIn = (bool: boolean) => {
         if (bool) state.setScreenState(DashboardScreenState.LOGGED_IN);
         else state.setScreenState(DashboardScreenState.NOT_LOGGED_IN);
@@ -24,7 +30,7 @@ const DashboardScreen: React.FC<{ state: DashboardState }> = (props) => {
             return (
                 <IntroScreen
                     isLoggedIn={state.isLoggedIn}
-                    setLoggedIn={onLogIn}
+                    onClickLogin={onClickLogin}
                     onJoinRoom={onJoinRoom}
                 />
             );
@@ -34,7 +40,7 @@ const DashboardScreen: React.FC<{ state: DashboardState }> = (props) => {
             return (
                 <IntroScreen
                     isLoggedIn={false}
-                    setLoggedIn={onLogIn}
+                    onClickLogin={onClickLogin}
                     onJoinRoom={onJoinRoom}
                 />
             );
@@ -46,12 +52,15 @@ const Dashboard: React.FC = () => {
         DashboardScreenState.NOT_LOGGED_IN
     );
     const [isLoggedIn, setLoggedIn] = useState(false);
+    const [isShowLogin, setShowLogin] = useState(false);
 
     const dashboardState: DashboardState = {
         screenState,
         setScreenState,
         isLoggedIn,
         setLoggedIn,
+        isShowLogin,
+        setShowLogin,
     };
 
     return (
@@ -60,6 +69,7 @@ const Dashboard: React.FC = () => {
                 <DashboardScreen state={dashboardState} />
             </div>
             <DashboardControls state={dashboardState} />
+            <LoginModal isShow={isShowLogin} setIsShow={setShowLogin} />
         </div>
     );
 };

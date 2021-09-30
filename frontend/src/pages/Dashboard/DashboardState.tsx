@@ -9,6 +9,8 @@ export interface DashboardState {
     setScreenState: React.Dispatch<React.SetStateAction<DashboardScreenState>>;
     isLoggedIn: boolean;
     setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+    isShowLogin: boolean;
+    setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default DashboardState;

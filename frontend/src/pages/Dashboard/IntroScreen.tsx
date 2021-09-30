@@ -2,12 +2,10 @@ import React from "react";
 
 const IntroScreen: React.FC<{
     isLoggedIn: boolean;
-    setLoggedIn: (a: boolean) => void;
+    onClickLogin: () => void;
     onJoinRoom: () => void;
 }> = (props) => {
-    const { isLoggedIn, setLoggedIn, onJoinRoom } = props;
-
-    const onClickLogIn = () => setLoggedIn(true);
+    const { isLoggedIn, onClickLogin, onJoinRoom } = props;
 
     if (isLoggedIn) {
         return (
@@ -35,7 +33,7 @@ const IntroScreen: React.FC<{
             <button
                 type="button"
                 className="btn btn-primary"
-                onClick={onClickLogIn}
+                onClick={onClickLogin}
             >
                 Login to Continue
             </button>
