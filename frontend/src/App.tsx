@@ -15,14 +15,19 @@ function App() {
     return (
         <div className="App d-flex">
             <Provider store={store}>
-                <Router>
-                    <Switch>
-                        <Route path="/login" component={LoginPage} />
-                        <Route path="/dashboard" component={DashboardPage} />
-                        <Route path="/room" component={RoomPage} />
-                        <Route exact path="/" component={LoginPage} />
-                    </Switch>
-                </Router>
+                <div className="Container m-auto d-flex">
+                    <Router>
+                        <Switch>
+                            <Route path="/login" component={LoginPage} />
+                            <Route
+                                path="/dashboard"
+                                component={DashboardPage}
+                            />
+                            <Route path="/room" component={RoomPage} />
+                            <Route exact path="/" component={LoginPage} />
+                        </Switch>
+                    </Router>
+                </div>
             </Provider>
         </div>
     );

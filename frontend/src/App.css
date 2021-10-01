@@ -32,11 +32,21 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.Container {
+  width: 60%;
+  height: 75%;
+}
+
+@media screen and (max-width: 1920px) {
+  .Container {
+    width: 60%;
+    height: 75%;
   }
-  to {
-    transform: rotate(360deg);
+}
+
+@media screen and (max-width: 1440px) {
+  .Container {
+    width: 80%;
+    height:75%
   }
 }
