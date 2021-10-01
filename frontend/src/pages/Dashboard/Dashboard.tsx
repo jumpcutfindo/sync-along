@@ -3,7 +3,6 @@ import IntroScreen from "./IntroScreen";
 import RoomScreen from "./RoomScreen";
 import { DashboardState, DashboardScreenState } from "./DashboardState";
 import DashboardControls from "./Controls/DashboardControls";
-import { LoginModal } from "../Login";
 
 const DashboardScreen: React.FC<{ state: DashboardState }> = (props) => {
     const { state } = props;
@@ -64,13 +63,12 @@ const Dashboard: React.FC = () => {
     };
 
     return (
-        <div className="Dashboard m-auto d-flex-column">
+        <>
             <div className="DashboardScreen d-flex mb-2">
                 <DashboardScreen state={dashboardState} />
             </div>
             <DashboardControls state={dashboardState} />
-            <LoginModal isShow={isShowLogin} setIsShow={setShowLogin} />
-        </div>
+        </>
     );
 };
 
