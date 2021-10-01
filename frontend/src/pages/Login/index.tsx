@@ -1,16 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
 
+import { useDispatch } from "react-redux";
+import { signIn } from "src/stores/login";
+
+import { useHistory } from "react-router-dom";
+
+import IntroScreen from "./IntroScreen";
 import "./Login.css";
+import "./index.css";
 
 export const LoginModal: React.FC<{
     isShow: boolean;
-    setIsShow: (a: boolean) => void;
 }> = (props) => {
-    const { isShow, setIsShow } = props;
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const closeModal = () => setIsShow(false);
+    const { isShow } = props;
+    const dispatch = useDispatch();
+    const history = useHistory();
+    const login = (event: React.FormEvent) => {
+        event.preventDefault();
+        dispatch(signIn);
+        history.push("/dashboard");
+    };
 
     if (!isShow) return null;
 
@@ -18,7 +28,7 @@ export const LoginModal: React.FC<{
         <Modal className="LoginModal" show={isShow} centered>
             <div className="d-flex-column text-center p-4">
                 <h2 className="mb-4">Log In</h2>
-                <form>
+                <form onSubmit={login}>
                     <input
                         type="text"
                         placeholder="Username"
@@ -42,7 +52,14 @@ export const LoginModal: React.FC<{
 };
 
 const LoginPage: React.FC = () => {
-    return <div>This is the login</div>;
+    const [showModal, setShowModal] = useState(false);
+    const toggleModal = () => setShowModal(!showModal);
+    return (
+        <div className="IntroScreen d-flex mb-2">
+            <IntroScreen onClickLogin={toggleModal} />
+            <LoginModal isShow={showModal} />
+        </div>
+    );
 };
 
 export default LoginPage;

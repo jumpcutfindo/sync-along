@@ -10,6 +10,7 @@ import { store } from "src/stores";
 import { Provider } from "react-redux";
 
 import "./App.css";
+import DashboardControls from "./pages/Dashboard/Controls/DashboardControls";
 
 function App() {
     return (
@@ -28,6 +29,7 @@ function App() {
                                 <Route exact path="/" component={LoginPage} />
                             </Switch>
                         </Router>
+                        <DashboardControls />
                     </div>
                 </div>
             </Provider>

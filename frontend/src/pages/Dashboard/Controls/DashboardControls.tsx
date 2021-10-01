@@ -1,8 +1,6 @@
 import React from "react";
 
-// eslint-disable-next-line import/no-named-as-default
-import DashboardState from "../DashboardState";
-
+/*
 const LoginButton: React.FC<{ onClick: () => void }> = (props) => {
     const { onClick } = props;
 
@@ -12,6 +10,7 @@ const LoginButton: React.FC<{ onClick: () => void }> = (props) => {
         </button>
     );
 };
+ */
 
 const RoomButton: React.FC = () => {
     return (
@@ -29,19 +28,12 @@ const PlaylistsButton: React.FC = () => {
     );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const DashboardControls: React.FC<{ state: DashboardState }> = (props) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { state } = props;
-
+const DashboardControls: React.FC = () => {
     return (
         <div className="DashboardControls d-flex">
             <div className="DashboardNavigation d-flex align-items-center justify-content-start flex-grow-1">
                 <RoomButton />
                 <PlaylistsButton />
-            </div>
-            <div className="DashboardLogin d-flex flex-grow-0 justify-content-end">
-                <LoginButton onClick={() => state.setShowLogin(true)} />
             </div>
         </div>
     );
