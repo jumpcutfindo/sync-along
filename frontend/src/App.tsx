@@ -16,17 +16,19 @@ function App() {
         <div className="App d-flex">
             <Provider store={store}>
                 <div className="Container m-auto d-flex">
-                    <Router>
-                        <Switch>
-                            <Route path="/login" component={LoginPage} />
-                            <Route
-                                path="/dashboard"
-                                component={DashboardPage}
-                            />
-                            <Route path="/room" component={RoomPage} />
-                            <Route exact path="/" component={LoginPage} />
-                        </Switch>
-                    </Router>
+                    <div className="Screen m-auto d-flex-column">
+                        <Router>
+                            <Switch>
+                                <Route path="/login" component={LoginPage} />
+                                <Route
+                                    path="/dashboard"
+                                    component={DashboardPage}
+                                />
+                                <Route path="/room" component={RoomPage} />
+                                <Route exact path="/" component={LoginPage} />
+                            </Switch>
+                        </Router>
+                    </div>
                 </div>
             </Provider>
         </div>
