@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
-
-import { useDispatch } from "react-redux";
-import { signIn } from "src/stores/login";
 
 import { useHistory } from "react-router-dom";
 
+import userApi from "src/services/user";
+import useInputState from "src/hooks/useInputState";
 import IntroScreen from "./IntroScreen";
+
 import "./Login.css";
 import "./index.css";
 
@@ -14,13 +14,24 @@ export const LoginModal: React.FC<{
     isShow: boolean;
 }> = (props) => {
     const { isShow } = props;
-    const dispatch = useDispatch();
+    const [username, onChangeUsername] = useInputState("");
+    const [password, onChangePassword] = useInputState("");
+
     const history = useHistory();
-    const login = (event: React.FormEvent) => {
+    const [login, { data, isLoading, isSuccess }] =
+        userApi.endpoints.login.useMutation();
+    const loginHandler = (event: React.FormEvent) => {
         event.preventDefault();
-        dispatch(signIn);
-        history.push("/dashboard");
+        login({ username, password });
     };
+
+    useEffect(() => {
+        if (isSuccess) {
+            console.log(data?.accessToken);
+            history.push("/dashboard");
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isLoading, isSuccess]);
 
     if (!isShow) return null;
 
@@ -28,19 +39,21 @@ export const LoginModal: React.FC<{
         <Modal className="LoginModal" show={isShow} centered>
             <div className="d-flex-column text-center p-4">
                 <h2 className="mb-4">Log In</h2>
-                <form onSubmit={login}>
+                <form onSubmit={loginHandler}>
                     <input
                         type="text"
                         placeholder="Username"
                         className="form-control my-2"
+                        onChange={onChangeUsername}
                     />
                     <input
                         type="password"
                         placeholder="Password"
                         className="form-control my-2"
+                        onChange={onChangePassword}
                     />
                     <button type="submit" className="btn btn-primary mt-3">
-                        Log In
+                        {isLoading ? "Loading..." : "Log In"}
                     </button>
                 </form>
                 <p className="mt-2 mb-0">
