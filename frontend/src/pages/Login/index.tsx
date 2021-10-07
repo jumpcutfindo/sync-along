@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 
 import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
+import { updateAccessToken } from "src/stores/auth";
 
 import userApi from "src/services/user";
 import useInputState from "src/hooks/useInputState";
@@ -18,6 +21,7 @@ export const LoginModal: React.FC<{
     const [password, onChangePassword] = useInputState("");
 
     const history = useHistory();
+    const dispatch = useDispatch();
     const [login, { data, isLoading, isSuccess }] =
         userApi.endpoints.login.useMutation();
     const loginHandler = (event: React.FormEvent) => {
@@ -27,7 +31,7 @@ export const LoginModal: React.FC<{
 
     useEffect(() => {
         if (isSuccess) {
-            console.log(data?.accessToken);
+            dispatch(updateAccessToken(data?.accessToken));
             history.push("/dashboard");
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
