@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-// State slices
-import loginReducer from "./login";
+// API Slices
+import userApi from "src/services/user";
 
 export const store = configureStore({
     reducer: {
-        login: loginReducer,
+        [userApi.reducerPath]: userApi.reducer,
     },
 });
 
