@@ -1,7 +1,10 @@
 import React from "react";
 
+import "./Dashboard.css";
+import Dashboard from "./Dashboard";
+
 const DashboardPage: React.FC = () => {
-    return <div>This is a dashboard</div>;
+    return <Dashboard />;
 };
 
 export default DashboardPage;

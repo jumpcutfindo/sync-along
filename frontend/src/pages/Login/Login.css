@@ -1,0 +1,12 @@
+.modal-dialog {
+    width: 20%;
+}
+
+.modal-content {
+    background-color: #101D42;
+}
+
+.form-control {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.25);
+}

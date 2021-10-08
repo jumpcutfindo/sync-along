@@ -25,9 +25,11 @@ module.exports = {
   },
   rules: {
     // Include .prettierrc.js rules
-    'prettier/prettier': ['error', {}, {usePrettierrc: true}],
+    'prettier/prettier': ['error', {usePrettierrc: true}],
     // We will use TypeScript's types for component props instead
     'react/prop-types': 'off',
+    // Turn off this rule because redux state updating is immutable
+    'no-param-reassign': 'off',
     // We don't want unused vars
     '@typescript-eslint/no-unused-vars': ['error'],
   },
