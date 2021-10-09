@@ -27,8 +27,6 @@ export const RegisterModalContent: React.FC<{
 
     const [errorMessage, setErrorMessage] = useState("");
 
-    const history = useHistory();
-
     const [register, { isLoading, isSuccess }] =
         userApi.endpoints.register.useMutation();
 
@@ -51,7 +49,7 @@ export const RegisterModalContent: React.FC<{
     useEffect(() => {
         if (isSuccess) {
             // TODO: Decide on what to do when registration is successful
-            history.push("/dashboard");
+            toggleShowRegistration();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoading, isSuccess]);
