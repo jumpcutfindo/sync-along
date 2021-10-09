@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 interface AppState {
     loggedIn: boolean;
@@ -12,14 +12,14 @@ export const appSlice = createSlice({
     name: "app",
     initialState,
     reducers: {
-        login(state, action: PayloadAction<undefined>) {
+        appLogin(state) {
             state.loggedIn = true;
         },
-        logout(state, action: PayloadAction<undefined>) {
+        appLogout(state) {
             state.loggedIn = false;
-        }
+        },
     },
 });
 
 export const appReducer = appSlice.reducer;
-export const { login, logout } = appSlice.actions;
+export const { appLogin, appLogout } = appSlice.actions;

@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import { updateAccessToken } from "src/stores/auth";
+import { appLogin } from "src/stores/app";
 
 import userApi from "src/services/user";
 import useInputState from "src/hooks/useInputState";
@@ -124,6 +125,10 @@ export const LoginModalContent: React.FC<{
             setErrorMessage("");
             login({ username, password });
         }
+
+        // TODO: Move this function into the if-else once login is handled properly
+        dispatch(appLogin());
+        history.push("/dashboard");
     };
 
     useEffect(() => {

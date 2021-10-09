@@ -5,11 +5,13 @@ import userApi from "src/services/user";
 
 // State slices
 import { authReducer, authSlice } from "./auth";
+import { appReducer, appSlice } from "./app";
 
 export const store = configureStore({
     reducer: {
         [userApi.reducerPath]: userApi.reducer,
         [authSlice.name]: authReducer,
+        [appSlice.name]: appReducer,
     },
 });
 
