@@ -83,7 +83,7 @@ export const RegisterModalContent: React.FC<{
                     onChange={onChangeRetypePassword}
                 />
                 {errorMessage !== "" ? (
-                    <p className="text-danger">{errorMessage}</p>
+                    <p className="text-danger small">{errorMessage}</p>
                 ) : null}
                 <div className="mt-3">
                     <button type="submit" className="btn btn-primary me-2">
@@ -153,7 +153,7 @@ export const LoginModalContent: React.FC<{
                     onChange={onChangePassword}
                 />
                 {errorMessage !== "" ? (
-                    <p className="text-danger">{errorMessage}</p>
+                    <p className="text-danger small">{errorMessage}</p>
                 ) : null}
                 <div className="mt-3">
                     <button type="submit" className="btn btn-primary me-2">
