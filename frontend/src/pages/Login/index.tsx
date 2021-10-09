@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 
-import { useHistory } from "react-router-dom";
+import useNavigator from "src/hooks/useNavigator";
 import { useDispatch } from "react-redux";
 
 import { updateAccessToken } from "src/stores/auth";
@@ -111,7 +111,7 @@ export const LoginModalContent: React.FC<{
 
     const [errorMessage, setErrorMessage] = useState("");
 
-    const history = useHistory();
+    const { navToDashboard } = useNavigator();
     const dispatch = useDispatch();
     const [login, { data, isLoading, isSuccess }] =
         userApi.endpoints.login.useMutation();
@@ -128,13 +128,13 @@ export const LoginModalContent: React.FC<{
 
         // TODO: Move this function into the if-else once login is handled properly
         dispatch(appLogin());
-        history.push("/dashboard");
+        navToDashboard();
     };
 
     useEffect(() => {
         if (isSuccess) {
             dispatch(updateAccessToken(data?.accessToken));
-            history.push("/dashboard");
+            navToDashboard();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoading, isSuccess]);
