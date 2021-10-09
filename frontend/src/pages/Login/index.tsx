@@ -15,8 +15,9 @@ import "./index.css";
 
 export const LoginModal: React.FC<{
     isShow: boolean;
+    toggleShow: () => void;
 }> = (props) => {
-    const { isShow } = props;
+    const { isShow, toggleShow } = props;
     const [username, onChangeUsername] = useInputState("");
     const [password, onChangePassword] = useInputState("");
 
@@ -56,9 +57,18 @@ export const LoginModal: React.FC<{
                         className="form-control my-2"
                         onChange={onChangePassword}
                     />
-                    <button type="submit" className="btn btn-primary mt-3">
-                        {isLoading ? "Loading..." : "Log In"}
-                    </button>
+                    <div className="mt-3">
+                        <button type="submit" className="btn btn-primary me-2">
+                            {isLoading ? "Loading..." : "Log In"}
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-outline-primary"
+                            onClick={toggleShow}
+                        >
+                            Cancel
+                        </button>
+                    </div>
                 </form>
                 <p className="mt-2 mb-0">
                     No account? Sign up <a href="/dashboard">here</a>.
@@ -74,7 +84,7 @@ const LoginPage: React.FC = () => {
     return (
         <div className="IntroScreen d-flex mb-2">
             <IntroScreen onClickLogin={toggleModal} />
-            <LoginModal isShow={showModal} />
+            <LoginModal isShow={showModal} toggleShow={toggleModal} />
         </div>
     );
 };
