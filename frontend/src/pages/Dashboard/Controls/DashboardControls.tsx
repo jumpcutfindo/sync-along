@@ -1,19 +1,31 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
+import useNavigator from "src/hooks/useNavigator";
 import { RootState } from "src/stores";
 
 import { appLogout } from "src/stores/app";
+import { updateAccessToken } from "src/stores/auth";
 
-const ProfileButton: React.FC<{ onClick: () => void }> = (props) => {
-    const { onClick } = props;
+const LogOutButton: React.FC = () => {
+    const dispatch = useDispatch();
+    const { navToLogin } = useNavigator();
+
+    const logout = () => {
+        // Set app's state to logged out, and also remove the access token
+        dispatch(appLogout());
+        dispatch(updateAccessToken(undefined));
+
+        navToLogin();
+    };
 
     const loggedIn = useSelector((state: RootState) => state.app.loggedIn);
 
     if (!loggedIn) return null;
 
     return (
-        <button type="button" className="btn btn-primary" onClick={onClick}>
-            Profile Name
+        <button type="button" className="btn btn-danger" onClick={logout}>
+            Log Out
         </button>
     );
 };
@@ -35,10 +47,6 @@ const PlaylistsButton: React.FC = () => {
 };
 
 const DashboardControls: React.FC = () => {
-    const logout = () => {
-        appLogout();
-    };
-
     return (
         <div className="DashboardControls d-flex">
             <div className="DashboardNavigation d-flex align-items-center justify-content-start flex-grow-1">
@@ -46,7 +54,7 @@ const DashboardControls: React.FC = () => {
                 <PlaylistsButton />
             </div>
             <div className="d-flex">
-                <ProfileButton onClick={logout} />
+                <LogOutButton />
             </div>
         </div>
     );
