@@ -25,6 +25,8 @@ export const RegisterModalContent: React.FC<{
     const [password, onChangePassword] = useInputState("");
     const [retypePassword, onChangeRetypePassword] = useInputState("");
 
+    const [errorMessage, setErrorMessage] = useState("");
+
     const history = useHistory();
 
     const [register, { isLoading, isSuccess }] =
@@ -32,13 +34,23 @@ export const RegisterModalContent: React.FC<{
 
     const registrationHandler = (event: React.FormEvent) => {
         event.preventDefault();
-        if (password === retypePassword) {
+        if (username === "") {
+            setErrorMessage("Please enter a username!");
+        } else if (password === "") {
+            setErrorMessage("Please enter a password!");
+        } else if (retypePassword === "") {
+            setErrorMessage("Please retype your password!");
+        } else if (password !== retypePassword) {
+            setErrorMessage("The passwords do not match!");
+        } else {
+            setErrorMessage("");
             register({ username, password });
         }
     };
 
     useEffect(() => {
         if (isSuccess) {
+            // TODO: Decide on what to do when registration is successful
             history.push("/dashboard");
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,6 +59,10 @@ export const RegisterModalContent: React.FC<{
     return (
         <div className="d-flex-column text-center p-4">
             <h2 className="mb-4">Register</h2>
+            <p>
+                Register a new account on Sync-Along and gain access to all our
+                features!
+            </p>
             <form onSubmit={registrationHandler}>
                 <input
                     type="text"
@@ -66,6 +82,9 @@ export const RegisterModalContent: React.FC<{
                     className="form-control my-2"
                     onChange={onChangeRetypePassword}
                 />
+                {errorMessage !== "" ? (
+                    <p className="text-danger">{errorMessage}</p>
+                ) : null}
                 <div className="mt-3">
                     <button type="submit" className="btn btn-primary me-2">
                         {isLoading ? "Loading..." : "Register"}
@@ -91,13 +110,22 @@ export const LoginModalContent: React.FC<{
     const [username, onChangeUsername] = useInputState("");
     const [password, onChangePassword] = useInputState("");
 
+    const [errorMessage, setErrorMessage] = useState("");
+
     const history = useHistory();
     const dispatch = useDispatch();
     const [login, { data, isLoading, isSuccess }] =
         userApi.endpoints.login.useMutation();
+
     const loginHandler = (event: React.FormEvent) => {
         event.preventDefault();
-        login({ username, password });
+
+        if (username === "" || password === "") {
+            setErrorMessage("Please enter a username and password!");
+        } else {
+            setErrorMessage("");
+            login({ username, password });
+        }
     };
 
     useEffect(() => {
@@ -124,6 +152,9 @@ export const LoginModalContent: React.FC<{
                     className="form-control my-2"
                     onChange={onChangePassword}
                 />
+                {errorMessage !== "" ? (
+                    <p className="text-danger">{errorMessage}</p>
+                ) : null}
                 <div className="mt-3">
                     <button type="submit" className="btn btn-primary me-2">
                         {isLoading ? "Loading..." : "Log In"}
