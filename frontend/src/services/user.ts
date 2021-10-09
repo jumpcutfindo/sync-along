@@ -20,6 +20,13 @@ const userApi = createApi({
                 body,
             }),
         }),
+        register: builder.mutation<AuthResponse, LoginParams>({
+            query: (body) => ({
+                url: "/register",
+                method: "POST",
+                body,
+            }),
+        }),
     }),
 });
 
