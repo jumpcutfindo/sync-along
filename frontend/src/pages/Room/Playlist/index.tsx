@@ -40,6 +40,14 @@ const Playlist: React.FC = () => {
         <PlaylistItem key={index} media={media} />
     ));
 
+    if (mediaViews.length === 0) {
+        return (
+            <div className="mt-3">
+                <p>Playlist is empty, add media by using the buttons above!</p>
+            </div>
+        );
+    }
+
     return (
         <div className="Playlist d-flex-column w-100 h-100">{mediaViews}</div>
     );
