@@ -8,16 +8,21 @@ export interface Media {
 
 interface PlaylistState {
     media: Media[];
+    current: Media | null;
 }
 
 const initialState: PlaylistState = {
     media: [],
+    current: null,
 };
 
 export const playlistSlice = createSlice({
     name: "playlist",
     initialState,
     reducers: {
+        setMedia(state, action: PayloadAction<Media>) {
+            state.current = action.payload;
+        },
         addMedia(state, action: PayloadAction<Media>) {
             state.media.push(action.payload);
         },
