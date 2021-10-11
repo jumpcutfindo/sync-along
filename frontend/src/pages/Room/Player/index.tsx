@@ -11,6 +11,67 @@ import { Media } from "src/stores/app/playlist";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlayCircle, faPauseCircle } from "@fortawesome/free-solid-svg-icons";
 
+const PlayerInfo: React.FC<{
+    currentProgress: number | undefined;
+    mediaDuration: number | undefined;
+    currentMedia: Media | null;
+}> = (props) => {
+    const { currentProgress, mediaDuration, currentMedia } = props;
+
+    return (
+        <div className="d-flex player-info flex-grow-1 text-start">
+            <p className="my-auto">
+                {currentMedia ? currentMedia.name : "No media selected!"}
+            </p>
+            <div
+                className="d-flex flex-grow-1 justify-content-end"
+                style={{ visibility: mediaDuration ? "visible" : "hidden" }}
+            >
+                <p className="my-auto">
+                    {currentProgress !== undefined &&
+                    mediaDuration !== undefined
+                        ? `${
+                              (currentProgress / 100) * mediaDuration
+                          } / ${mediaDuration}`
+                        : null}
+                </p>
+            </div>
+        </div>
+    );
+};
+
+const PlayerButtons: React.FC<{
+    isLoaded: boolean;
+    isPlaying: boolean;
+    onPlayPressed: () => void;
+}> = (props) => {
+    const { isLoaded, isPlaying, onPlayPressed } = props;
+
+    if (!isLoaded) return null;
+
+    return (
+        <div className="d-flex player-buttons justify-content-end my-auto mx-3">
+            {!isPlaying ? (
+                <FontAwesomeIcon
+                    className="player-control-button"
+                    icon={faPlayCircle}
+                    size="3x"
+                    color="white"
+                    onClick={onPlayPressed}
+                />
+            ) : (
+                <FontAwesomeIcon
+                    className="player-control-button"
+                    icon={faPauseCircle}
+                    size="3x"
+                    color="white"
+                    onClick={onPlayPressed}
+                />
+            )}
+        </div>
+    );
+};
+
 const PlayerComponent: React.FC = () => {
     const ref = useRef<ReactPlayer>(null);
 
@@ -41,39 +102,17 @@ const PlayerComponent: React.FC = () => {
                 <Slider value={progress} onChange={onSeek} />
             </div>
 
-            <div className="d-flex player-holder flex-grow-1">
-                <div className="d-flex flex-column my-auto p-3">
-                    <p className="m-0">
-                        {currentMedia
-                            ? currentMedia.name
-                            : "No media selected!"}
-                    </p>
-                </div>
-                <div
-                    className="d-flex flex-grow-1 justify-content-end"
-                    style={{
-                        visibility:
-                            currentMedia !== null ? "visible" : "hidden",
-                    }}
-                >
-                    {!isPlaying ? (
-                        <FontAwesomeIcon
-                            className="player-control-button"
-                            icon={faPlayCircle}
-                            size="3x"
-                            color="white"
-                            onClick={onPlayPressed}
-                        />
-                    ) : (
-                        <FontAwesomeIcon
-                            className="player-control-button"
-                            icon={faPauseCircle}
-                            size="3x"
-                            color="white"
-                            onClick={onPlayPressed}
-                        />
-                    )}
-                </div>
+            <div className="d-flex flex-grow-1 player-holder px-3">
+                <PlayerInfo
+                    currentProgress={progress}
+                    mediaDuration={ref.current?.getDuration()}
+                    currentMedia={currentMedia}
+                />
+                <PlayerButtons
+                    isLoaded={currentMedia !== null}
+                    isPlaying={isPlaying}
+                    onPlayPressed={onPlayPressed}
+                />
             </div>
 
             <ReactPlayer
