@@ -1,14 +1,25 @@
 .PlayerComponent {
-    background: blue;
     border-radius: 0px 0px 0px 10px;
 }
 
-.player-progress-bar {
-    background: red;
-    height: 5px;
+.rc-slider-rail {
+    border-radius: 0px !important;
+    height: 2px !important;
+    background-color: rgba(255, 255, 255, 0.25) !important;
 }
 
-.player-progress-bar-remaining {
-    background: green;
-    height: 5px;
+.rc-slider-track {
+    border-radius: 0px !important;
+    height: 2px !important;
+    background-color: #00A3FF !important;
+}
+
+.rc-slider-handle {
+    width: 8px !important;
+    height: 8px !important;
+    cursor: pointer !important;
+    border-radius: 50% !important;
+    border: solid 2px #fff !important;
+    background-color: #fff !important;
+    margin-top: -3px !important;
 }

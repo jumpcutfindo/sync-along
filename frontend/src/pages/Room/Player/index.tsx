@@ -8,8 +8,6 @@ import "rc-slider/assets/index.css";
 const PlayerComponent: React.FC = () => {
     const ref = useRef<ReactPlayer>(null);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [player, setPlayer] = useState(null);
     const [progress, setProgress] = useState(0);
     const [isPlaying, setPlaying] = useState(false);
 
