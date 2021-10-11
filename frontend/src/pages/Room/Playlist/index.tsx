@@ -1,15 +1,32 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "src/stores";
-import { Media } from "src/stores/app/playlist";
+import { Media, addMedia } from "src/stores/app/playlist";
 
 import "./index.css";
 
 const PlaylistHeaderButtons: React.FC = () => {
+    const dispatch = useDispatch();
+
+    const addNewMedia = () => {
+        // TODO: Remove this temporary adding of a random song
+        const media: Media = {
+            url: "https://www.youtube.com/watch?v=s3Q80mk7bxE",
+            name: "I Want You Back - The Jackson 5",
+            duration: 2000,
+        };
+
+        dispatch(addMedia(media));
+    };
+
     return (
         <div className="PlaylistHeaderButtons d-flex w-100 justify-content-end">
-            <button type="button" className="btn btn-primary my-auto me-2">
-                Add a Song
+            <button
+                type="button"
+                className="btn btn-primary my-auto me-2"
+                onClick={addNewMedia}
+            >
+                Add Media
             </button>
             <button type="button" className="btn btn-success my-auto">
                 Import Playlist
@@ -39,7 +56,7 @@ const PlaylistItem: React.FC<{ media: Media }> = (props) => {
 };
 
 const Playlist: React.FC = () => {
-    const medias = useSelector((state: RootState) => state.playlist.songs);
+    const medias = useSelector((state: RootState) => state.playlist.media);
 
     const mediaViews = medias.map((media, index) => (
         // eslint-disable-next-line react/no-array-index-key
