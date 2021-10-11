@@ -18,6 +18,17 @@ const PlayerInfo: React.FC<{
 }> = (props) => {
     const { currentProgress, mediaDuration, currentMedia } = props;
 
+    let progressText = "";
+    if (currentProgress !== undefined && mediaDuration !== undefined) {
+        const currentDuration = (currentProgress / 100) * mediaDuration * 1000;
+        const totalDuration = mediaDuration * 1000;
+
+        progressText = `${new Date(currentDuration)
+            .toISOString()
+            .substr(11, 8)} /
+            ${new Date(totalDuration).toISOString().substr(11, 8)}`;
+    }
+
     return (
         <div className="d-flex player-info flex-grow-1 text-start">
             <p className="my-auto">
@@ -27,14 +38,7 @@ const PlayerInfo: React.FC<{
                 className="d-flex flex-grow-1 justify-content-end"
                 style={{ visibility: mediaDuration ? "visible" : "hidden" }}
             >
-                <p className="my-auto">
-                    {currentProgress !== undefined &&
-                    mediaDuration !== undefined
-                        ? `${
-                              (currentProgress / 100) * mediaDuration
-                          } / ${mediaDuration}`
-                        : null}
-                </p>
+                <p className="my-auto">{progressText}</p>
             </div>
         </div>
     );
