@@ -4,12 +4,22 @@ import Slider from "rc-slider";
 
 import "./index.css";
 import "rc-slider/assets/index.css";
+import { useSelector } from "react-redux";
+import { RootState } from "src/stores";
+import { Media } from "src/stores/app/playlist";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlayCircle, faPauseCircle } from "@fortawesome/free-solid-svg-icons";
 
 const PlayerComponent: React.FC = () => {
     const ref = useRef<ReactPlayer>(null);
 
     const [progress, setProgress] = useState(0);
     const [isPlaying, setPlaying] = useState(false);
+
+    const currentMedia: Media | null = useSelector(
+        (state: RootState) => state.playlist.current
+    );
 
     const onSeek = (value: number) => {
         setProgress(value);
@@ -26,18 +36,49 @@ const PlayerComponent: React.FC = () => {
     };
 
     return (
-        <div className="PlayerComponent h-100">
+        <div className="PlayerComponent d-flex flex-column h-100">
             <div className="d-flex player-progress w-100">
                 <Slider value={progress} onChange={onSeek} />
             </div>
 
-            <button type="button" onClick={onPlayPressed}>
-                Toggle Music
-            </button>
+            <div className="d-flex player-holder flex-grow-1">
+                <div className="d-flex flex-column my-auto p-3">
+                    <p className="m-0">
+                        {currentMedia
+                            ? currentMedia.name
+                            : "No media selected!"}
+                    </p>
+                </div>
+                <div
+                    className="d-flex flex-grow-1 justify-content-end"
+                    style={{
+                        visibility:
+                            currentMedia !== null ? "visible" : "hidden",
+                    }}
+                >
+                    {!isPlaying ? (
+                        <FontAwesomeIcon
+                            className="player-control-button"
+                            icon={faPlayCircle}
+                            size="3x"
+                            color="white"
+                            onClick={onPlayPressed}
+                        />
+                    ) : (
+                        <FontAwesomeIcon
+                            className="player-control-button"
+                            icon={faPauseCircle}
+                            size="3x"
+                            color="white"
+                            onClick={onPlayPressed}
+                        />
+                    )}
+                </div>
+            </div>
 
             <ReactPlayer
                 ref={ref}
-                url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                url={currentMedia?.url}
                 width="0"
                 height="0"
                 progressInterval={100}

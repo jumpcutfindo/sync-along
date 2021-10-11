@@ -25,6 +25,8 @@ export const playlistSlice = createSlice({
         },
         addMedia(state, action: PayloadAction<Media>) {
             state.media.push(action.payload);
+
+            if (state.current === null) state.current = action.payload;
         },
         removeMedia(state, action: PayloadAction<Media>) {
             state.media = state.media.filter((song) => song !== action.payload);

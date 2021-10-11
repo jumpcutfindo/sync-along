@@ -2,6 +2,10 @@
     border-radius: 0px 0px 0px 10px;
 }
 
+.player-control-button:hover {
+    cursor: pointer;
+}
+
 .rc-slider-rail {
     border-radius: 0px !important;
     height: 2px !important;
