@@ -9,30 +9,40 @@ export interface Media {
 interface PlaylistState {
     media: Media[];
     current: Media | null;
+    currentIndex: number;
 }
 
 const initialState: PlaylistState = {
     media: [],
     current: null,
+    currentIndex: -1,
 };
 
 export const playlistSlice = createSlice({
     name: "playlist",
     initialState,
     reducers: {
-        setMedia(state, action: PayloadAction<Media>) {
-            state.current = action.payload;
-        },
         addMedia(state, action: PayloadAction<Media>) {
             state.media.push(action.payload);
 
-            if (state.current === null) state.current = action.payload;
+            if (state.currentIndex === -1) {
+                state.currentIndex = 0;
+                // eslint-disable-next-line prefer-destructuring
+                state.current = state.media[0];
+            }
         },
-        removeMedia(state, action: PayloadAction<Media>) {
-            state.media = state.media.filter((song) => song !== action.payload);
+        nextMedia(state) {
+            state.currentIndex += 1;
+            state.current = state.media[state.currentIndex];
+
+            if (state.currentIndex >= state.media.length) {
+                state.currentIndex = 0;
+                // eslint-disable-next-line prefer-destructuring
+                state.current = state.media[0];
+            }
         },
     },
 });
 
 export const playlistReducer = playlistSlice.reducer;
-export const { addMedia, removeMedia } = playlistSlice.actions;
+export const { addMedia, nextMedia } = playlistSlice.actions;

@@ -4,9 +4,9 @@ import Slider from "rc-slider";
 
 import "./index.css";
 import "rc-slider/assets/index.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "src/stores";
-import { Media } from "src/stores/app/playlist";
+import { Media, nextMedia } from "src/stores/app/playlist";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -40,7 +40,7 @@ const PlayerInfo: React.FC<{
                 {currentMedia ? currentMedia.name : "No media selected!"}
             </p>
             <div
-                className="d-flex flex-grow-1 justify-content-end"
+                className="d-flex player-progress-text flex-grow-1 justify-content-end"
                 style={{ visibility: mediaDuration ? "visible" : "hidden" }}
             >
                 <p className="my-auto">{progressText}</p>
@@ -53,8 +53,9 @@ const PlayerButtons: React.FC<{
     isLoaded: boolean;
     isPlaying: boolean;
     onPlayPressed: () => void;
+    onNextPressed: () => void;
 }> = (props) => {
-    const { isLoaded, isPlaying, onPlayPressed } = props;
+    const { isLoaded, isPlaying, onPlayPressed, onNextPressed } = props;
 
     if (!isLoaded) return null;
 
@@ -88,6 +89,7 @@ const PlayerButtons: React.FC<{
                 icon={faStepForward}
                 size="2x"
                 color="white"
+                onClick={onNextPressed}
             />
         </div>
     );
@@ -95,6 +97,8 @@ const PlayerButtons: React.FC<{
 
 const PlayerComponent: React.FC = () => {
     const ref = useRef<ReactPlayer>(null);
+
+    const dispatch = useDispatch();
 
     const [progress, setProgress] = useState(0);
     const [isPlaying, setPlaying] = useState(false);
@@ -117,6 +121,11 @@ const PlayerComponent: React.FC = () => {
         setPlaying(!isPlaying);
     };
 
+    const onNextPressed = () => {
+        dispatch(nextMedia());
+        setPlaying(true);
+    };
+
     return (
         <div className="PlayerComponent d-flex flex-column h-100">
             <div className="d-flex player-progress w-100">
@@ -133,6 +142,7 @@ const PlayerComponent: React.FC = () => {
                     isLoaded={currentMedia !== null}
                     isPlaying={isPlaying}
                     onPlayPressed={onPlayPressed}
+                    onNextPressed={onNextPressed}
                 />
             </div>
 

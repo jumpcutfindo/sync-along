@@ -6,6 +6,14 @@
     cursor: pointer;
 }
 
+.player-progress-text {
+    min-width: 200px;
+}
+
+.rc-slider:hover {
+    cursor: pointer;
+}
+
 .rc-slider-rail {
     border-radius: 0px !important;
     height: 2px !important;

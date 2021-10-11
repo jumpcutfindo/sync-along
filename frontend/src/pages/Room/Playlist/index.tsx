@@ -18,6 +18,12 @@ const PlaylistHeaderButtons: React.FC = () => {
             duration: 2000,
         };
         dispatch(addMedia(media));
+        const media2: Media = {
+            url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            name: "Rick Astley - Never Gonna Give You Up (Official Music Video)",
+            duration: 2000,
+        };
+        dispatch(addMedia(media2));
     };
 
     return (
