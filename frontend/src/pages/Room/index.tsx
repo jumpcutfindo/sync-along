@@ -1,9 +1,16 @@
 import React from "react";
+import ChatComponent from "./Chat";
+import PlayerComponent from "./Player";
+import PlaylistComponent from "./Playlist";
+import RoomInfoComponent from "./RoomInfo";
 
 const RoomScreen: React.FC = () => {
     return (
-        <div>
-            <p>This is when you have joined a room</p>
+        <div className="RoomScreen d-flex w-100 h-100">
+            <PlaylistComponent />
+            <PlayerComponent />
+            <ChatComponent />
+            <RoomInfoComponent />
         </div>
     );
 };
