@@ -6,7 +6,7 @@ import "./index.css";
 import "rc-slider/assets/index.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "src/stores";
-import { Media, nextMedia } from "src/stores/app/playlist";
+import { Media, nextMedia, prevMedia } from "src/stores/app/playlist";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -54,8 +54,10 @@ const PlayerButtons: React.FC<{
     isPlaying: boolean;
     onPlayPressed: () => void;
     onNextPressed: () => void;
+    onPrevPressed: () => void;
 }> = (props) => {
-    const { isLoaded, isPlaying, onPlayPressed, onNextPressed } = props;
+    const { isLoaded, isPlaying, onPlayPressed, onNextPressed, onPrevPressed } =
+        props;
 
     if (!isLoaded) return null;
 
@@ -66,6 +68,7 @@ const PlayerButtons: React.FC<{
                 icon={faStepBackward}
                 size="2x"
                 color="white"
+                onClick={onPrevPressed}
             />
             {!isPlaying ? (
                 <FontAwesomeIcon
@@ -126,6 +129,11 @@ const PlayerComponent: React.FC = () => {
         setPlaying(true);
     };
 
+    const onPrevPressed = () => {
+        dispatch(prevMedia());
+        setPlaying(true);
+    };
+
     return (
         <div className="PlayerComponent d-flex flex-column h-100">
             <div className="d-flex player-progress w-100">
@@ -143,6 +151,7 @@ const PlayerComponent: React.FC = () => {
                     isPlaying={isPlaying}
                     onPlayPressed={onPlayPressed}
                     onNextPressed={onNextPressed}
+                    onPrevPressed={onPrevPressed}
                 />
             </div>
 

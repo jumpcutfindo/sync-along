@@ -41,8 +41,18 @@ export const playlistSlice = createSlice({
                 state.current = state.media[0];
             }
         },
+        prevMedia(state) {
+            state.currentIndex -= 1;
+            state.current = state.media[state.currentIndex];
+
+            if (state.currentIndex < 0) {
+                state.currentIndex = 0;
+                // eslint-disable-next-line prefer-destructuring
+                state.current = state.media[0];
+            }
+        },
     },
 });
 
 export const playlistReducer = playlistSlice.reducer;
-export const { addMedia, nextMedia } = playlistSlice.actions;
+export const { addMedia, nextMedia, prevMedia } = playlistSlice.actions;
