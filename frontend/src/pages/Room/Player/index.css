@@ -2,3 +2,13 @@
     background: blue;
     border-radius: 0px 0px 0px 10px;
 }
+
+.player-progress-bar {
+    background: red;
+    height: 5px;
+}
+
+.player-progress-bar-remaining {
+    background: green;
+    height: 5px;
+}
