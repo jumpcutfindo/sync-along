@@ -1,18 +1,4 @@
 .PlayerComponent {
-    background: none;
+    background: blue;
     border-radius: 0px 0px 0px 10px;
-}
-
-.plyr {
-    margin-top: auto;
-    margin-bottom: auto;
-}
-
-.plyr__controls {
-    background: #101D42 !important;
-}
-
-.plyr iframe {
-    max-height: 50px;
-    visibility: hidden;
 }
