@@ -9,13 +9,14 @@ const PlaylistHeaderButtons: React.FC = () => {
     const dispatch = useDispatch();
 
     const addNewMedia = () => {
-        // TODO: Remove this temporary adding of a random song
+        // TODO: This should send an API request then use the response to update the playlist state of the app
+
+        // TODO: Remove this temporary "response" from server
         const media: Media = {
             url: "https://www.youtube.com/watch?v=s3Q80mk7bxE",
             name: "I Want You Back - The Jackson 5",
             duration: 2000,
         };
-
         dispatch(addMedia(media));
     };
 
@@ -36,21 +37,32 @@ const PlaylistHeaderButtons: React.FC = () => {
 };
 
 const PlaylistHeader: React.FC = () => (
-    <div className="PlaylistHeader d-flex mb-2">
+    <div className="PlaylistHeader d-flex">
         <div className="d-flex w-100 m-3">
-            <h2 className="m-0">PLAYLISTS</h2>
+            <h2 className="m-0">PLAYLIST</h2>
             <PlaylistHeaderButtons />
         </div>
     </div>
 );
 
-const PlaylistItem: React.FC<{ media: Media }> = (props) => {
+const PlaylistItem: React.FC<{ index: number; media: Media }> = (props) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { media } = props;
+    const { index, media } = props;
 
     return (
-        <div>
-            <p>This is a playlist item</p>
+        <div
+            className={`PlaylistItem d-flex ${index % 2 ? "odd" : "even"} py-2`}
+        >
+            <div className="my-auto mx-2">
+                <p className="video-index m-0">#{index + 1}</p>
+            </div>
+            <div className="video-thumbnail" />
+            <div className="d-flex-column align-content-start text-start ms-2">
+                <p className="video-title my-0">{media.name}</p>
+                <a className="video-url" href={media.url}>
+                    {media.url}
+                </a>
+            </div>
         </div>
     );
 };
@@ -60,7 +72,7 @@ const Playlist: React.FC = () => {
 
     const mediaViews = medias.map((media, index) => (
         // eslint-disable-next-line react/no-array-index-key
-        <PlaylistItem key={index} media={media} />
+        <PlaylistItem key={index} index={index} media={media} />
     ));
 
     if (mediaViews.length === 0) {
@@ -72,7 +84,9 @@ const Playlist: React.FC = () => {
     }
 
     return (
-        <div className="Playlist d-flex-column w-100 h-100">{mediaViews}</div>
+        <div className="Playlist d-flex-column w-100 overflow-auto">
+            {mediaViews}
+        </div>
     );
 };
 
