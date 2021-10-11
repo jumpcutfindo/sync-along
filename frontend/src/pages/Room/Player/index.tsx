@@ -9,7 +9,12 @@ import { RootState } from "src/stores";
 import { Media } from "src/stores/app/playlist";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlayCircle, faPauseCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+    faPlayCircle,
+    faPauseCircle,
+    faStepBackward,
+    faStepForward,
+} from "@fortawesome/free-solid-svg-icons";
 
 const PlayerInfo: React.FC<{
     currentProgress: number | undefined;
@@ -55,6 +60,12 @@ const PlayerButtons: React.FC<{
 
     return (
         <div className="d-flex player-buttons justify-content-end my-auto mx-3">
+            <FontAwesomeIcon
+                className="player-control-button my-auto me-3"
+                icon={faStepBackward}
+                size="2x"
+                color="white"
+            />
             {!isPlaying ? (
                 <FontAwesomeIcon
                     className="player-control-button"
@@ -72,6 +83,12 @@ const PlayerButtons: React.FC<{
                     onClick={onPlayPressed}
                 />
             )}
+            <FontAwesomeIcon
+                className="player-control-button my-auto ms-3"
+                icon={faStepForward}
+                size="2x"
+                color="white"
+            />
         </div>
     );
 };
