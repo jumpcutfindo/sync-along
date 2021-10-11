@@ -7,25 +7,25 @@ export interface Media {
 }
 
 interface PlaylistState {
-    songs: Media[];
+    media: Media[];
 }
 
 const initialState: PlaylistState = {
-    songs: [],
+    media: [],
 };
 
 export const playlistSlice = createSlice({
     name: "playlist",
     initialState,
     reducers: {
-        addSong(state, action: PayloadAction<Media>) {
-            state.songs.push(action.payload);
+        addMedia(state, action: PayloadAction<Media>) {
+            state.media.push(action.payload);
         },
-        deleteSong(state, action: PayloadAction<Media>) {
-            state.songs = state.songs.filter((song) => song !== action.payload);
+        removeMedia(state, action: PayloadAction<Media>) {
+            state.media = state.media.filter((song) => song !== action.payload);
         },
     },
 });
 
 export const playlistReducer = playlistSlice.reducer;
-export const { addSong, deleteSong } = playlistSlice.actions;
+export const { addMedia, removeMedia } = playlistSlice.actions;
