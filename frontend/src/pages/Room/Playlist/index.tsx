@@ -1,4 +1,7 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "src/stores";
+import { Media } from "src/stores/app/playlist";
 
 import "./index.css";
 
@@ -18,8 +21,10 @@ const PlaylistHeader: React.FC = () => (
     </div>
 );
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const PlaylistItem: React.FC = () => {
+const PlaylistItem: React.FC<{ media: Media }> = (props) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { media } = props;
+
     return (
         <div>
             <p>This is a playlist item</p>
@@ -28,7 +33,16 @@ const PlaylistItem: React.FC = () => {
 };
 
 const Playlist: React.FC = () => {
-    return <div className="Playlist">This is the main playlist</div>;
+    const medias = useSelector((state: RootState) => state.playlist.songs);
+
+    const mediaViews = medias.map((media, index) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <PlaylistItem key={index} media={media} />
+    ));
+
+    return (
+        <div className="Playlist d-flex-column w-100 h-100">{mediaViews}</div>
+    );
 };
 
 const PlaylistComponent: React.FC = () => {

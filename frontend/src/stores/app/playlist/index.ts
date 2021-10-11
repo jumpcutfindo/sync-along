@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface Song {
+export interface Media {
     url: string;
     name: string;
     duration: number;
 }
 
 interface PlaylistState {
-    songs: Song[];
+    songs: Media[];
 }
 
 const initialState: PlaylistState = {
@@ -18,10 +18,10 @@ export const playlistSlice = createSlice({
     name: "playlist",
     initialState,
     reducers: {
-        addSong(state, action: PayloadAction<Song>) {
+        addSong(state, action: PayloadAction<Media>) {
             state.songs.push(action.payload);
         },
-        deleteSong(state, action: PayloadAction<Song>) {
+        deleteSong(state, action: PayloadAction<Media>) {
             state.songs = state.songs.filter((song) => song !== action.payload);
         },
     },
