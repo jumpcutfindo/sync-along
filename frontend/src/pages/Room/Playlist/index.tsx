@@ -18,6 +18,15 @@ const PlaylistHeader: React.FC = () => (
     </div>
 );
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const PlaylistItem: React.FC = () => {
+    return (
+        <div>
+            <p>This is a playlist item</p>
+        </div>
+    );
+};
+
 const Playlist: React.FC = () => {
     return <div className="Playlist">This is the main playlist</div>;
 };
