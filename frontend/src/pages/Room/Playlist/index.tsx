@@ -86,6 +86,7 @@ const Playlist: React.FC = () => {
     return (
         <div className="Playlist d-flex-column w-100 overflow-auto">
             {mediaViews}
+            <p className="my-2">End of list.</p>
         </div>
     );
 };

@@ -39,7 +39,7 @@ h1 {
   font-size: 4.0rem !important;
 }
 
-p {
+p, a {
   font-family: 'Inter', sans-serif;
   color: whitesmoke;
 }
