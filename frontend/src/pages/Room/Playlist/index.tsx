@@ -50,6 +50,7 @@ const AddMediaButton: React.FC = () => {
                         <button
                             type="button"
                             className="btn btn-outline-danger"
+                            onClick={togglePopover}
                         >
                             Cancel
                         </button>
@@ -61,27 +62,6 @@ const AddMediaButton: React.FC = () => {
 };
 
 const PlaylistHeaderButtons: React.FC = () => {
-    const dispatch = useDispatch();
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const addNewMedia = () => {
-        // TODO: This should send an API request then use the response to update the playlist state of the app
-
-        // TODO: Remove this temporary "response" from server
-        const media: Media = {
-            url: "https://www.youtube.com/watch?v=s3Q80mk7bxE",
-            name: "I Want You Back - The Jackson 5",
-            duration: 2000,
-        };
-        dispatch(addMedia(media));
-        const media2: Media = {
-            url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            name: "Rick Astley - Never Gonna Give You Up (Official Music Video)",
-            duration: 2000,
-        };
-        dispatch(addMedia(media2));
-    };
-
     return (
         <div className="PlaylistHeaderButtons d-flex w-100 justify-content-end">
             <AddMediaButton />
