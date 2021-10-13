@@ -7,6 +7,7 @@ import "rc-slider/assets/index.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "src/stores";
 import { Media, nextMedia, prevMedia } from "src/stores/app/playlist";
+import { play, stop } from "src/stores/app/player";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -156,12 +157,20 @@ const PlayerComponent: React.FC = () => {
     const dispatch = useDispatch();
 
     const [progress, setProgress] = useState(0);
-    const [isPlaying, setPlaying] = useState(false);
     const [volume, setVolume] = useState(0.5);
 
     const currentMedia: Media | null = useSelector(
         (state: RootState) => state.playlist.current
     );
+
+    const isPlaying: boolean = useSelector(
+        (state: RootState) => state.player.isPlaying
+    );
+
+    const setPlaying = (shouldPlay: boolean) => {
+        if (shouldPlay) dispatch(play());
+        else dispatch(stop());
+    };
 
     // Methods for client side
     const onVolumeChange = (value: number) => {

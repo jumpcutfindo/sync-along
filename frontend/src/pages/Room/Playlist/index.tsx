@@ -4,6 +4,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "src/stores";
 import { Media, addMedia, setMedia } from "src/stores/app/playlist";
+import { play } from "src/stores/app/player";
 
 import "./index.css";
 
@@ -98,6 +99,7 @@ const Playlist: React.FC = () => {
 
     const setCurrentPlaying = (index: number) => {
         dispatch(setMedia(index));
+        dispatch(play());
     };
 
     const mediaViews = medias.map((media, index) => (
