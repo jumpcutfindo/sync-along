@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/interactive-supports-focus */
-import React, { useRef, useState } from "react";
+import React, { FormEvent, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "src/stores";
 import { Media, addMedia, setMedia } from "src/stores/app/playlist";
@@ -9,14 +9,30 @@ import { play } from "src/stores/app/player";
 import { Overlay } from "react-bootstrap";
 
 import "./index.css";
+import useInputState from "src/hooks/useInputState";
 
 const AddMediaButton: React.FC = () => {
     const ref = useRef(null);
+    const dispatch = useDispatch();
 
+    const [url, onChangeUrl] = useInputState("");
     const [isShowPopover, setShowPopover] = useState(false);
 
     const togglePopover = () => {
         setShowPopover(!isShowPopover);
+    };
+
+    const handleSubmit = (event: FormEvent) => {
+        event.preventDefault();
+
+        // TODO: Basic validation of the url or pass to server to handle
+        // TODO: Send url to server for handling
+        const response: Media = {
+            url,
+            name: url,
+        };
+
+        dispatch(addMedia(response));
     };
 
     return (
@@ -39,22 +55,28 @@ const AddMediaButton: React.FC = () => {
                     <p className="mb-2">
                         <b>Add a link:</b>
                     </p>
-                    <input
-                        className="form-control mb-2"
-                        placeholder="e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-                    />
-                    <div className="d-flex">
-                        <button type="button" className="btn btn-success me-2">
-                            Add
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-outline-danger"
-                            onClick={togglePopover}
-                        >
-                            Cancel
-                        </button>
-                    </div>
+                    <form onSubmit={handleSubmit}>
+                        <input
+                            className="form-control mb-2"
+                            placeholder="e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                            onChange={onChangeUrl}
+                        />
+                        <div className="d-flex">
+                            <button
+                                type="submit"
+                                className="btn btn-success me-2"
+                            >
+                                Add
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-outline-danger"
+                                onClick={togglePopover}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </Overlay>
         </div>

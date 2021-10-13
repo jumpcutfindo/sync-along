@@ -3,7 +3,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface Media {
     url: string;
     name: string;
-    duration: number;
 }
 
 interface PlaylistState {
