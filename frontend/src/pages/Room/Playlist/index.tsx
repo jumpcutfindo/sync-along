@@ -11,6 +11,16 @@ import { Overlay } from "react-bootstrap";
 import "./index.css";
 import useInputState from "src/hooks/useInputState";
 
+const validateYouTubeURL = (url: string) => {
+    if (url === undefined || url === null || url === "") return false;
+    const p =
+        /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+
+    const flag = url.match(p);
+    if (flag) return flag[1];
+    return false;
+};
+
 const AddMediaButton: React.FC = () => {
     const ref = useRef(null);
     const dispatch = useDispatch();
@@ -32,7 +42,7 @@ const AddMediaButton: React.FC = () => {
             name: url,
         };
 
-        dispatch(addMedia(response));
+        if (validateYouTubeURL(url)) dispatch(addMedia(response));
     };
 
     return (
