@@ -7,6 +7,7 @@ import userApi from "src/services/user";
 import { authReducer, authSlice } from "./auth";
 import { appReducer, appSlice } from "./app";
 import { playlistReducer, playlistSlice } from "./app/playlist";
+import { playerReducer, playerSlice } from "./app/player";
 
 export const store = configureStore({
     reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
         [authSlice.name]: authReducer,
         [appSlice.name]: appReducer,
         [playlistSlice.name]: playlistReducer,
+        [playerSlice.name]: playerReducer,
     },
 });
 
