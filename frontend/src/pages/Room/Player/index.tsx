@@ -14,6 +14,10 @@ import {
     faPauseCircle,
     faStepBackward,
     faStepForward,
+    faVolumeOff,
+    faVolumeDown,
+    faVolumeUp,
+    faVolumeMute,
 } from "@fortawesome/free-solid-svg-icons";
 
 const PlayerInfo: React.FC<{
@@ -50,50 +54,98 @@ const PlayerInfo: React.FC<{
 };
 
 const PlayerButtons: React.FC<{
+    volume: number;
+    onVolumeChanged: (arg: number) => void;
     isLoaded: boolean;
     isPlaying: boolean;
     onPlayPressed: () => void;
     onNextPressed: () => void;
     onPrevPressed: () => void;
 }> = (props) => {
-    const { isLoaded, isPlaying, onPlayPressed, onNextPressed, onPrevPressed } =
-        props;
+    const {
+        volume,
+        isLoaded,
+        isPlaying,
+        onPlayPressed,
+        onNextPressed,
+        onPrevPressed,
+        onVolumeChanged,
+    } = props;
+
+    const [savedVolume, setSavedVolume] = useState(volume);
+    const [isMuted, setMuted] = useState(false);
 
     if (!isLoaded) return null;
 
+    const getVolumeIcon = () => {
+        if (isMuted) return faVolumeMute;
+        if (volume === 0.0) return faVolumeOff;
+        if (volume < 0.5) return faVolumeDown;
+        return faVolumeUp;
+    };
+
+    const toggleMute = () => {
+        if (isMuted) onVolumeChanged(savedVolume);
+        else onVolumeChanged(0.0);
+
+        setMuted(!isMuted);
+    };
+
+    const onSeekVolume = (value: number) => {
+        onVolumeChanged(value / 100);
+        setSavedVolume(value / 100);
+        setMuted(false);
+    };
+
     return (
-        <div className="d-flex player-buttons justify-content-end my-auto mx-3">
-            <FontAwesomeIcon
-                className="player-control-button my-auto me-3"
-                icon={faStepBackward}
-                size="2x"
-                color="white"
-                onClick={onPrevPressed}
-            />
-            {!isPlaying ? (
+        <div className="d-flex flex-column">
+            <div className="d-flex player-buttons justify-content-end my-auto mx-3">
                 <FontAwesomeIcon
-                    className="player-control-button"
-                    icon={faPlayCircle}
-                    size="3x"
+                    className="player-control-button my-auto me-3"
+                    icon={faStepBackward}
+                    size="2x"
                     color="white"
-                    onClick={onPlayPressed}
+                    onClick={onPrevPressed}
                 />
-            ) : (
+                {!isPlaying ? (
+                    <FontAwesomeIcon
+                        className="player-control-button"
+                        icon={faPlayCircle}
+                        size="3x"
+                        color="white"
+                        onClick={onPlayPressed}
+                    />
+                ) : (
+                    <FontAwesomeIcon
+                        className="player-control-button"
+                        icon={faPauseCircle}
+                        size="3x"
+                        color="white"
+                        onClick={onPlayPressed}
+                    />
+                )}
                 <FontAwesomeIcon
-                    className="player-control-button"
-                    icon={faPauseCircle}
-                    size="3x"
+                    className="player-control-button my-auto ms-3"
+                    icon={faStepForward}
+                    size="2x"
                     color="white"
-                    onClick={onPlayPressed}
+                    onClick={onNextPressed}
                 />
-            )}
-            <FontAwesomeIcon
-                className="player-control-button my-auto ms-3"
-                icon={faStepForward}
-                size="2x"
-                color="white"
-                onClick={onNextPressed}
-            />
+            </div>
+            <div className="d-flex">
+                <FontAwesomeIcon
+                    className="player-control-button player-volume-icon my-auto me-2"
+                    icon={getVolumeIcon()}
+                    size="1x"
+                    color="white"
+                    onClick={toggleMute}
+                />
+                <Slider
+                    className="my-auto"
+                    value={volume * 100}
+                    onChange={onSeekVolume}
+                />
+            </div>
         </div>
     );
 };
@@ -105,6 +157,7 @@ const PlayerComponent: React.FC = () => {
 
     const [progress, setProgress] = useState(0);
     const [isPlaying, setPlaying] = useState(false);
+    const [volume, setVolume] = useState(0.5);
 
     const currentMedia: Media | null = useSelector(
         (state: RootState) => state.playlist.current
@@ -114,6 +167,10 @@ const PlayerComponent: React.FC = () => {
         setProgress(value);
         ref.current?.seekTo(value / 100, "fraction");
         setPlaying(true);
+    };
+
+    const onVolumeChange = (value: number) => {
+        setVolume(value);
     };
 
     const onPlayerProgress = (newProgress: any) => {
@@ -147,6 +204,8 @@ const PlayerComponent: React.FC = () => {
                     currentMedia={currentMedia}
                 />
                 <PlayerButtons
+                    volume={volume}
+                    onVolumeChanged={onVolumeChange}
                     isLoaded={currentMedia !== null}
                     isPlaying={isPlaying}
                     onPlayPressed={onPlayPressed}
@@ -162,6 +221,7 @@ const PlayerComponent: React.FC = () => {
                 height="0"
                 progressInterval={100}
                 playing={isPlaying}
+                volume={volume}
                 onProgress={onPlayerProgress}
             />
         </div>
