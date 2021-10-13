@@ -27,6 +27,7 @@ const AddMediaButton: React.FC = () => {
 
     const [url, onChangeUrl] = useInputState("");
     const [isShowPopover, setShowPopover] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
 
     const togglePopover = () => {
         setShowPopover(!isShowPopover);
@@ -36,13 +37,23 @@ const AddMediaButton: React.FC = () => {
         event.preventDefault();
 
         // TODO: Basic validation of the url or pass to server to handle
-        // TODO: Send url to server for handling
+        // TODO: Send url to server for handling (the response should at least contain the title of the song)
+        // Note that the duration of the song has been automatically handled by react-player
         const response: Media = {
             url,
             name: url,
         };
 
-        if (validateYouTubeURL(url)) dispatch(addMedia(response));
+        if (validateYouTubeURL(url)) {
+            dispatch(addMedia(response));
+            setErrorMsg("");
+        } else {
+            setErrorMsg("Invalid URL has been entered!");
+        }
+    };
+
+    const isError = () => {
+        return errorMsg === "";
     };
 
     return (
@@ -71,6 +82,16 @@ const AddMediaButton: React.FC = () => {
                             placeholder="e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ"
                             onChange={onChangeUrl}
                         />
+                        <p
+                            style={{
+                                visibility: `${
+                                    !isError() ? "visible" : "hidden"
+                                }`,
+                            }}
+                            className="mb-2 text-danger"
+                        >
+                            {errorMsg}
+                        </p>
                         <div className="d-flex">
                             <button
                                 type="submit"
@@ -83,7 +104,7 @@ const AddMediaButton: React.FC = () => {
                                 className="btn btn-outline-danger"
                                 onClick={togglePopover}
                             >
-                                Cancel
+                                Close
                             </button>
                         </div>
                     </form>
