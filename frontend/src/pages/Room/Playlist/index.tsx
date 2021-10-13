@@ -1,7 +1,9 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/interactive-supports-focus */
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "src/stores";
-import { Media, addMedia } from "src/stores/app/playlist";
+import { Media, addMedia, setMedia } from "src/stores/app/playlist";
 
 import "./index.css";
 
@@ -55,15 +57,22 @@ const PlaylistItem: React.FC<{
     index: number;
     media: Media;
     selected: boolean;
+    setPlaying: (arg: number) => void;
 }> = (props) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { index, media, selected } = props;
+    const { index, media, selected, setPlaying } = props;
+
+    const setThisPlaying = () => {
+        setPlaying(index);
+    };
 
     return (
         <div
+            role="button"
             className={`PlaylistItem d-flex ${index % 2 ? "odd" : "even"} ${
                 selected ? "selected" : ""
             } py-2`}
+            onClick={setThisPlaying}
         >
             <div className="my-auto mx-2">
                 <p className="video-index m-0">#{index + 1}</p>
@@ -80,10 +89,16 @@ const PlaylistItem: React.FC<{
 };
 
 const Playlist: React.FC = () => {
+    const dispatch = useDispatch();
+
     const medias = useSelector((state: RootState) => state.playlist.media);
     const currentIndex = useSelector(
         (state: RootState) => state.playlist.currentIndex
     );
+
+    const setCurrentPlaying = (index: number) => {
+        dispatch(setMedia(index));
+    };
 
     const mediaViews = medias.map((media, index) => (
         <PlaylistItem
@@ -92,6 +107,7 @@ const Playlist: React.FC = () => {
             index={index}
             media={media}
             selected={index === currentIndex}
+            setPlaying={setCurrentPlaying}
         />
     ));
 

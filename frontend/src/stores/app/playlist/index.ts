@@ -51,8 +51,13 @@ export const playlistSlice = createSlice({
                 state.current = state.media[0];
             }
         },
+        setMedia(state, action: PayloadAction<number>) {
+            state.currentIndex = action.payload;
+            state.current = state.media[action.payload];
+        },
     },
 });
 
 export const playlistReducer = playlistSlice.reducer;
-export const { addMedia, nextMedia, prevMedia } = playlistSlice.actions;
+export const { addMedia, nextMedia, prevMedia, setMedia } =
+    playlistSlice.actions;
