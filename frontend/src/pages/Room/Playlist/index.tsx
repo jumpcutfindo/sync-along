@@ -51,13 +51,19 @@ const PlaylistHeader: React.FC = () => (
     </div>
 );
 
-const PlaylistItem: React.FC<{ index: number; media: Media }> = (props) => {
+const PlaylistItem: React.FC<{
+    index: number;
+    media: Media;
+    selected: boolean;
+}> = (props) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { index, media } = props;
+    const { index, media, selected } = props;
 
     return (
         <div
-            className={`PlaylistItem d-flex ${index % 2 ? "odd" : "even"} py-2`}
+            className={`PlaylistItem d-flex ${index % 2 ? "odd" : "even"} ${
+                selected ? "selected" : ""
+            } py-2`}
         >
             <div className="my-auto mx-2">
                 <p className="video-index m-0">#{index + 1}</p>
@@ -75,10 +81,18 @@ const PlaylistItem: React.FC<{ index: number; media: Media }> = (props) => {
 
 const Playlist: React.FC = () => {
     const medias = useSelector((state: RootState) => state.playlist.media);
+    const currentIndex = useSelector(
+        (state: RootState) => state.playlist.currentIndex
+    );
 
     const mediaViews = medias.map((media, index) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <PlaylistItem key={index} index={index} media={media} />
+        <PlaylistItem
+            // eslint-disable-next-line react/no-array-index-key
+            key={index}
+            index={index}
+            media={media}
+            selected={index === currentIndex}
+        />
     ));
 
     if (mediaViews.length === 0) {
