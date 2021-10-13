@@ -163,12 +163,7 @@ const PlayerComponent: React.FC = () => {
         (state: RootState) => state.playlist.current
     );
 
-    const onSeek = (value: number) => {
-        setProgress(value);
-        ref.current?.seekTo(value / 100, "fraction");
-        setPlaying(true);
-    };
-
+    // Methods for client side
     const onVolumeChange = (value: number) => {
         setVolume(value);
     };
@@ -177,15 +172,26 @@ const PlayerComponent: React.FC = () => {
         setProgress(newProgress.played * 100);
     };
 
+    // Methods for server side
+    // TODO: This should send a message to the server indicating the value of the progress
+    const onSeek = (value: number) => {
+        setProgress(value);
+        ref.current?.seekTo(value / 100, "fraction");
+        setPlaying(true);
+    };
+
+    // TODO: This should send a message to the server indicating the player has been toggled
     const onPlayPressed = () => {
         setPlaying(!isPlaying);
     };
 
+    // TODO: This should send a message to the server indicating a skip to the next song
     const onNextPressed = () => {
         dispatch(nextMedia());
         setPlaying(true);
     };
 
+    // TODO: This should send a message to the server indicating a jump to prev song
     const onPrevPressed = () => {
         dispatch(prevMedia());
         setPlaying(true);
