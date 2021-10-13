@@ -39,7 +39,7 @@ const PlayerInfo: React.FC<{
     }
 
     return (
-        <div className="d-flex player-info flex-grow-1 text-start">
+        <div className="d-flex player-info flex-grow-1 text-start me-2">
             <p className="my-auto">
                 {currentMedia ? currentMedia.name : "No media selected!"}
             </p>
@@ -98,8 +98,8 @@ const PlayerButtons: React.FC<{
     };
 
     return (
-        <div className="d-flex flex-column">
-            <div className="d-flex player-buttons justify-content-end my-auto mx-3">
+        <div className="d-flex flex-column my-auto mx-3">
+            <div className="d-flex player-buttons justify-content-end mb-2">
                 <FontAwesomeIcon
                     className="player-control-button my-auto me-3"
                     icon={faStepBackward}
