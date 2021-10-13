@@ -1,16 +1,69 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/interactive-supports-focus */
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "src/stores";
 import { Media, addMedia, setMedia } from "src/stores/app/playlist";
 import { play } from "src/stores/app/player";
 
+import { Overlay } from "react-bootstrap";
+
 import "./index.css";
+
+const AddMediaButton: React.FC = () => {
+    const ref = useRef(null);
+
+    const [isShowPopover, setShowPopover] = useState(false);
+
+    const togglePopover = () => {
+        setShowPopover(!isShowPopover);
+    };
+
+    return (
+        <div className="AddMediaButton me-2">
+            <button
+                ref={ref}
+                type="button"
+                className="btn btn-primary"
+                onClick={togglePopover}
+            >
+                Add Media
+            </button>
+            <Overlay
+                target={ref.current}
+                show={isShowPopover}
+                placement="bottom"
+                transition={false}
+            >
+                <div className="add-media-popover d-flex flex-column p-3 mt-2">
+                    <p className="mb-2">
+                        <b>Add a link:</b>
+                    </p>
+                    <input
+                        className="form-control mb-2"
+                        placeholder="e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                    />
+                    <div className="d-flex">
+                        <button type="button" className="btn btn-success me-2">
+                            Add
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-outline-danger"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </Overlay>
+        </div>
+    );
+};
 
 const PlaylistHeaderButtons: React.FC = () => {
     const dispatch = useDispatch();
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const addNewMedia = () => {
         // TODO: This should send an API request then use the response to update the playlist state of the app
 
@@ -31,13 +84,7 @@ const PlaylistHeaderButtons: React.FC = () => {
 
     return (
         <div className="PlaylistHeaderButtons d-flex w-100 justify-content-end">
-            <button
-                type="button"
-                className="btn btn-primary my-auto me-2"
-                onClick={addNewMedia}
-            >
-                Add Media
-            </button>
+            <AddMediaButton />
             <button type="button" className="btn btn-success my-auto">
                 Import Playlist
             </button>
