@@ -51,6 +51,8 @@ export const RegisterModalContent: React.FC<{
         if (isSuccess) {
             // TODO: Decide on what to do when registration is successful
             toggleShowRegistration();
+        } else {
+            setErrorMessage("Unable to login!");
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoading, isSuccess]);
