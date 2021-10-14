@@ -1,11 +1,12 @@
 import React from "react";
+import RoomScreen from "./Room";
 
-const RoomScreen: React.FC = () => {
+const RoomPage: React.FC = () => {
     return (
-        <div>
-            <p>This is when you have joined a room</p>
+        <div className="d-flex w-100 h-100 mb-2">
+            <RoomScreen />
         </div>
     );
 };
 
-export default RoomScreen;
+export default RoomPage;

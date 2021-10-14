@@ -39,11 +39,26 @@ h1 {
   font-size: 4.0rem !important;
 }
 
-p {
+p, a {
   font-family: 'Inter', sans-serif;
   color: whitesmoke;
 }
 
 button {
   font-family: 'Inter', sans-serif !important;
+}
+
+hr {
+  background-color: rgba(255, 255, 255, 1.0) !important;
+}
+
+.form-control {
+  font-family: 'Inter', sans-serif;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: white;
+}
+
+::placeholder {
+  color: white;
 }

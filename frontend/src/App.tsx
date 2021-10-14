@@ -28,8 +28,8 @@ function App() {
                                 <Route path="/room" component={RoomPage} />
                                 <Route exact path="/" component={LoginPage} />
                             </Switch>
+                            <DashboardControls />
                         </Router>
-                        <DashboardControls />
                     </div>
                 </div>
             </Provider>

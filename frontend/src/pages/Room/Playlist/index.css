@@ -1,0 +1,53 @@
+.PlaylistComponent {
+    background: none;
+    border-radius: 10px 0px 0px 0px;
+}
+
+.PlaylistHeader {
+    height: 10%;
+}
+
+.PlaylistHeader h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+}
+
+.Playlist {
+    height: 90%;
+}
+
+.PlaylistItem:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    cursor: pointer;
+}
+
+.PlaylistItem.odd {
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.PlaylistItem.selected {
+    background: rgba(0, 255, 0, 0.25);
+}
+
+.PlaylistItem .video-index {
+    width: 40px;
+}
+
+.PlaylistItem .video-thumbnail {
+    width: 50px;
+    height: 50px;
+
+    background: pink;
+}
+
+.PlaylistItem .video-title {
+    font-weight: 600;
+}
+
+.add-media-popover {
+    border: 1px rgba(255, 255, 255, 0.1) solid;
+    border-radius: 10px;
+    background-color: #101D42;
+    width: 400px;
+    box-shadow: 0px 4px 16px rgba(0,0,0,0.25);
+}
