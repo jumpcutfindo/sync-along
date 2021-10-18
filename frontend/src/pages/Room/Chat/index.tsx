@@ -1,18 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import useInputState from "src/hooks/useInputState";
 
 import "./index.css";
 
 const MessageInput: React.FC = () => {
-    const [messageInput, updateMessageInput] = useInputState("");
-
+    const [messageInput, updateMessageInput, clearInput] = useInputState("");
+    // const socket = {};
     const sendMessage = (event: React.FormEvent) => {
         event.preventDefault();
+        // socket.emit("chat", messageInput);
+        clearInput();
     };
     return (
         <form onSubmit={sendMessage}>
             <input
-                className="form-control"
+                className="message-input form-control"
                 value={messageInput}
                 onChange={updateMessageInput}
                 placeholder="Send a message here!"
