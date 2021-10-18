@@ -1,4 +1,30 @@
 .ChatComponent {
     background: red;
     border-radius: 0px 0px 10px 0px;
+    position: relative;
+}
+
+.message-input {
+    position: absolute;
+    bottom: 0;
+}
+.message {
+  text-align: left;
+}
+
+.message-container {
+  padding: 10px;
+  border-bottom: 1px solid white;
+}
+
+.text-container {
+  padding: 0px 10px;
+}
+
+.is-user {
+  text-align: right;
+}
+
+.username {
+  font-weight: 600;
 }
