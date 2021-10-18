@@ -4,8 +4,8 @@ import { useHistory } from "react-router-dom";
 
 export default function useNavigator() {
     const history = useHistory();
-    const navToRoom = () => {
-        history.push("/room");
+    const navToRoom = (roomCode = "") => {
+        history.push(`/room/${roomCode}`);
     };
     const navToLogin = () => {
         history.push("/login");
