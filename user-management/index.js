@@ -127,6 +127,23 @@ app.post("/sign-up", async (req, res) => {
   });
 });
 
+<<<<<<< HEAD
+=======
+// Get particular user in database
+async function getUser(username, callback) {
+  db.get(
+    `SELECT (SELECT (hashedPassword) FROM accounts WHERE username=?) AS hashedPassword`,
+    [username],
+    (err, row) => {
+      if (err) {
+        log.info(err.message);
+      }
+      callback(row.hashedPassword);
+    }
+  );
+}
+
+>>>>>>> 40e1db2 (Add user login)
 app.post("/login", async (req, res) => {
   console.log(`/login received at server ${JSON.stringify(req.body)}`);
 
@@ -174,6 +191,7 @@ app.post("/login", async (req, res) => {
   });
 });
 
+<<<<<<< HEAD
 /* user logs out */
 app.get("/logout", (req, res) => {
   if (!req.session || !req.session.isLoggedIn) {
@@ -188,6 +206,8 @@ app.get("/logout", (req, res) => {
   });
 });
 
+=======
+>>>>>>> 40e1db2 (Add user login)
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
