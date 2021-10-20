@@ -53,5 +53,21 @@ app.post('/join', (req, res) => {
     })
 })
 
+/* F3.4 The application should allow that when the room owner leaves the room, all the remaining users will be automatically removed from the room and the room will be deleted from the application. */
+app.post("/delete", (req, res) => {
+    const code = req.body.code;
+
+    if (!rooms.has(code)) {
+        return res.status(404).json({
+            isSuccessful: false, // room not found to remove
+        })
+    }
+    rooms.delete(code);
+    
+    return res.status(200).json({
+        isSuccessful: true,
+    })
+})
+
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Server listening on port ${port}`));
