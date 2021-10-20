@@ -103,5 +103,36 @@ app.post("/delete", (req, res) => {
     })
 })
 
+/* F3.5 The application should allow users (except the room owner - to-do) to leave the room that they are joining. */
+app.post("/leave", (req, res) => {
+    const username = req.body.username;
+
+    if (!username) {
+        return res.status(400).json({
+            isSuccessful: false,
+            message: "Please provide a username to leave the room"
+        })
+    }
+    
+    if (!users.has(username)) {
+        return res.status(400).json({
+            isSuccessful: false,
+            message: "User is currently not in any room."
+        })
+    }
+    
+    code = users.get(username);
+    let room_users = rooms.get(code).split(",");
+    room_users.pop(username); // remove user from room
+    rooms.set(code, room_users.join(',')); // update room 
+    users.delete(username);
+
+    console.log(`rooms=${[...rooms.entries()]}`);
+    console.log(`users=${[...users.entries()]}`);
+    return res.status(200).json({
+        isSuccessful: true,
+    })
+})
+
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Server listening on port ${port}`));
