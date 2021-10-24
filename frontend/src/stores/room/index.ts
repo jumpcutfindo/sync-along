@@ -7,7 +7,7 @@ interface RoomStore {
 const initialState: RoomStore = {};
 
 export const roomSlice = createSlice({
-    name: "chat",
+    name: "room",
     initialState,
     reducers: {
         storeRoomCode(state, action) {
