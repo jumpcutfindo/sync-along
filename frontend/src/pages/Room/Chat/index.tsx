@@ -1,9 +1,7 @@
 import React from "react";
 
-import { useSelector } from "react-redux";
+import { useAppSelector } from "src/hooks/typedReduxHooks";
 import useInputState from "src/hooks/useInputState";
-import chatApi from "src/services/chat";
-import { RootState } from "src/stores";
 
 import "./index.css";
 
@@ -57,10 +55,15 @@ const Message: React.FC<{ user: string; message: string }> = ({
 };
 
 const MessageList: React.FC = () => {
-    const roomNumber = useSelector((state: RootState) => state.room.roomCode);
-    const { data = [] } = chatApi.endpoints.getMessages.useQuery(
-        roomNumber ?? ""
-    );
+    const roomNumber = useAppSelector((state) => state.room.roomCode);
+    console.log(roomNumber);
+    const data = [
+        {
+            id: "1",
+            text: "Hello!",
+            userName: "user1",
+        },
+    ];
     return (
         <div>
             {data.map(({ id, text, userName }) => (

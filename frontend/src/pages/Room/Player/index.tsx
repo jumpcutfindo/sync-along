@@ -4,8 +4,8 @@ import Slider from "rc-slider";
 
 import "./index.css";
 import "rc-slider/assets/index.css";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "src/stores";
+
+import { useAppSelector, useAppDispatch } from "src/hooks/typedReduxHooks";
 import { Media, nextMedia, prevMedia } from "src/stores/app/playlist";
 import { play, stop } from "src/stores/app/player";
 
@@ -154,17 +154,17 @@ const PlayerButtons: React.FC<{
 const PlayerComponent: React.FC = () => {
     const ref = useRef<ReactPlayer>(null);
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const [progress, setProgress] = useState(0);
     const [volume, setVolume] = useState(0.5);
 
-    const currentMedia: Media | null = useSelector(
-        (state: RootState) => state.playlist.current
+    const currentMedia: Media | null = useAppSelector(
+        (state) => state.playlist.current
     );
 
-    const isPlaying: boolean = useSelector(
-        (state: RootState) => state.player.isPlaying
+    const isPlaying: boolean = useAppSelector(
+        (state) => state.player.isPlaying
     );
 
     const setPlaying = (shouldPlay: boolean) => {

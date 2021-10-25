@@ -1,5 +1,6 @@
-import { createDraftSafeSelector, createSlice } from "@reduxjs/toolkit";
-import { RootState } from "src/stores";
+import { createSlice } from "@reduxjs/toolkit";
+
+import Types from "Types";
 
 interface RoomStore {
     roomCode?: string;
@@ -16,6 +17,8 @@ export const roomSlice = createSlice({
         },
     },
 });
+
+export const selectRoomCode = (state: Types.RootState) => state.room.roomCode;
 
 export const roomReducer = roomSlice.reducer;
 export const { storeRoomCode } = roomSlice.actions;

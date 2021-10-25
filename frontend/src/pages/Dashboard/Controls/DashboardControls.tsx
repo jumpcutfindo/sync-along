@@ -1,14 +1,13 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "src/hooks/typedReduxHooks";
 
 import useNavigator from "src/hooks/useNavigator";
-import { RootState } from "src/stores";
 
 import { appLogout } from "src/stores/app";
 import { updateAccessToken } from "src/stores/auth";
 
 const LogOutButton: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const { navToLogin } = useNavigator();
 
     const logout = () => {
@@ -19,7 +18,7 @@ const LogOutButton: React.FC = () => {
         navToLogin();
     };
 
-    const loggedIn = useSelector((state: RootState) => state.app.loggedIn);
+    const loggedIn = useAppSelector((state) => state.app.loggedIn);
 
     if (!loggedIn) return null;
 
