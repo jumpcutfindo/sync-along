@@ -17,7 +17,7 @@ import { chatSlice, chatReducer } from "./chat";
 
 const socketClient = new SocketClient();
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
     [userApi.reducerPath]: userApi.reducer,
     [roomApi.reducerPath]: roomApi.reducer,
     [authSlice.name]: authReducer,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "src/hooks/typedReduxHooks";
 import { Overlay } from "react-bootstrap";
 import useInputState from "src/hooks/useInputState";
 import useNavigator from "src/hooks/useNavigator";
@@ -8,7 +8,7 @@ import roomApi from "src/services/room";
 import { storeRoomCode } from "src/stores/room";
 
 const Dashboard: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const joinRoomRef = useRef(null);
     const [isShowPopover, setShowPopover] = useState(false);
     const { navToRoom } = useNavigator();

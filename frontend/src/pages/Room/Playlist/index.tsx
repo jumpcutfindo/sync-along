@@ -22,7 +22,7 @@ const validateYouTubeURL = (url: string) => {
 
 const AddMediaButton: React.FC = () => {
     const ref = useRef(null);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const [url, onChangeUrl] = useInputState("");
     const [isShowPopover, setShowPopover] = useState(false);
@@ -179,7 +179,7 @@ const Playlist: React.FC = () => {
         dispatch(play());
     };
 
-    const mediaViews = medias.map((media, index) => (
+    const mediaViews = medias.map((media: Media, index: number) => (
         <PlaylistItem
             // eslint-disable-next-line react/no-array-index-key
             key={index}

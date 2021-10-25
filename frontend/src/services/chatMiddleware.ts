@@ -5,10 +5,10 @@
  */
 
 import { Middleware } from "redux";
-import { RootState } from "src/stores";
+import Types from "Types";
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-const chatMiddleware = (socket: any): Middleware<{}, RootState> => {
+const chatMiddleware = (socket: any): Middleware<{}, Types.RootState> => {
     return ({ dispatch, getState }) =>
         (next) =>
         (action) => {
@@ -26,10 +26,16 @@ const chatMiddleware = (socket: any): Middleware<{}, RootState> => {
             next({ ...rest, type: REQUEST });
 
             return promise(socket)
-                .then((result: unknown) => {
-                    return next({ ...rest, result, type: SUCCESS });
-                })
-                .catch((error: unknown) => {
+                .then(
+                    (result: {
+                        id: string;
+                        text: string;
+                        username: string;
+                    }) => {
+                        return next({ ...rest, result, type: SUCCESS });
+                    }
+                )
+                .catch((error: Error) => {
                     return next({ ...rest, error, type: FAILURE });
                 });
         };
