@@ -13,7 +13,7 @@ export const roomSlice = createSlice({
     initialState,
     reducers: {
         storeRoomCode(state, action) {
-            state.roomCode = action.payload.roomCode;
+            state.roomCode = action.payload;
         },
     },
 });

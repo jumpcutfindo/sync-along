@@ -1,14 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import SocketClient from "src/services/SocketClient";
 
 import { selectRoomCode } from "src/stores/room";
 
+import Types from "Types";
+
 const socketService = new SocketClient();
 
-const sendMessage = createAsyncThunk(
-    "chat/send",
-    async (text, { getState }) => {
-        const roomCode = selectRoomCode(getState());
+export const sendMessage = createAsyncThunk(
+    "chat",
+    async (text: string, { getState }) => {
+        const roomCode = selectRoomCode(getState() as Types.RootState);
         const result = await socketService.emit("message", {
             text,
             roomCode,
@@ -34,18 +37,17 @@ export const chatSlice = createSlice({
     } as ChatState,
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(sendMessage.pending, (state, action) => {
-            state.messages.push({
-                id: (action?.payload?.id) as string,
-                text: `${action?.payload?.text}`,
-                username: `${action?.payload?.username}`,
+        builder
+            .addCase(sendMessage.pending, (state, action) => {
+                state.messages.push({
+                    id: "1",
+                    text: action.meta.arg,
+                    username: `test`,
+                });
+            })
+            .addCase(sendMessage.rejected, (state, action) => {
+                state.messages = state.messages.filter((msg) => msg.id !== `2`);
             });
-        });
-        builder.addCase(sendMessage.rejected, (state, action) => {
-            state.messages = state.messages.filter(
-                (msg) => msg.id !== `${action?.payload?.id}`
-            );
-        });
     },
 });
 

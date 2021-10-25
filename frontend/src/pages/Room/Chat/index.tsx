@@ -1,16 +1,19 @@
 import React from "react";
 
-import { useAppSelector } from "src/hooks/typedReduxHooks";
+import { useAppSelector, useAppDispatch } from "src/hooks/typedReduxHooks";
 import useInputState from "src/hooks/useInputState";
+
+import { sendMessage as sendMessageAction } from "src/stores/chat";
 
 import "./index.css";
 
 const MessageInput: React.FC = () => {
     const [messageInput, updateMessageInput, clearInput] = useInputState("");
+    const dispatch = useAppDispatch();
     // const socket = {};
     const sendMessage = (event: React.FormEvent) => {
         event.preventDefault();
-        // socket.emit("chat", messageInput);
+        dispatch(sendMessageAction(messageInput));
         clearInput();
     };
     return (
@@ -55,19 +58,11 @@ const Message: React.FC<{ user: string; message: string }> = ({
 };
 
 const MessageList: React.FC = () => {
-    const roomNumber = useAppSelector((state) => state.room.roomCode);
-    console.log(roomNumber);
-    const data = [
-        {
-            id: "1",
-            text: "Hello!",
-            userName: "user1",
-        },
-    ];
+    const data = useAppSelector((state) => state.chat.messages);
     return (
         <div>
-            {data.map(({ id, text, userName }) => (
-                <Message key={id} user={userName} message={text} />
+            {data.map(({ id, text, username }) => (
+                <Message key={id} user={username} message={text} />
             ))}
         </div>
     );
