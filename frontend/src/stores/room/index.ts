@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createDraftSafeSelector, createSlice } from "@reduxjs/toolkit";
+import { RootState } from "src/stores";
 
 interface RoomStore {
     roomCode?: string;
