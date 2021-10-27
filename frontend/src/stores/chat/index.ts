@@ -1,24 +1,37 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import SocketClient from "src/services/SocketClient";
-
-import { selectRoomCode } from "src/stores/room";
+import { createSlice, createAction } from "@reduxjs/toolkit";
 
 import Types from "Types";
 
-const socketService = new SocketClient();
-
-export const sendMessage = createAsyncThunk(
-    "chat",
-    async (text: string, { getState }) => {
-        const roomCode = selectRoomCode(getState() as Types.RootState);
-        const result = await socketService.emit("message", {
+export const sendMessage = createAction("chat", (text: string) => {
+    return {
+        payload: {
             text,
-            roomCode,
-        });
-        return result;
-    }
-);
+            promise: (socket: Types.Socket) => socket.emit("chatMessage", text),
+        },
+    };
+});
+
+export const updateMessages = createAction("chat", (data) => {
+    return {
+        payload: {
+            id: data.time,
+            username: data.username,
+            text: data.text,
+        },
+    };
+});
+
+export const receiveMessages = createAction("chat", (dispatch) => {
+    return {
+        payload: {
+            promise: (socket: Types.Socket) =>
+                socket.on("message", (data) => {
+                    dispatch("chat", updateMessages(data));
+                }),
+        },
+    };
+});
 
 type Messages = {
     id: string;

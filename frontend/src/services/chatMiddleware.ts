@@ -16,21 +16,20 @@ const chatMiddleware = (
                 return action(dispatch, getState);
             }
 
-            const { promise, type, types, ...rest } = action;
+            const { promise, type, ...rest } = action;
             // Filters out actions that are not related to chat functionality
             if (type !== "chat" || !promise) {
                 return next(action);
             }
 
-            const [REQUEST, SUCCESS, FAILURE] = types;
-            next({ ...rest, type: REQUEST });
+            next({ ...rest, type: "REQUEST" });
 
             return promise(socket)
                 .then((result: { text: string }) => {
-                    return next({ ...rest, result, type: SUCCESS });
+                    return next({ ...rest, result, type: "SUCCESS" });
                 })
                 .catch((error: Error) => {
-                    return next({ ...rest, error, type: FAILURE });
+                    return next({ ...rest, error, type: "FAILURE" });
                 });
         };
 };
