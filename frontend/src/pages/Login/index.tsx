@@ -5,7 +5,7 @@ import { Modal } from "react-bootstrap";
 import useNavigator from "src/hooks/useNavigator";
 import { useAppDispatch } from "src/hooks/typedReduxHooks";
 import { updateAccessToken } from "src/stores/auth";
-import { appLogin } from "src/stores/app";
+import { appLogin, storeUser } from "src/stores/app";
 
 import userApi from "src/services/user";
 import useInputState from "src/hooks/useInputState";
@@ -129,6 +129,7 @@ export const LoginModalContent: React.FC<{
 
         // TODO: Move this function into the if-else once login is handled properly
         dispatch(appLogin());
+        dispatch(storeUser({ name: username, id: 1 }));
         navToDashboard();
     };
 
