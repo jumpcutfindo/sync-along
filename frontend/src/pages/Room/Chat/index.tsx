@@ -10,7 +10,6 @@ import "./index.css";
 const MessageInput: React.FC = () => {
     const [messageInput, updateMessageInput, clearInput] = useInputState("");
     const dispatch = useAppDispatch();
-    // const socket = {};
     const sendMessage = (event: React.FormEvent) => {
         event.preventDefault();
         dispatch(sendMessageAction(messageInput));

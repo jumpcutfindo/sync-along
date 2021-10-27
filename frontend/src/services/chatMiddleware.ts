@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/ban-types */
 /**
  * A middleware for handling socket requests
  */
@@ -7,8 +6,9 @@
 import { Middleware } from "redux";
 import Types from "Types";
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-const chatMiddleware = (socket: any): Middleware<{}, Types.RootState> => {
+const chatMiddleware = (
+    socket: Types.Socket
+): Middleware<{}, Types.RootState> => {
     return ({ dispatch, getState }) =>
         (next) =>
         (action) => {
@@ -26,15 +26,9 @@ const chatMiddleware = (socket: any): Middleware<{}, Types.RootState> => {
             next({ ...rest, type: REQUEST });
 
             return promise(socket)
-                .then(
-                    (result: {
-                        id: string;
-                        text: string;
-                        username: string;
-                    }) => {
-                        return next({ ...rest, result, type: SUCCESS });
-                    }
-                )
+                .then((result: { text: string }) => {
+                    return next({ ...rest, result, type: SUCCESS });
+                })
                 .catch((error: Error) => {
                     return next({ ...rest, error, type: FAILURE });
                 });

@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import io from "socket.io-client";
+import Types from "Types";
 
 const host = "http://localhost:4000";
 
 const NoConnectionError = new Error("No socket connection");
-type Socket = ReturnType<typeof io>;
 
 class SocketClient {
-    socket: Socket | undefined;
+    socket: Types.Socket | undefined;
 
     connect(): Promise<string> {
         this.socket = io(host);
