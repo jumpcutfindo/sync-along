@@ -31,21 +31,63 @@ app.post('/room/new', (req, res) => {
 const server = app.listen(4000, () => console.log("server started!"))
 
 
-// // Chat app
-// let usersInChat = [];
-// const socket = require("socket.io");
-// const io = socket(server);
+// Chat app
+let usersInChat = [];
+const socket = require("socket.io");
+const io = socket(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  }
+});
 
-// function joinUser(id, username, roomName) {
-//   const user = {id, username, roomName};
-//   usersInChat.push(user);
-//   return user;
-// }
+const c_users = [];
 
-// function getCurrentUser(id) {
-//   return usersInChat.find((user) => user.id === id);
-// }
+// joins the user to the specific chatroom
+function join_User(id, username, room) {
+  const p_user = { id, username, room };
 
-// function userDisconnect(id) {
-//   usersInChat = usersInChat.filter((user) => user.id !== id);
-// }
+  c_users.push(p_user);
+  console.log(c_users, "users");
+
+  return p_user;
+}
+
+function get_Current_User(id) {
+  return c_users.find((p_user) => p_user.id === id);
+}
+
+// called when the user leaves the chat and its user object deleted from array
+function user_Disconnect(id) {
+  const index = c_users.findIndex((p_user) => p_user.id === id);
+
+  if (index !== -1) {
+    return c_users.splice(index, 1)[0];
+  }
+}
+
+io.on("connection", (socket) => {
+  socket.on("joinRoom", ({username, roomname}) => {
+    const p_user = join_User(socket.id, username, roomname);
+    console.log(`${socket.id}=id`);
+    socket.join(p_user.room);
+    io.to(p_user.room).emit("message", {
+      userId: p_user.id,
+      username: p_user.username,
+      text: "hi",
+    });
+  });
+
+  socket.on("chat", (text) => {
+    const p_user = get_Current_User(socket.id);
+    io.to(p_user.room).emit("message", {
+      userId: p_user.id,
+      username: p_user.username,
+      text: text,
+    });
+  });
+
+  socket.on("disconnect", () => {
+    const p_user = user_Disconnect(socket.id);
+  })
+})
