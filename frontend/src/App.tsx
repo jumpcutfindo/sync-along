@@ -6,7 +6,7 @@ import DashboardPage from "src/pages/Dashboard";
 import LoginPage from "src/pages/Login";
 import RoomPage from "src/pages/Room";
 
-import { store } from "src/stores";
+import store from "src/stores";
 import { Provider } from "react-redux";
 
 import "./App.css";

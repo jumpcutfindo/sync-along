@@ -1,8 +1,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/interactive-supports-focus */
 import React, { FormEvent, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "src/stores";
+import { useAppDispatch, useAppSelector } from "src/hooks/typedReduxHooks";
 import { Media, addMedia, setMedia } from "src/stores/app/playlist";
 import { play } from "src/stores/app/player";
 
@@ -23,7 +22,7 @@ const validateYouTubeURL = (url: string) => {
 
 const AddMediaButton: React.FC = () => {
     const ref = useRef(null);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const [url, onChangeUrl] = useInputState("");
     const [isShowPopover, setShowPopover] = useState(false);
@@ -170,19 +169,17 @@ const PlaylistItem: React.FC<{
 };
 
 const Playlist: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
-    const medias = useSelector((state: RootState) => state.playlist.media);
-    const currentIndex = useSelector(
-        (state: RootState) => state.playlist.currentIndex
-    );
+    const medias = useAppSelector((state) => state.playlist.media);
+    const currentIndex = useAppSelector((state) => state.playlist.currentIndex);
 
     const setCurrentPlaying = (index: number) => {
         dispatch(setMedia(index));
         dispatch(play());
     };
 
-    const mediaViews = medias.map((media, index) => (
+    const mediaViews = medias.map((media: Media, index: number) => (
         <PlaylistItem
             // eslint-disable-next-line react/no-array-index-key
             key={index}
