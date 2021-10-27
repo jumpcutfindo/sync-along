@@ -4,10 +4,11 @@
  */
 
 import { Middleware } from "redux";
+import SocketClient from "src/services/SocketClient";
 import Types from "Types";
 
 const chatMiddleware = (
-    socket: Types.Socket
+    socket: SocketClient
 ): Middleware<{}, Types.RootState> => {
     return ({ dispatch, getState }) =>
         (next) =>
@@ -18,7 +19,7 @@ const chatMiddleware = (
 
             const { promise, type, ...rest } = action;
             // Filters out actions that are not related to chat functionality
-            if (type !== "chat" || !promise) {
+            if (!type.startsWith("chat") || !promise) {
                 return next(action);
             }
 
@@ -29,6 +30,7 @@ const chatMiddleware = (
                     return next({ ...rest, result, type: "SUCCESS" });
                 })
                 .catch((error: Error) => {
+                    console.log("error here!");
                     return next({ ...rest, error, type: "FAILURE" });
                 });
         };

@@ -26,7 +26,7 @@ class SocketClient {
         });
     }
 
-    emit(event: string, data: Record<string, unknown>): any {
+    emit(event: string, data: string): any {
         return new Promise((resolve, reject) => {
             if (!this.socket) {
                 return reject(NoConnectionError);

@@ -1,18 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice, createAction } from "@reduxjs/toolkit";
+import SocketClient from "src/services/SocketClient";
 
-import Types from "Types";
-
-export const sendMessage = createAction("chat", (text: string) => {
+export const sendMessage = createAction("chat/sendMessage", (text: string) => {
     return {
         payload: {
             text,
-            promise: (socket: Types.Socket) => socket.emit("chatMessage", text),
+            promise: (socket: SocketClient) => socket.emit("chatMessage", text),
         },
     };
 });
 
-export const updateMessages = createAction("chat", (data) => {
+export const updateMessages = createAction("chat/getMessage", (data) => {
     return {
         payload: {
             id: data.time,
@@ -22,13 +21,21 @@ export const updateMessages = createAction("chat", (data) => {
     };
 });
 
-export const receiveMessages = createAction("chat", (dispatch) => {
+export const receiveMessages = createAction("chat/getMessages", (dispatch) => {
     return {
         payload: {
-            promise: (socket: Types.Socket) =>
+            promise: (socket: SocketClient) =>
                 socket.on("message", (data) => {
                     dispatch("chat", updateMessages(data));
                 }),
+        },
+    };
+});
+
+export const stopReceiveMessages = createAction("chat/stopMessages", () => {
+    return {
+        payload: {
+            promise: (socket: SocketClient) => socket.disconnect(),
         },
     };
 });
@@ -50,17 +57,14 @@ export const chatSlice = createSlice({
     } as ChatState,
     reducers: {},
     extraReducers: (builder) => {
-        builder
-            .addCase(sendMessage.pending, (state, action) => {
-                state.messages.push({
-                    id: "1",
-                    text: action.meta.arg,
-                    username: `test`,
-                });
-            })
-            .addCase(sendMessage.rejected, (state, action) => {
-                state.messages = state.messages.filter((msg) => msg.id !== `2`);
+        builder.addCase(updateMessages, (state, action) => {
+            const { id, username, text } = action.payload;
+            state.messages.push({
+                id,
+                text,
+                username,
             });
+        });
     },
 });
 
