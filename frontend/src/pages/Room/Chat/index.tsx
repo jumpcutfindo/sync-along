@@ -58,14 +58,19 @@ const MessageInput: React.FC = () => {
     );
 };
 
-const Message: React.FC<{ user: string; message: string }> = ({
+const Message: React.FC<{ user: string; message: string; isEven: boolean }> = ({
     user,
     message,
+    isEven,
 }) => {
     return (
-        <div className="message-container d-flex p-2 text-start">
+        <div
+            className={`message-container d-flex p-2 text-start ${
+                isEven ? "even" : ""
+            }`}
+        >
             <div className="message">
-                <p>
+                <p className="m-0">
                     <b>{user}: </b>
                     {message}
                 </p>
@@ -85,8 +90,13 @@ const MessageList: React.FC = () => {
     const data = useAppSelector((state) => state.chat.messages);
     return (
         <div className="message-list flex-grow-1">
-            {data.map(({ id, text, username }) => (
-                <Message key={id} user={username} message={text} />
+            {data.map(({ id, text, username }, index) => (
+                <Message
+                    key={id}
+                    user={username}
+                    message={text}
+                    isEven={index % 2 === 0}
+                />
             ))}
         </div>
     );
@@ -95,6 +105,7 @@ const MessageList: React.FC = () => {
 const ChatComponent: React.FC = () => {
     return (
         <div className="ChatComponent h-100 d-flex flex-column">
+            <h6 className="m-2 text-start">CHAT</h6>
             <MessageList />
             <MessageInput />
         </div>

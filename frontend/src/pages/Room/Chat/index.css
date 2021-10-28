@@ -22,6 +22,10 @@
   font-size: smaller;
 }
 
+.message-container.even {
+  background: rgba(0, 0, 0, 0.1);
+}
+
 .message {
   font-size: 10pt;
 }
