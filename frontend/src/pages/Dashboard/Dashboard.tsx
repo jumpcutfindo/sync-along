@@ -16,7 +16,6 @@ const JoinRoomModal: React.FC<{
 }> = (props) => {
     const dispatch = useAppDispatch();
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { isShow, toggleShow, user, navToRoom } = props;
 
     const [roomCode, onChangeRoomCode] = useInputState("");
@@ -32,9 +31,10 @@ const JoinRoomModal: React.FC<{
 
     return (
         <Modal className="JoinRoomModal" show={isShow} centered>
-            <div className="p-3 mt-2">
+            <div className="d-flex-column text-center p-4">
+                <h2 className="mb-4">Join Room</h2>
                 <p className="mb-2">
-                    <b>Enter room code: </b>
+                    <b>Room Code</b>
                 </p>
                 <form onSubmit={joinRoom}>
                     <input
@@ -43,6 +43,18 @@ const JoinRoomModal: React.FC<{
                         value={roomCode}
                         onChange={onChangeRoomCode}
                     />
+                    <div className="mt-3">
+                        <button type="submit" className="btn btn-success me-2">
+                            Join
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-outline-danger"
+                            onClick={toggleShow}
+                        >
+                            Cancel
+                        </button>
+                    </div>
                 </form>
             </div>
         </Modal>

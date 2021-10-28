@@ -22,3 +22,11 @@
 .DashboardLogin {
 }
 
+.modal-dialog {
+  width: 20%;
+}
+
+.modal-content {
+  background-color: #101D42;
+}
+
