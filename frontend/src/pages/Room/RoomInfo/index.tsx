@@ -47,7 +47,7 @@ const UserInfoComponent: React.FC = () => {
                     </p>
                     <p className="m-0 user-title my-auto me-2">9 / 10</p>
                     <FontAwesomeIcon
-                        className="my-auto me-2"
+                        className="my-auto me-1"
                         icon={showDetails ? faCaretUp : faCaretDown}
                         color="white"
                     />
