@@ -1,9 +1,14 @@
-import React from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect } from "react";
 
 import { useAppSelector, useAppDispatch } from "src/hooks/typedReduxHooks";
 import useInputState from "src/hooks/useInputState";
 
-import { sendMessage as sendMessageAction } from "src/stores/chat";
+import {
+    sendMessage as sendMessageAction,
+    receiveMessages,
+    stopReceiveMessages,
+} from "src/stores/chat";
 
 import "./index.css";
 
@@ -57,9 +62,16 @@ const Message: React.FC<{ user: string; message: string }> = ({
 };
 
 const MessageList: React.FC = () => {
+    const dispatch = useAppDispatch();
+    useEffect(() => {
+        dispatch(receiveMessages(dispatch));
+        return () => {
+            dispatch(stopReceiveMessages);
+        };
+    }, []);
     const data = useAppSelector((state) => state.chat.messages);
     return (
-        <div>
+        <div className="message-list">
             {data.map(({ id, text, username }) => (
                 <Message key={id} user={username} message={text} />
             ))}

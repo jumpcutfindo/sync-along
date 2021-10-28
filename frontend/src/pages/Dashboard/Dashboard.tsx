@@ -1,16 +1,18 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useAppDispatch } from "src/hooks/typedReduxHooks";
+import { useAppDispatch, useAppSelector } from "src/hooks/typedReduxHooks";
 import { Overlay } from "react-bootstrap";
 import useInputState from "src/hooks/useInputState";
 import useNavigator from "src/hooks/useNavigator";
 import roomApi from "src/services/room";
 
+import { joinRoom as joinRoomAction } from "src/stores/chat";
 import { storeRoomCode } from "src/stores/room";
 
 const Dashboard: React.FC = () => {
     const dispatch = useAppDispatch();
     const joinRoomRef = useRef(null);
     const [isShowPopover, setShowPopover] = useState(false);
+    const user = useAppSelector((state) => state.app.user);
     const { navToRoom } = useNavigator();
     const togglePopover = () => {
         setShowPopover(!isShowPopover);
@@ -27,14 +29,21 @@ const Dashboard: React.FC = () => {
 
     const joinRoom = (event: React.FormEvent) => {
         event.preventDefault();
-        dispatch(storeRoomCode(data?.roomCode));
-        navToRoom(roomCode);
+        dispatch(storeRoomCode(roomCode));
+        if (user && roomCode) {
+            dispatch(joinRoomAction({ username: user.name, room: roomCode }));
+            navToRoom(roomCode);
+        }
     };
 
     useEffect(() => {
         if (!isLoading && isSuccess) {
-            dispatch(storeRoomCode(data?.roomCode));
-            navToRoom(data?.roomCode);
+            const room = data?.roomCode;
+            dispatch(storeRoomCode(room));
+            if (user && room) {
+                dispatch(joinRoomAction({ username: user.name, room }));
+                navToRoom(room);
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoading, isSuccess]);

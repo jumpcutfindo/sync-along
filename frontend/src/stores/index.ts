@@ -31,7 +31,17 @@ export const rootReducer = combineReducers({
 const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().prepend(chatMiddleware(socketClient)),
+        getDefaultMiddleware({
+            serializableCheck: {
+                ignoredActions: [
+                    "chat/sendMessage",
+                    "chat/getMessages",
+                    "chat/stopMessages",
+                    "room/joinRoom",
+                    "chat/getMessages",
+                ],
+            },
+        }).prepend(chatMiddleware(socketClient)),
 });
 
 export default store;

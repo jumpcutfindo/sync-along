@@ -1,18 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice, createAction } from "@reduxjs/toolkit";
+import SocketClient from "src/services/SocketClient";
 
-import Types from "Types";
-
-export const sendMessage = createAction("chat", (text: string) => {
+export const sendMessage = createAction("chat/sendMessage", (text: string) => {
     return {
         payload: {
             text,
-            promise: (socket: Types.Socket) => socket.emit("chatMessage", text),
+            types: [
+                "chat/sendMessage/REQUEST",
+                "chat/sendMessage/SUCCESS",
+                "chat/sendMessage/FAILURE",
+            ],
+            promise: (socket: SocketClient) => socket.emit("chatMessage", text),
         },
     };
 });
 
-export const updateMessages = createAction("chat", (data) => {
+export const updateMessages = createAction("message/getMessage", (data) => {
     return {
         payload: {
             id: data.time,
@@ -22,13 +26,59 @@ export const updateMessages = createAction("chat", (data) => {
     };
 });
 
-export const receiveMessages = createAction("chat", (dispatch) => {
+export const joinRoom = createAction(
+    "room/joinRoom",
+    ({ username, room }: { username: string; room: string }) => {
+        return {
+            payload: {
+                types: [
+                    "room/joinRoom/REQUEST",
+                    "room/joinRoom/SUCCESS",
+                    "room/joinRoom/FAILURE",
+                ],
+                promise: async (socket: SocketClient) => {
+                    await socket.connect();
+                    const res = await socket.emit("joinRoom", {
+                        username,
+                        room,
+                    });
+                    return res;
+                },
+            },
+        };
+    }
+);
+
+export const receiveMessages = createAction("chat/getMessages", (dispatch) => {
     return {
         payload: {
-            promise: (socket: Types.Socket) =>
-                socket.on("message", (data) => {
-                    dispatch("chat", updateMessages(data));
-                }),
+            types: [
+                "chat/getMessages/REQUEST",
+                "chat/getMessages/SUCCESS",
+                "chat/getMessages/FAILURE",
+            ],
+            promise: async (socket: SocketClient) => {
+                await socket.connect();
+
+                return socket.on("message", (data) => {
+                    dispatch(updateMessages(data));
+                });
+            },
+        },
+    };
+});
+
+export const stopReceiveMessages = createAction("chat/stopMessages", () => {
+    return {
+        payload: {
+            types: [
+                "chat/stopMessages/REQUEST",
+                "chat/stopMessages/SUCCESS",
+                "chat/stopMessages/FAILURE",
+            ],
+            promise: (socket: SocketClient) => {
+                return socket.disconnect();
+            },
         },
     };
 });
@@ -50,17 +100,14 @@ export const chatSlice = createSlice({
     } as ChatState,
     reducers: {},
     extraReducers: (builder) => {
-        builder
-            .addCase(sendMessage.pending, (state, action) => {
-                state.messages.push({
-                    id: "1",
-                    text: action.meta.arg,
-                    username: `test`,
-                });
-            })
-            .addCase(sendMessage.rejected, (state, action) => {
-                state.messages = state.messages.filter((msg) => msg.id !== `2`);
+        builder.addCase(updateMessages, (state, action) => {
+            const { id, username, text } = action.payload;
+            state.messages.push({
+                id,
+                text,
+                username,
             });
+        });
     },
 });
 
