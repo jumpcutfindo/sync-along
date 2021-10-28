@@ -18,6 +18,7 @@ const RoomScreen: React.FC = () => {
                     <PlayerComponent />
                 </div>
             </div>
+            <div className="vertical-divider" />
             <div className="ChatColumn d-flex-column h-100">
                 <div className="RoomInfoComponentContainer">
                     <RoomInfoComponent />
