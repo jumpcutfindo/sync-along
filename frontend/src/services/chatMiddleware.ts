@@ -17,21 +17,22 @@ const chatMiddleware = (
                 return action(dispatch, getState);
             }
 
-            const { promise, type, ...rest } = action;
+            const { type, payload, ...rest } = action;
             // Filters out actions that are not related to chat functionality
-            if (!type.startsWith("chat") || !promise) {
+            if (!type.startsWith("chat") && !(type === "room/joinRoom")) {
                 return next(action);
             }
 
-            next({ ...rest, type: "REQUEST" });
+            const { types, promise } = action.payload;
+            const [REQUEST, SUCCESS, FAILURE] = types;
+            next({ ...rest, type: REQUEST });
 
             return promise(socket)
                 .then((result: { text: string }) => {
-                    return next({ ...rest, result, type: "SUCCESS" });
+                    return next({ ...rest, result, type: SUCCESS });
                 })
                 .catch((error: Error) => {
-                    console.log("error here!");
-                    return next({ ...rest, error, type: "FAILURE" });
+                    return next({ ...rest, error, type: FAILURE });
                 });
         };
 };

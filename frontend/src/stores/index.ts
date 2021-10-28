@@ -33,7 +33,13 @@ const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {
-                ignoredActions: ["chat/sendMessage"],
+                ignoredActions: [
+                    "chat/sendMessage",
+                    "chat/getMessages",
+                    "chat/stopMessages",
+                    "room/joinRoom",
+                    "chat/getMessages",
+                ],
             },
         }).prepend(chatMiddleware(socketClient)),
 });

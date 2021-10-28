@@ -6,12 +6,17 @@ export const sendMessage = createAction("chat/sendMessage", (text: string) => {
     return {
         payload: {
             text,
+            types: [
+                "chat/sendMessage/REQUEST",
+                "chat/sendMessage/SUCCESS",
+                "chat/sendMessage/FAILURE",
+            ],
             promise: (socket: SocketClient) => socket.emit("chatMessage", text),
         },
     };
 });
 
-export const updateMessages = createAction("chat/getMessage", (data) => {
+export const updateMessages = createAction("message/getMessage", (data) => {
     return {
         payload: {
             id: data.time,
@@ -21,13 +26,44 @@ export const updateMessages = createAction("chat/getMessage", (data) => {
     };
 });
 
+export const joinRoom = createAction(
+    "room/joinRoom",
+    ({ username, room }: { username: string; room: string }) => {
+        return {
+            payload: {
+                types: [
+                    "room/joinRoom/REQUEST",
+                    "room/joinRoom/SUCCESS",
+                    "room/joinRoom/FAILURE",
+                ],
+                promise: async (socket: SocketClient) => {
+                    await socket.connect();
+                    const res = await socket.emit("joinRoom", {
+                        username,
+                        room,
+                    });
+                    return res;
+                },
+            },
+        };
+    }
+);
+
 export const receiveMessages = createAction("chat/getMessages", (dispatch) => {
     return {
         payload: {
-            promise: (socket: SocketClient) =>
-                socket.on("message", (data) => {
-                    dispatch("chat", updateMessages(data));
-                }),
+            types: [
+                "chat/getMessages/REQUEST",
+                "chat/getMessages/SUCCESS",
+                "chat/getMessages/FAILURE",
+            ],
+            promise: async (socket: SocketClient) => {
+                await socket.connect();
+
+                return socket.on("message", (data) => {
+                    dispatch(updateMessages(data));
+                });
+            },
         },
     };
 });
@@ -35,7 +71,14 @@ export const receiveMessages = createAction("chat/getMessages", (dispatch) => {
 export const stopReceiveMessages = createAction("chat/stopMessages", () => {
     return {
         payload: {
-            promise: (socket: SocketClient) => socket.disconnect(),
+            types: [
+                "chat/stopMessages/REQUEST",
+                "chat/stopMessages/SUCCESS",
+                "chat/stopMessages/FAILURE",
+            ],
+            promise: (socket: SocketClient) => {
+                return socket.disconnect();
+            },
         },
     };
 });

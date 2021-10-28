@@ -28,3 +28,9 @@
 .username {
   font-weight: 600;
 }
+
+.message-list {
+  overflow-y: auto;
+  max-height: calc(100% - 38px);
+  position: relative;
+}

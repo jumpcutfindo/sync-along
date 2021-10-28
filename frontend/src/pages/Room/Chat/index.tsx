@@ -71,7 +71,7 @@ const MessageList: React.FC = () => {
     }, []);
     const data = useAppSelector((state) => state.chat.messages);
     return (
-        <div>
+        <div className="message-list">
             {data.map(({ id, text, username }) => (
                 <Message key={id} user={username} message={text} />
             ))}

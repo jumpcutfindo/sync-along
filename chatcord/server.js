@@ -12,7 +12,12 @@ const {
 
 const app = express();
 const server = http.createServer(app);
-const io = socketio(server);
+const io = socketio(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
 
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -23,7 +28,6 @@ const botName = 'ChatCord Bot';
 io.on('connection', socket => {
   socket.on('joinRoom', ({ username, room }) => {
     const user = userJoin(socket.id, username, room);
-
     socket.join(user.room);
 
     // Welcome current user
@@ -47,8 +51,10 @@ io.on('connection', socket => {
   // Listen for chatMessage
   socket.on('chatMessage', msg => {
     const user = getCurrentUser(socket.id);
-
-    io.to(user.room).emit('message', formatMessage(user.username, msg));
+    console.log(user);
+    if (user) {
+      io.to(user.room).emit('message', formatMessage(user.username, msg));
+    }
   });
 
   // Runs when client disconnects

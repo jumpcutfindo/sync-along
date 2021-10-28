@@ -2,7 +2,7 @@
 import io from "socket.io-client";
 import Types from "Types";
 
-const host = "http://localhost:4000";
+const host = "http://localhost:4001";
 
 const NoConnectionError = new Error("No socket connection");
 
@@ -26,7 +26,8 @@ class SocketClient {
         });
     }
 
-    emit(event: string, data: string): any {
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    emit(event: string, data: any): any {
         return new Promise((resolve, reject) => {
             if (!this.socket) {
                 return reject(NoConnectionError);
