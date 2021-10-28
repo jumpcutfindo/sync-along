@@ -10,7 +10,7 @@ import "./Room.css";
 const RoomScreen: React.FC = () => {
     return (
         <div className="RoomScreen d-flex w-100 h-100">
-            <div className="PlayerColumn d-flex-column h-100">
+            <div className="PlayerColumn d-flex flex-column h-100">
                 <div className="PlaylistComponentContainer">
                     <PlaylistComponent />
                 </div>
@@ -19,11 +19,12 @@ const RoomScreen: React.FC = () => {
                 </div>
             </div>
             <div className="vertical-divider" />
-            <div className="ChatColumn d-flex-column h-100">
+            <div className="ChatColumn d-flex flex-column h-100">
                 <div className="RoomInfoComponentContainer">
                     <RoomInfoComponent />
                 </div>
-                <div className="ChatComponentContainer">
+                <hr className="m-0" />
+                <div className="ChatComponentContainer flex-grow-1">
                     <ChatComponent />
                 </div>
             </div>
