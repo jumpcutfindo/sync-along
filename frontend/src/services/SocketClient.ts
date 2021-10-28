@@ -5,7 +5,6 @@ import Types from "Types";
 const host = "http://localhost:4001";
 
 const NoConnectionError = new Error("No socket connection");
-
 class SocketClient {
     socket: Types.Socket | undefined;
 
@@ -48,7 +47,6 @@ class SocketClient {
                         console.error(response.error);
                         return reject(response.error);
                     }
-
                     return resolve("Emited event");
                 }
             );

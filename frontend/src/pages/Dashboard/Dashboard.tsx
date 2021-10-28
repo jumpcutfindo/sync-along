@@ -27,22 +27,29 @@ const Dashboard: React.FC = () => {
         generateRoomCode({ accessToken: "test" });
     };
 
-    const joinRoom = (event: React.FormEvent) => {
-        event.preventDefault();
-        dispatch(storeRoomCode(roomCode));
-        if (user && roomCode) {
-            dispatch(joinRoomAction({ username: user.name, room: roomCode }));
-            navToRoom(roomCode);
+    // TODO: add error handling
+    const joinRoom = (room: string) => {
+        dispatch(storeRoomCode(room));
+        if (user && room) {
+            dispatch(joinRoomAction({ username: user.name, room }))
+                .then(() => navToRoom(room))
+                .catch(() => console.log("cannot join room!"));
         }
+    };
+
+    const joinExistingRoom = (event: React.FormEvent) => {
+        event.preventDefault();
+        joinRoom(roomCode);
     };
 
     useEffect(() => {
         if (!isLoading && isSuccess) {
             const room = data?.roomCode;
-            dispatch(storeRoomCode(room));
-            if (user && room) {
-                dispatch(joinRoomAction({ username: user.name, room }));
-                navToRoom(room);
+            // TODO: replace with error in the UI
+            if (!room) {
+                console.log("API did not return room");
+            } else {
+                joinRoom(room);
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,7 +85,7 @@ const Dashboard: React.FC = () => {
                             <p className="mb-2">
                                 <b>Enter room code: </b>
                             </p>
-                            <form onSubmit={joinRoom}>
+                            <form onSubmit={joinExistingRoom}>
                                 <input
                                     className="form-control mb-2"
                                     placeholder="Eg: 1234"

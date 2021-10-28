@@ -1,8 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice, createAction, createAsyncThunk } from "@reduxjs/toolkit";
 import SocketClient from "src/services/SocketClient";
+import {
+    connectSocketAction,
+    disconnectSocketAction,
+    joinRoomAction,
+    receiveMessagesAction,
+    sendMessageAction,
+    updateMessagesAction,
+} from "src/stores/chat/actions";
 
-export const updateMessages = createAction("message/getMessage", (data) => {
+export const updateMessages = createAction(updateMessagesAction, (data) => {
     return {
         payload: {
             id: data.time,
@@ -17,13 +25,13 @@ type JoinRoomArgs = {
     room: string;
 };
 
-export const joinRoomThunk = createAsyncThunk<
+export const joinRoom = createAsyncThunk<
     void,
     JoinRoomArgs,
     {
         extra: SocketClient;
     }
->("room/joinRoom", async ({ username, room }, thunkApi) => {
+>(joinRoomAction, async ({ username, room }, thunkApi) => {
     const socketClient = thunkApi.extra;
     return new Promise((resolve, reject) => {
         socketClient
@@ -41,36 +49,50 @@ export const joinRoomThunk = createAsyncThunk<
     });
 });
 
-export const sendMessage = createAsyncThunk<unknown, string, {
-    extra: SocketClient
-}>("chat/sendMessage", (text: string, { extra: socketClient }) => {
+export const sendMessage = createAsyncThunk<
+    unknown,
+    string,
+    {
+        extra: SocketClient;
+    }
+>(sendMessageAction, (text: string, { extra: socketClient }) => {
     return socketClient.emit("chatMessage", text);
 });
 
-                return socket.on("message", (data) => {
-                    dispatch(updateMessages(data));
-                });
-            },
-        },
-    };
+// TODO: add handlers if socket.io times out.
+export const receiveMessages = createAsyncThunk<
+    unknown,
+    undefined,
+    {
+        extra: SocketClient;
+    }
+>(receiveMessagesAction, (_, { dispatch, extra: socketClient }) => {
+    return socketClient.on("message", (data) => dispatch(updateMessages(data)));
 });
 
-export const stopReceiveMessages = createAction("chat/stopMessages", () => {
-    return {
-        payload: {
-            types: [
-                "chat/stopMessages/REQUEST",
-                "chat/stopMessages/SUCCESS",
-                "chat/stopMessages/FAILURE",
-            ],
-            promise: (socket: SocketClient) => {
-                return socket.disconnect();
-            },
-        },
-    };
+// Created an additional function for connecting sockets in case we want to reuse the socket for music
+// management
+export const connectSocket = createAsyncThunk<
+    unknown,
+    undefined,
+    {
+        extra: SocketClient;
+    }
+>(connectSocketAction, (_, { extra: socketClient }) => {
+    return socketClient.connect();
 });
 
-type Messages = {
+export const disconnectSocket = createAsyncThunk<
+    unknown,
+    undefined,
+    {
+        extra: SocketClient;
+    }
+>(disconnectSocketAction, (_, { extra: socketClient }) => {
+    return socketClient.disconnect();
+});
+
+export type Messages = {
     id: string;
     text: string;
     username: string;
@@ -87,14 +109,19 @@ export const chatSlice = createSlice({
     } as ChatState,
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(updateMessages, (state, action) => {
-            const { id, username, text } = action.payload;
-            state.messages.push({
-                id,
-                text,
-                username,
+        builder
+            .addCase(updateMessages, (state, action) => {
+                const { id, username, text } = action.payload;
+                state.messages.push({
+                    id,
+                    text,
+                    username,
+                });
+            })
+            .addCase(disconnectSocket.fulfilled, (state) => {
+                state.messages = [];
+                return state;
             });
-        });
     },
 });
 
