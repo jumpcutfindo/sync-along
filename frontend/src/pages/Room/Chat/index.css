@@ -18,6 +18,10 @@
   box-shadow: none;
 }
 
+.message-input-send {
+  font-size: smaller;
+}
+
 .message {
   text-align: left;
 }

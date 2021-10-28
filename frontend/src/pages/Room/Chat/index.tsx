@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { useAppSelector, useAppDispatch } from "src/hooks/typedReduxHooks";
 import useTextAreaState from "src/hooks/useTextAreaState";
@@ -13,24 +13,46 @@ import {
 import "./index.css";
 
 const MessageInput: React.FC = () => {
+    const ref = useRef<HTMLFormElement>(null);
     const [messageInput, updateMessageInput, clearInput] = useTextAreaState("");
     const dispatch = useAppDispatch();
 
-    const sendMessage = (event: any) => {
-        event.preventDefault();
+    const sendMessage = () => {
         dispatch(sendMessageAction(messageInput));
         clearInput();
     };
 
+    const onSubmit = (event: React.FormEvent) => {
+        event.preventDefault();
+        sendMessage();
+    };
+
+    const onKeyPress = (event: React.KeyboardEvent) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            dispatch(sendMessageAction(messageInput));
+            clearInput();
+        }
+    };
+
     return (
         <div className="d-flex m-2">
-            <form onSubmit={sendMessage} className="flex-grow-1">
+            <form ref={ref} onSubmit={onSubmit} className="d-flex flex-grow-1">
                 <textarea
-                    className="message-input form-control"
+                    className="message-input form-control me-2"
                     value={messageInput}
                     onChange={updateMessageInput}
+                    onKeyPress={onKeyPress}
                     placeholder="Send a message"
                 />
+                <div>
+                    <button
+                        type="submit"
+                        className="btn btn-primary message-input-send"
+                    >
+                        Send
+                    </button>
+                </div>
             </form>
         </div>
     );
