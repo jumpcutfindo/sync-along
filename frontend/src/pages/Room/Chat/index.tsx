@@ -62,26 +62,13 @@ const Message: React.FC<{ user: string; message: string }> = ({
     user,
     message,
 }) => {
-    if (user === "User1") {
-        return (
-            <div className="message-container">
-                <div className="text-container is-user">{message}</div>
-            </div>
-        );
-    }
     return (
-        <div className="message-container">
-            <div className="d-flex">
-                <img
-                    src="https://cdn-icons-png.flaticon.com/512/147/147144.png"
-                    alt="user avatar"
-                    width="32"
-                    height="32"
-                />
-                <div className="message text-container">
-                    <div className="username">{user}</div>
-                    <div>{message}</div>
-                </div>
+        <div className="message-container d-flex p-2 text-start">
+            <div className="message">
+                <p>
+                    <b>{user}: </b>
+                    {message}
+                </p>
             </div>
         </div>
     );
