@@ -1,13 +1,23 @@
 .ChatComponent {
-    background: red;
     border-radius: 0px 0px 10px 0px;
     position: relative;
 }
 
 .message-input {
-    position: absolute;
-    bottom: 0;
+  min-height: 100px !important;
+  background-color: rgba(0, 0, 0, 0.25) !important;
+  font-size: smaller;
+  border: none;
+  resize: none;
+  color: white;
 }
+
+.message-input:focus {
+  color: white;
+  border: none;
+  box-shadow: none;
+}
+
 .message {
   text-align: left;
 }

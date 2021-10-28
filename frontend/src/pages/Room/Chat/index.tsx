@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 
 import { useAppSelector, useAppDispatch } from "src/hooks/typedReduxHooks";
-import useInputState from "src/hooks/useInputState";
+import useTextAreaState from "src/hooks/useTextAreaState";
 
 import {
     sendMessage as sendMessageAction,
@@ -13,22 +13,26 @@ import {
 import "./index.css";
 
 const MessageInput: React.FC = () => {
-    const [messageInput, updateMessageInput, clearInput] = useInputState("");
+    const [messageInput, updateMessageInput, clearInput] = useTextAreaState("");
     const dispatch = useAppDispatch();
-    const sendMessage = (event: React.FormEvent) => {
+
+    const sendMessage = (event: any) => {
         event.preventDefault();
         dispatch(sendMessageAction(messageInput));
         clearInput();
     };
+
     return (
-        <form onSubmit={sendMessage}>
-            <input
-                className="message-input form-control"
-                value={messageInput}
-                onChange={updateMessageInput}
-                placeholder="Send a message here!"
-            />
-        </form>
+        <div className="d-flex m-2">
+            <form onSubmit={sendMessage} className="flex-grow-1">
+                <textarea
+                    className="message-input form-control"
+                    value={messageInput}
+                    onChange={updateMessageInput}
+                    placeholder="Send a message"
+                />
+            </form>
+        </div>
     );
 };
 
@@ -71,7 +75,7 @@ const MessageList: React.FC = () => {
     }, []);
     const data = useAppSelector((state) => state.chat.messages);
     return (
-        <div className="message-list">
+        <div className="message-list flex-grow-1">
             {data.map(({ id, text, username }) => (
                 <Message key={id} user={username} message={text} />
             ))}
@@ -81,7 +85,7 @@ const MessageList: React.FC = () => {
 
 const ChatComponent: React.FC = () => {
     return (
-        <div className="ChatComponent h-100">
+        <div className="ChatComponent h-100 d-flex flex-column">
             <MessageList />
             <MessageInput />
         </div>
