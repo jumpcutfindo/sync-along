@@ -5,6 +5,7 @@ import useNavigator from "src/hooks/useNavigator";
 
 import { appLogout } from "src/stores/app";
 import { updateAccessToken } from "src/stores/auth";
+import { storeRoomCode } from "src/stores/room";
 
 const LogOutButton: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -34,8 +35,22 @@ const LogOutButton: React.FC = () => {
 };
 
 const LeaveRoomButton: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const inRoom = useAppSelector((state) => state.room.roomCode);
+    const { navToDashboard } = useNavigator();
+
+    if (!inRoom) return null;
+
+    const leaveRoom = () => {
+        navToDashboard();
+    };
+
     return (
-        <button type="button" className="btn btn-danger me-2">
+        <button
+            type="button"
+            className="btn btn-danger me-2"
+            onClick={leaveRoom}
+        >
             Leave Room
         </button>
     );
