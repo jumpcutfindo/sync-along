@@ -23,24 +23,20 @@ const LogOutButton: React.FC = () => {
     if (!loggedIn) return null;
 
     return (
-        <button type="button" className="btn btn-danger" onClick={logout}>
+        <button
+            type="button"
+            className="btn btn-outline-danger"
+            onClick={logout}
+        >
             Log Out
         </button>
     );
 };
 
-const RoomButton: React.FC = () => {
+const LeaveRoomButton: React.FC = () => {
     return (
-        <button type="button" className="btn btn-primary me-2">
-            Room
-        </button>
-    );
-};
-
-const PlaylistsButton: React.FC = () => {
-    return (
-        <button type="button" className="btn btn-primary me-2">
-            My Playlists
+        <button type="button" className="btn btn-danger me-2">
+            Leave Room
         </button>
     );
 };
@@ -49,8 +45,7 @@ const DashboardControls: React.FC = () => {
     return (
         <div className="DashboardControls d-flex">
             <div className="DashboardNavigation d-flex align-items-center justify-content-start flex-grow-1">
-                <RoomButton />
-                <PlaylistsButton />
+                <LeaveRoomButton />
             </div>
             <div className="d-flex">
                 <LogOutButton />
