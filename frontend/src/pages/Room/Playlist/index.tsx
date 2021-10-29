@@ -8,6 +8,7 @@ import {
     setMedia,
     addSong as addSongAction,
     receivePlaylistUpdates,
+    selectSong,
 } from "src/stores/app/playlist";
 import { play } from "src/stores/app/player";
 
@@ -139,13 +140,13 @@ const PlaylistItem: React.FC<{
     index: number;
     media: Media;
     selected: boolean;
-    setPlaying: (arg: number) => void;
+    setPlaying: (arg: string) => void;
 }> = (props) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { index, media, selected, setPlaying } = props;
 
     const setThisPlaying = () => {
-        setPlaying(index);
+        setPlaying(media.id.toString());
     };
 
     return (
@@ -176,9 +177,8 @@ const Playlist: React.FC = () => {
     const medias = useAppSelector((state) => state.playlist.media);
     const currentIndex = useAppSelector((state) => state.playlist.currentIndex);
 
-    const setCurrentPlaying = (index: number) => {
-        dispatch(setMedia(index));
-        dispatch(play());
+    const setCurrentPlaying = (id: string) => {
+        dispatch(selectSong(id));
     };
 
     useEffect(() => {

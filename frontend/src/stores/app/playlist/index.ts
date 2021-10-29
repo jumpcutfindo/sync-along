@@ -51,6 +51,14 @@ export const addSong = createAsyncThunk<
     return socketClient.emit("playlist/add", { url });
 });
 
+export const selectSong = createAsyncThunk<
+    unknown,
+    string,
+    { extra: SocketClient }
+>(selectSongAction, (id, { extra: socketClient }) => {
+    return socketClient.emit("playlist/select", { id });
+});
+
 export const receivePlaylistUpdates = createAsyncThunk<
     unknown,
     undefined,
@@ -102,7 +110,9 @@ export const playlistSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(updatePlaylist, (state, action) => {
             const { playlist, current } = action.payload;
+            console.log(action.payload);
 
+            // Update the current playlist with the data from the server
             state.media = playlist.map((song: any) => {
                 return {
                     id: song.id,
@@ -110,6 +120,16 @@ export const playlistSlice = createSlice({
                     name: song.url,
                 };
             });
+
+            // Avoid having to search if there isn't a song set to play
+            if (!current) return;
+
+            // If there is a song set to play, try to find it and play it on our end
+            const currentSong = state.media.find(
+                (song) => song.id === current.id
+            );
+
+            if (currentSong) state.current = currentSong;
         });
     },
 });
