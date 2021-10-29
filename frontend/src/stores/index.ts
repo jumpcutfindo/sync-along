@@ -5,7 +5,6 @@ import roomApi from "src/services/room";
 
 // external clients and adapters
 import SocketClient from "src/services/SocketClient";
-import chatMiddleware from "src/services/chatMiddleware";
 
 // State slices
 import { authReducer, authSlice } from "./auth";
@@ -32,16 +31,10 @@ const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
-            serializableCheck: {
-                ignoredActions: [
-                    "chat/sendMessage",
-                    "chat/getMessages",
-                    "chat/stopMessages",
-                    "room/joinRoom",
-                    "chat/getMessages",
-                ],
+            thunk: {
+                extraArgument: socketClient,
             },
-        }).prepend(chatMiddleware(socketClient)),
+        }),
 });
 
 export default store;

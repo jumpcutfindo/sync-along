@@ -26,7 +26,7 @@ const botName = 'ChatCord Bot';
 
 // Run when client connects
 io.on('connection', socket => {
-  socket.on('joinRoom', ({ username, room }) => {
+  socket.on('joinRoom', ({ username, room }, callback) => {
     const user = userJoin(socket.id, username, room);
     socket.join(user.room);
 
@@ -46,6 +46,9 @@ io.on('connection', socket => {
       room: user.room,
       users: getRoomUsers(user.room)
     });
+    callback({
+      status: "ok"
+    });
   });
 
   // Listen for chatMessage
@@ -58,7 +61,7 @@ io.on('connection', socket => {
   });
 
   // Runs when client disconnects
-  socket.on('disconnect', () => {
+  socket.on('disconnect', ({} ,callback) => {
     const user = userLeave(socket.id);
 
     if (user) {
@@ -72,6 +75,13 @@ io.on('connection', socket => {
         room: user.room,
         users: getRoomUsers(user.room)
       });
+      callback({
+        status: "ok",
+      });
+    } else {
+      callback({
+        status: "user not here"
+      })
     }
   });
 });

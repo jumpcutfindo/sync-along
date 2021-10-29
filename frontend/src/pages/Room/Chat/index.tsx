@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { useAppSelector, useAppDispatch } from "src/hooks/typedReduxHooks";
 import useTextAreaState from "src/hooks/useTextAreaState";
@@ -7,7 +7,8 @@ import useTextAreaState from "src/hooks/useTextAreaState";
 import {
     sendMessage as sendMessageAction,
     receiveMessages,
-    stopReceiveMessages,
+    Messages,
+    disconnectSocket,
 } from "src/stores/chat";
 
 import "./index.css";
@@ -79,18 +80,14 @@ const Message: React.FC<{ user: string; message: string; isEven: boolean }> = ({
     );
 };
 
-const MessageList: React.FC = () => {
-    const dispatch = useAppDispatch();
-    useEffect(() => {
-        dispatch(receiveMessages(dispatch));
-        return () => {
-            dispatch(stopReceiveMessages);
-        };
-    }, []);
-    const data = useAppSelector((state) => state.chat.messages);
+type MessageListProps = {
+    messages: Messages[];
+};
+
+const MessageList: React.FC<MessageListProps> = ({ messages }) => {
     return (
-        <div className="message-list flex-grow-1">
-            {data.map(({ id, text, username }, index) => (
+        <div className="message-list">
+            {messages.map(({ id, text, username }, index) => (
                 <Message
                     key={id}
                     user={username}
@@ -103,10 +100,23 @@ const MessageList: React.FC = () => {
 };
 
 const ChatComponent: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const [_, setIsLoading] = useState(true);
+    useEffect(() => {
+        dispatch(receiveMessages())
+            .catch(() => console.log("error"))
+            .finally(() => setIsLoading(false));
+        return () => {
+            dispatch(disconnectSocket());
+        };
+    }, []);
+    const messages = useAppSelector((state) => state.chat.messages);
+    // TODO: error handling
+    // TODO: use isLoading to show state?
     return (
         <div className="ChatComponent h-100 d-flex flex-column">
             <h6 className="m-2 text-start">CHAT</h6>
-            <MessageList />
+            <MessageList messages={messages} />
             <MessageInput />
         </div>
     );

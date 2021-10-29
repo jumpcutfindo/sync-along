@@ -12,21 +12,17 @@ const JoinRoomModal: React.FC<{
     isShow: boolean;
     toggleShow: () => void;
     user: { name: string; id: string } | undefined;
-    navToRoom: (arg0: string) => void;
+    joinRoom: (arg0: string) => void;
 }> = (props) => {
     const dispatch = useAppDispatch();
 
-    const { isShow, toggleShow, user, navToRoom } = props;
+    const { isShow, toggleShow, user, joinRoom } = props;
 
     const [roomCode, onChangeRoomCode] = useInputState("");
 
-    const joinRoom = (event: React.FormEvent) => {
+    const joinExistingRoom = (event: React.FormEvent) => {
         event.preventDefault();
-        dispatch(storeRoomCode(roomCode));
-        if (user && roomCode) {
-            dispatch(joinRoomAction({ username: user.name, room: roomCode }));
-            navToRoom(roomCode);
-        }
+        joinRoom(roomCode);
     };
 
     return (
@@ -36,7 +32,7 @@ const JoinRoomModal: React.FC<{
                 <p className="mb-2">
                     <b>Room Code</b>
                 </p>
-                <form onSubmit={joinRoom}>
+                <form onSubmit={joinExistingRoom}>
                     <input
                         className="form-control mb-2"
                         placeholder="Eg: 1234"
@@ -82,13 +78,24 @@ const Dashboard: React.FC = () => {
         generateRoomCode({ accessToken: "test" });
     };
 
+    // TODO: add error handling
+    const joinRoom = (room: string) => {
+        dispatch(storeRoomCode(room));
+        if (user && room) {
+            dispatch(joinRoomAction({ username: user.name, room }))
+                .then(() => navToRoom(room))
+                .catch(() => console.log("cannot join room!"));
+        }
+    };
+
     useEffect(() => {
         if (!isLoading && isSuccess) {
             const room = data?.roomCode;
-            dispatch(storeRoomCode(room));
-            if (user && room) {
-                dispatch(joinRoomAction({ username: user.name, room }));
-                navToRoom(room);
+            // TODO: replace with error in the UI
+            if (!room) {
+                console.log("API did not return room");
+            } else {
+                joinRoom(room);
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -118,7 +125,7 @@ const Dashboard: React.FC = () => {
                         isShow={isShowJoinModal}
                         toggleShow={toggleJoinModal}
                         user={user}
-                        navToRoom={navToRoom}
+                        joinRoom={joinRoom}
                     />
                 </div>
             </div>
