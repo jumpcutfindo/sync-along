@@ -1,14 +1,21 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/interactive-supports-focus */
-import React, { FormEvent, useRef, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "src/hooks/typedReduxHooks";
-import { Media, addMedia, setMedia } from "src/stores/app/playlist";
+import {
+    Media,
+    addMedia,
+    setMedia,
+    addSong as addSongAction,
+    receivePlaylistUpdates,
+} from "src/stores/app/playlist";
 import { play } from "src/stores/app/player";
 
 import { Overlay } from "react-bootstrap";
 
 import "./index.css";
 import useInputState from "src/hooks/useInputState";
+import { disconnectSocket } from "src/stores/chat";
 
 const validateYouTubeURL = (url: string) => {
     if (url === undefined || url === null || url === "") return false;
@@ -38,13 +45,8 @@ const AddMediaButton: React.FC = () => {
         // TODO: Basic validation of the url or pass to server to handle
         // TODO: Send url to server for handling (the response should at least contain the title of the song)
         // Note that the duration of the song has been automatically handled by react-player
-        const response: Media = {
-            url,
-            name: url,
-        };
-
         if (validateYouTubeURL(url)) {
-            dispatch(addMedia(response));
+            dispatch(addSongAction(url));
             setErrorMsg("");
         } else {
             setErrorMsg("Invalid URL has been entered!");
@@ -178,6 +180,13 @@ const Playlist: React.FC = () => {
         dispatch(setMedia(index));
         dispatch(play());
     };
+
+    useEffect(() => {
+        dispatch(receivePlaylistUpdates()).catch(() => console.log("error"));
+        return () => {
+            dispatch(disconnectSocket());
+        };
+    }, [dispatch]);
 
     const mediaViews = medias.map((media: Media, index: number) => (
         <PlaylistItem

@@ -31,8 +31,7 @@ const MessageInput: React.FC = () => {
     const onKeyPress = (event: React.KeyboardEvent) => {
         if (event.key === "Enter" && !event.shiftKey) {
             event.preventDefault();
-            dispatch(sendMessageAction(messageInput));
-            clearInput();
+            sendMessage();
         }
     };
 

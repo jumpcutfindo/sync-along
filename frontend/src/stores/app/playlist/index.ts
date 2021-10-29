@@ -1,6 +1,24 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+/* eslint-disable @typescript-eslint/no-shadow */
+import {
+    createAction,
+    createAsyncThunk,
+    createSlice,
+    PayloadAction,
+} from "@reduxjs/toolkit";
+import { url } from "inspector";
+import { useAppSelector } from "src/hooks/typedReduxHooks";
+import SocketClient from "src/services/SocketClient";
+import { RootState } from "Types";
+
+import {
+    selectSongAction,
+    addSongAction,
+    removeSongAction,
+    playlistUpdateAction as updatePlaylistAction,
+} from "./actions";
 
 export interface Media {
+    id: string;
     url: string;
     name: string;
 }
@@ -16,6 +34,32 @@ const initialState: PlaylistState = {
     current: null,
     currentIndex: -1,
 };
+
+export const updatePlaylist = createAction(updatePlaylistAction, (data) => {
+    const { playlist, current } = JSON.parse(data);
+
+    const payload = { playlist, current };
+
+    return { payload };
+});
+
+export const addSong = createAsyncThunk<
+    unknown,
+    string,
+    { extra: SocketClient }
+>(addSongAction, (url, { extra: socketClient }) => {
+    return socketClient.emit("playlist/add", { url });
+});
+
+export const receivePlaylistUpdates = createAsyncThunk<
+    unknown,
+    undefined,
+    { extra: SocketClient }
+>(updatePlaylistAction, (_, { dispatch, extra: socketClient }) => {
+    return socketClient.on("playlist/update", (data) => {
+        dispatch(updatePlaylist(data));
+    });
+});
 
 export const playlistSlice = createSlice({
     name: "playlist",
@@ -54,6 +98,19 @@ export const playlistSlice = createSlice({
             state.currentIndex = action.payload;
             state.current = state.media[action.payload];
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(updatePlaylist, (state, action) => {
+            const { playlist, current } = action.payload;
+
+            state.media = playlist.map((song: any) => {
+                return {
+                    id: song.id,
+                    url: song.url,
+                    name: song.url,
+                };
+            });
+        });
     },
 });
 
