@@ -59,6 +59,14 @@ export const selectSong = createAsyncThunk<
     return socketClient.emit("playlist/select", { id });
 });
 
+export const removeSong = createAsyncThunk<
+    unknown,
+    string,
+    { extra: SocketClient }
+>(removeSongAction, (id, { extra: socketClient }) => {
+    return socketClient.emit("playlist/remove", { id });
+});
+
 export const receivePlaylistUpdates = createAsyncThunk<
     unknown,
     undefined,
