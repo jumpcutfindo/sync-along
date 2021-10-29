@@ -32,6 +32,7 @@ module.exports = {
     // Turn off this rule because redux state updating is immutable
     'no-param-reassign': 'off',
     // We don't want unused vars
-    '@typescript-eslint/no-unused-vars': ['error'],
+    '@typescript-eslint/no-unused-vars': [ 'off' ],
+    '@typescript-eslint/naming-convention': [ 'off' ],
   },
 }

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useAppSelector, useAppDispatch } from "src/hooks/typedReduxHooks";
 import useInputState from "src/hooks/useInputState";
@@ -7,7 +7,8 @@ import useInputState from "src/hooks/useInputState";
 import {
     sendMessage as sendMessageAction,
     receiveMessages,
-    stopReceiveMessages,
+    Messages,
+    disconnectSocket,
 } from "src/stores/chat";
 
 import "./index.css";
@@ -61,18 +62,14 @@ const Message: React.FC<{ user: string; message: string }> = ({
     );
 };
 
-const MessageList: React.FC = () => {
-    const dispatch = useAppDispatch();
-    useEffect(() => {
-        dispatch(receiveMessages(dispatch));
-        return () => {
-            dispatch(stopReceiveMessages);
-        };
-    }, []);
-    const data = useAppSelector((state) => state.chat.messages);
+type MessageListProps = {
+    messages: Messages[];
+};
+
+const MessageList: React.FC<MessageListProps> = ({ messages }) => {
     return (
         <div className="message-list">
-            {data.map(({ id, text, username }) => (
+            {messages.map(({ id, text, username }) => (
                 <Message key={id} user={username} message={text} />
             ))}
         </div>
@@ -80,9 +77,22 @@ const MessageList: React.FC = () => {
 };
 
 const ChatComponent: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const [_, setIsLoading] = useState(true);
+    useEffect(() => {
+        dispatch(receiveMessages())
+            .catch(() => console.log("error"))
+            .finally(() => setIsLoading(false));
+        return () => {
+            dispatch(disconnectSocket());
+        };
+    }, []);
+    const messages = useAppSelector((state) => state.chat.messages);
+    // TODO: error handling
+    // TODO: use isLoading to show state?
     return (
         <div className="ChatComponent h-100">
-            <MessageList />
+            <MessageList messages={messages} />
             <MessageInput />
         </div>
     );

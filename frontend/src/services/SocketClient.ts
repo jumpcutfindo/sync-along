@@ -5,7 +5,6 @@ import Types from "Types";
 const host = "http://localhost:4001";
 
 const NoConnectionError = new Error("No socket connection");
-
 class SocketClient {
     socket: Types.Socket | undefined;
 
@@ -17,12 +16,19 @@ class SocketClient {
         });
     }
 
+    // TODO: debug why handler does not receive acknowledgement from server
     disconnect(): Promise<string> {
         return new Promise((resolve) => {
+            console.log("in disconnect socket client");
+            if (!this.socket) {
+                console.log("socket not here");
+            }
             this.socket?.on("disconnect", () => {
+                console.log("disconnected in socket io");
                 this.socket = undefined;
-                resolve("Disconnected!");
+                return resolve("Disconnected!");
             });
+            resolve("");
         });
     }
 
@@ -41,7 +47,6 @@ class SocketClient {
                         console.error(response.error);
                         return reject(response.error);
                     }
-
                     return resolve("Emited event");
                 }
             );
