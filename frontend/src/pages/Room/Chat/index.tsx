@@ -85,8 +85,15 @@ type MessageListProps = {
 };
 
 const MessageList: React.FC<MessageListProps> = ({ messages }) => {
+    const ref = useRef<HTMLDivElement>(null);
+    const end = useRef<HTMLDivElement>(null);
+
+    const scrollBottom = () => end.current?.scrollIntoView();
+
+    useEffect(() => scrollBottom());
+
     return (
-        <div className="message-list">
+        <div ref={ref} className="message-list flex-grow-1">
             {messages.map(({ id, text, username }, index) => (
                 <Message
                     key={id}
@@ -95,6 +102,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
                     isEven={index % 2 === 0}
                 />
             ))}
+            <div ref={end} />
         </div>
     );
 };

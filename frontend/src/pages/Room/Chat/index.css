@@ -42,4 +42,5 @@
   overflow-y: auto;
   max-height: calc(100% - 38px);
   position: relative;
+  height: 0px;
 }
