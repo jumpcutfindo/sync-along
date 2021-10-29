@@ -42,6 +42,8 @@ const LeaveRoomButton: React.FC = () => {
     if (!inRoom) return null;
 
     const leaveRoom = () => {
+        // TODO: Add functionality to actually leave the socket room on pressed
+        dispatch(storeRoomCode(undefined));
         navToDashboard();
     };
 
