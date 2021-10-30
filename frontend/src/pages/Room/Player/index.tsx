@@ -11,6 +11,7 @@ import {
     pauseSong,
     playSong,
     receivePlayerUpdates,
+    seekSong,
 } from "src/stores/app/player";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -161,15 +162,8 @@ const PlayerComponent: React.FC = () => {
 
     const dispatch = useAppDispatch();
 
-    const [progress, setProgress] = useState(0);
+    const [sliderProgress, setSliderProgress] = useState(0);
     const [volume, setVolume] = useState(0.5);
-
-    useEffect(() => {
-        dispatch(receivePlayerUpdates()).catch(() => console.log("error"));
-        return () => {
-            dispatch(disconnectSocket());
-        };
-    }, [dispatch]);
 
     const currentMedia: Media | null = useAppSelector(
         (state) => state.playlist.current
@@ -179,9 +173,13 @@ const PlayerComponent: React.FC = () => {
         (state) => state.player.isPlaying
     );
 
+    const seekTime: number = useAppSelector(
+        (state) => state.player.lastScrubTime
+    );
+
     const setPlaying = (shouldPlay: boolean) => {
-        if (shouldPlay) dispatch(playSong());
-        else dispatch(pauseSong());
+        if (shouldPlay) dispatch(playSong(sliderProgress));
+        else dispatch(pauseSong(sliderProgress));
     };
 
     // Methods for client side
@@ -190,18 +188,10 @@ const PlayerComponent: React.FC = () => {
     };
 
     const onPlayerProgress = (newProgress: any) => {
-        setProgress(newProgress.played * 100);
+        setSliderProgress(newProgress.played * 100);
     };
 
-    // Methods for server side
-    // TODO: This should send a message to the server indicating the value of the progress
-    const onSeek = (value: number) => {
-        setProgress(value);
-        ref.current?.seekTo(value / 100, "fraction");
-        setPlaying(true);
-    };
-
-    // TODO: This should send a message to the server indicating the player has been toggled
+    // Button actions
     const onPlayPressed = () => {
         setPlaying(!isPlaying);
     };
@@ -214,15 +204,30 @@ const PlayerComponent: React.FC = () => {
         dispatch(prevSong());
     };
 
+    const onSeekSong = (value: number) => {
+        if (ref.current && currentMedia) dispatch(seekSong(value));
+    };
+
+    useEffect(() => {
+        dispatch(receivePlayerUpdates()).catch(() => console.log("error"));
+
+        ref.current?.seekTo(seekTime / 100, "fraction");
+        setSliderProgress(seekTime);
+
+        return () => {
+            dispatch(disconnectSocket());
+        };
+    }, [dispatch, seekTime]);
+
     return (
         <div className="PlayerComponent d-flex flex-column h-100">
             <div className="d-flex player-progress w-100">
-                <Slider value={progress} onChange={onSeek} />
+                <Slider value={sliderProgress} onChange={onSeekSong} />
             </div>
 
             <div className="d-flex flex-grow-1 player-holder px-3">
                 <PlayerInfo
-                    currentProgress={progress}
+                    currentProgress={sliderProgress}
                     mediaDuration={ref.current?.getDuration()}
                     currentMedia={currentMedia}
                 />

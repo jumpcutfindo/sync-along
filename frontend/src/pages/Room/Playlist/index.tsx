@@ -9,7 +9,6 @@ import {
     selectSong,
     removeSong,
 } from "src/stores/app/playlist";
-import { play } from "src/stores/app/player";
 
 import { Overlay } from "react-bootstrap";
 

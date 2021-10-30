@@ -1,6 +1,6 @@
 import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import SocketClient from "src/services/SocketClient";
-import { playAction, updatePlayerAction } from "./actions";
+import { playAction, seekAction, updatePlayerAction } from "./actions";
 
 interface PlayerState {
     isPlaying: boolean;
@@ -24,18 +24,26 @@ export const updatePlayer = createAction(updatePlayerAction, (data) => {
 
 export const playSong = createAsyncThunk<
     unknown,
-    undefined,
+    number,
     { extra: SocketClient }
->(playAction, (undef, { extra: socketClient }) => {
-    return socketClient.emit("player/play", {});
+>(playAction, (currentTime, { extra: socketClient }) => {
+    return socketClient.emit("player/play", currentTime);
 });
 
 export const pauseSong = createAsyncThunk<
     unknown,
-    undefined,
+    number,
     { extra: SocketClient }
->(playAction, (undef, { extra: socketClient }) => {
-    return socketClient.emit("player/pause", {});
+>(playAction, (currentTime, { extra: socketClient }) => {
+    return socketClient.emit("player/pause", currentTime);
+});
+
+export const seekSong = createAsyncThunk<
+    unknown,
+    number,
+    { extra: SocketClient }
+>(seekAction, (seekTime, { extra: socketClient }) => {
+    return socketClient.emit("player/scrub", seekTime);
 });
 
 export const receivePlayerUpdates = createAsyncThunk<
@@ -51,14 +59,7 @@ export const receivePlayerUpdates = createAsyncThunk<
 export const playerSlice = createSlice({
     name: "player",
     initialState,
-    reducers: {
-        play(state) {
-            state.isPlaying = true;
-        },
-        stop(state) {
-            state.isPlaying = false;
-        },
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder.addCase(updatePlayer, (state, action) => {
             const { isPlaying, lastScrubTime, lastUpdateTime } = action.payload;
@@ -66,11 +67,8 @@ export const playerSlice = createSlice({
             state.isPlaying = isPlaying;
             state.lastScrubTime = lastScrubTime;
             state.lastUpdateTime = lastUpdateTime;
-
-            console.log(state);
         });
     },
 });
 
 export const playerReducer = playerSlice.reducer;
-export const { play, stop } = playerSlice.actions;
