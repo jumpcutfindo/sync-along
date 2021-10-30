@@ -209,14 +209,12 @@ const PlayerComponent: React.FC = () => {
     };
 
     useEffect(() => {
-        dispatch(receivePlayerUpdates()).catch(() => console.log("error"));
-
         ref.current?.seekTo(seekTime / 100, "fraction");
         setSliderProgress(seekTime);
+    }, [seekTime]);
 
-        return () => {
-            dispatch(disconnectSocket());
-        };
+    useEffect(() => {
+        dispatch(receivePlayerUpdates()).catch(() => console.log("error"));
     }, [dispatch, seekTime]);
 
     return (

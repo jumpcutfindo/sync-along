@@ -207,9 +207,6 @@ const Playlist: React.FC = () => {
 
     useEffect(() => {
         dispatch(receivePlaylistUpdates()).catch(() => console.log("error"));
-        return () => {
-            dispatch(disconnectSocket());
-        };
     }, [dispatch]);
 
     const mediaViews = medias.map((media: Media, index: number) => (
