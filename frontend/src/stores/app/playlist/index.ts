@@ -15,6 +15,8 @@ import {
     addSongAction,
     removeSongAction,
     playlistUpdateAction as updatePlaylistAction,
+    nextSongAction,
+    prevSongAction,
 } from "./actions";
 
 export interface Media {
@@ -65,6 +67,22 @@ export const removeSong = createAsyncThunk<
     { extra: SocketClient }
 >(removeSongAction, (id, { extra: socketClient }) => {
     return socketClient.emit("playlist/remove", { id });
+});
+
+export const nextSong = createAsyncThunk<
+    unknown,
+    undefined,
+    { extra: SocketClient }
+>(nextSongAction, (undef, { extra: socketClient }) => {
+    return socketClient.emit("playlist/next", {});
+});
+
+export const prevSong = createAsyncThunk<
+    unknown,
+    undefined,
+    { extra: SocketClient }
+>(prevSongAction, (undef, { extra: socketClient }) => {
+    return socketClient.emit("playlist/prev", {});
 });
 
 export const receivePlaylistUpdates = createAsyncThunk<
