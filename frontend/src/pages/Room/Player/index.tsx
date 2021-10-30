@@ -173,6 +173,10 @@ const PlayerComponent: React.FC = () => {
         (state) => state.player.isPlaying
     );
 
+    const lastUpdateTime: number = useAppSelector(
+        (state) => state.player.lastUpdateTime
+    );
+
     const seekTime: number = useAppSelector(
         (state) => state.player.lastScrubTime
     );
@@ -211,7 +215,7 @@ const PlayerComponent: React.FC = () => {
     useEffect(() => {
         ref.current?.seekTo(seekTime / 100, "fraction");
         setSliderProgress(seekTime);
-    }, [seekTime]);
+    }, [seekTime, lastUpdateTime]);
 
     useEffect(() => {
         dispatch(receivePlayerUpdates()).catch(() => console.log("error"));
