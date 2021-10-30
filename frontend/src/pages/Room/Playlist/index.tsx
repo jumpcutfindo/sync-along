@@ -169,10 +169,17 @@ const PlaylistItem: React.FC<{
             </div>
             <div className="video-thumbnail" />
             <div className="d-flex flex-column align-content-start text-start ms-2 flex-grow-1">
-                <p className="video-title my-0">{media.name}</p>
-                <a className="video-url" href={media.url}>
-                    {media.url}
-                </a>
+                <div>
+                    <p className="video-title my-0">{media.name}</p>
+                    <a
+                        className="video-url"
+                        href={media.url}
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        {media.url}
+                    </a>
+                </div>
             </div>
             <FontAwesomeIcon
                 className="player-control-button me-3 my-auto"

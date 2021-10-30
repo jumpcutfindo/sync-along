@@ -6,7 +6,7 @@ import "./index.css";
 import "rc-slider/assets/index.css";
 
 import { useAppSelector, useAppDispatch } from "src/hooks/typedReduxHooks";
-import { Media, nextMedia, prevMedia } from "src/stores/app/playlist";
+import { Media, nextSong, prevSong } from "src/stores/app/playlist";
 import { play, stop } from "src/stores/app/player";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -194,15 +194,13 @@ const PlayerComponent: React.FC = () => {
         setPlaying(!isPlaying);
     };
 
-    // TODO: This should send a message to the server indicating a skip to the next song
     const onNextPressed = () => {
-        dispatch(nextMedia());
+        dispatch(nextSong());
         setPlaying(true);
     };
 
-    // TODO: This should send a message to the server indicating a jump to prev song
     const onPrevPressed = () => {
-        dispatch(prevMedia());
+        dispatch(prevSong());
         setPlaying(true);
     };
 
