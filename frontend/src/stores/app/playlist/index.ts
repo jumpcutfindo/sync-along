@@ -14,7 +14,7 @@ import {
     selectSongAction,
     addSongAction,
     removeSongAction,
-    playlistUpdateAction as updatePlaylistAction,
+    updatePlayerAction as updatePlaylistAction,
     nextSongAction,
     prevSongAction,
 } from "./actions";
@@ -98,45 +98,10 @@ export const receivePlaylistUpdates = createAsyncThunk<
 export const playlistSlice = createSlice({
     name: "playlist",
     initialState,
-    reducers: {
-        addMedia(state, action: PayloadAction<Media>) {
-            state.media.push(action.payload);
-
-            if (state.currentIndex === -1) {
-                state.currentIndex = 0;
-                // eslint-disable-next-line prefer-destructuring
-                state.current = state.media[0];
-            }
-        },
-        nextMedia(state) {
-            state.currentIndex += 1;
-            state.current = state.media[state.currentIndex];
-
-            if (state.currentIndex >= state.media.length) {
-                state.currentIndex = 0;
-                // eslint-disable-next-line prefer-destructuring
-                state.current = state.media[0];
-            }
-        },
-        prevMedia(state) {
-            state.currentIndex -= 1;
-            state.current = state.media[state.currentIndex];
-
-            if (state.currentIndex < 0) {
-                state.currentIndex = 0;
-                // eslint-disable-next-line prefer-destructuring
-                state.current = state.media[0];
-            }
-        },
-        setMedia(state, action: PayloadAction<number>) {
-            state.currentIndex = action.payload;
-            state.current = state.media[action.payload];
-        },
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder.addCase(updatePlaylist, (state, action) => {
             const { playlist, current } = action.payload;
-            console.log(action.payload);
 
             // Update the current playlist with the data from the server
             state.media = playlist.map((song: any) => {
@@ -161,5 +126,3 @@ export const playlistSlice = createSlice({
 });
 
 export const playlistReducer = playlistSlice.reducer;
-export const { addMedia, nextMedia, prevMedia, setMedia } =
-    playlistSlice.actions;

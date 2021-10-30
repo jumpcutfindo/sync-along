@@ -4,4 +4,4 @@ export const removeSongAction = "playlist/remove";
 export const nextSongAction = "playlist/next";
 export const prevSongAction = "playlist/prev";
 
-export const playlistUpdateAction = "playlist/update";
+export const updatePlayerAction = "playlist/update";

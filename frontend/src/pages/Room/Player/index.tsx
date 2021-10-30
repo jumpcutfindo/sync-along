@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import ReactPlayer from "react-player/youtube";
 import Slider from "rc-slider";
 
@@ -7,7 +7,11 @@ import "rc-slider/assets/index.css";
 
 import { useAppSelector, useAppDispatch } from "src/hooks/typedReduxHooks";
 import { Media, nextSong, prevSong } from "src/stores/app/playlist";
-import { play, stop } from "src/stores/app/player";
+import {
+    pauseSong,
+    playSong,
+    receivePlayerUpdates,
+} from "src/stores/app/player";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,6 +24,7 @@ import {
     faVolumeUp,
     faVolumeMute,
 } from "@fortawesome/free-solid-svg-icons";
+import { disconnectSocket } from "src/stores/chat";
 
 const PlayerInfo: React.FC<{
     currentProgress: number | undefined;
@@ -159,6 +164,13 @@ const PlayerComponent: React.FC = () => {
     const [progress, setProgress] = useState(0);
     const [volume, setVolume] = useState(0.5);
 
+    useEffect(() => {
+        dispatch(receivePlayerUpdates()).catch(() => console.log("error"));
+        return () => {
+            dispatch(disconnectSocket());
+        };
+    }, [dispatch]);
+
     const currentMedia: Media | null = useAppSelector(
         (state) => state.playlist.current
     );
@@ -168,8 +180,8 @@ const PlayerComponent: React.FC = () => {
     );
 
     const setPlaying = (shouldPlay: boolean) => {
-        if (shouldPlay) dispatch(play());
-        else dispatch(stop());
+        if (shouldPlay) dispatch(playSong());
+        else dispatch(pauseSong());
     };
 
     // Methods for client side
