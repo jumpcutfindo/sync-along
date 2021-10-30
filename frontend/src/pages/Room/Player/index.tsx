@@ -196,12 +196,10 @@ const PlayerComponent: React.FC = () => {
 
     const onNextPressed = () => {
         dispatch(nextSong());
-        setPlaying(true);
     };
 
     const onPrevPressed = () => {
         dispatch(prevSong());
-        setPlaying(true);
     };
 
     return (

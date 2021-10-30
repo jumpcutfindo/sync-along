@@ -196,7 +196,7 @@ const Playlist: React.FC = () => {
     const dispatch = useAppDispatch();
 
     const medias = useAppSelector((state) => state.playlist.media);
-    const currentIndex = useAppSelector((state) => state.playlist.currentIndex);
+    const current = useAppSelector((state) => state.playlist.current);
 
     const setCurrentPlaying = (id: string) => {
         dispatch(selectSong(id));
@@ -219,7 +219,7 @@ const Playlist: React.FC = () => {
             key={index}
             index={index}
             media={media}
-            selected={index === currentIndex}
+            selected={media.id === current?.id}
             selectThis={setCurrentPlaying}
             removeThis={removeSelected}
         />
