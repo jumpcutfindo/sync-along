@@ -1,6 +1,11 @@
 import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import SocketClient from "src/services/SocketClient";
-import { playAction, seekAction, updatePlayerAction } from "./actions";
+import {
+    completeAction,
+    playAction,
+    seekAction,
+    updatePlayerAction,
+} from "./actions";
 
 interface PlayerState {
     isPlaying: boolean;
@@ -44,6 +49,14 @@ export const seekSong = createAsyncThunk<
     { extra: SocketClient }
 >(seekAction, (seekTime, { extra: socketClient }) => {
     return socketClient.emit("player/scrub", seekTime);
+});
+
+export const completeSong = createAsyncThunk<
+    unknown,
+    undefined,
+    { extra: SocketClient }
+>(completeAction, (undef, { extra: socketClient }) => {
+    return socketClient.emit("player/complete", {});
 });
 
 export const receivePlayerUpdates = createAsyncThunk<

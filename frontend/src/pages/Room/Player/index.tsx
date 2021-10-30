@@ -8,6 +8,7 @@ import "rc-slider/assets/index.css";
 import { useAppSelector, useAppDispatch } from "src/hooks/typedReduxHooks";
 import { Media, nextSong, prevSong } from "src/stores/app/playlist";
 import {
+    completeSong,
     pauseSong,
     playSong,
     receivePlayerUpdates,
@@ -212,6 +213,10 @@ const PlayerComponent: React.FC = () => {
         if (ref.current && currentMedia) dispatch(seekSong(value));
     };
 
+    const onSongFinished = () => {
+        dispatch(completeSong());
+    };
+
     useEffect(() => {
         ref.current?.seekTo(seekTime / 100, "fraction");
         setSliderProgress(seekTime);
@@ -253,6 +258,7 @@ const PlayerComponent: React.FC = () => {
                 playing={isPlaying}
                 volume={volume}
                 onProgress={onPlayerProgress}
+                onEnded={onSongFinished}
             />
         </div>
     );
