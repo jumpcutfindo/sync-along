@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import ReactPlayer from "react-player/youtube";
 import Slider from "rc-slider";
 
@@ -6,8 +6,14 @@ import "./index.css";
 import "rc-slider/assets/index.css";
 
 import { useAppSelector, useAppDispatch } from "src/hooks/typedReduxHooks";
-import { Media, nextMedia, prevMedia } from "src/stores/app/playlist";
-import { play, stop } from "src/stores/app/player";
+import { Media, nextSong, prevSong } from "src/stores/app/playlist";
+import {
+    completeSong,
+    pauseSong,
+    playSong,
+    receivePlayerUpdates,
+    seekSong,
+} from "src/stores/app/player";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,6 +26,7 @@ import {
     faVolumeUp,
     faVolumeMute,
 } from "@fortawesome/free-solid-svg-icons";
+import { disconnectSocket } from "src/stores/chat";
 
 const PlayerInfo: React.FC<{
     currentProgress: number | undefined;
@@ -156,7 +163,7 @@ const PlayerComponent: React.FC = () => {
 
     const dispatch = useAppDispatch();
 
-    const [progress, setProgress] = useState(0);
+    const [sliderProgress, setSliderProgress] = useState(0);
     const [volume, setVolume] = useState(0.5);
 
     const currentMedia: Media | null = useAppSelector(
@@ -167,9 +174,17 @@ const PlayerComponent: React.FC = () => {
         (state) => state.player.isPlaying
     );
 
+    const lastUpdateTime: number = useAppSelector(
+        (state) => state.player.lastUpdateTime
+    );
+
+    const seekTime: number = useAppSelector(
+        (state) => state.player.lastScrubTime
+    );
+
     const setPlaying = (shouldPlay: boolean) => {
-        if (shouldPlay) dispatch(play());
-        else dispatch(stop());
+        if (shouldPlay) dispatch(playSong(sliderProgress));
+        else dispatch(pauseSong(sliderProgress));
     };
 
     // Methods for client side
@@ -178,43 +193,48 @@ const PlayerComponent: React.FC = () => {
     };
 
     const onPlayerProgress = (newProgress: any) => {
-        setProgress(newProgress.played * 100);
+        setSliderProgress(newProgress.played * 100);
     };
 
-    // Methods for server side
-    // TODO: This should send a message to the server indicating the value of the progress
-    const onSeek = (value: number) => {
-        setProgress(value);
-        ref.current?.seekTo(value / 100, "fraction");
-        setPlaying(true);
-    };
-
-    // TODO: This should send a message to the server indicating the player has been toggled
+    // Button actions
     const onPlayPressed = () => {
         setPlaying(!isPlaying);
     };
 
-    // TODO: This should send a message to the server indicating a skip to the next song
     const onNextPressed = () => {
-        dispatch(nextMedia());
-        setPlaying(true);
+        dispatch(nextSong());
     };
 
-    // TODO: This should send a message to the server indicating a jump to prev song
     const onPrevPressed = () => {
-        dispatch(prevMedia());
-        setPlaying(true);
+        dispatch(prevSong());
     };
+
+    const onSeekSong = (value: number) => {
+        if (ref.current && currentMedia) dispatch(seekSong(value));
+    };
+
+    const onSongFinished = () => {
+        dispatch(completeSong());
+    };
+
+    useEffect(() => {
+        ref.current?.seekTo(seekTime / 100, "fraction");
+        setSliderProgress(seekTime);
+    }, [seekTime, lastUpdateTime]);
+
+    useEffect(() => {
+        dispatch(receivePlayerUpdates()).catch(() => console.log("error"));
+    }, [dispatch, seekTime]);
 
     return (
         <div className="PlayerComponent d-flex flex-column h-100">
             <div className="d-flex player-progress w-100">
-                <Slider value={progress} onChange={onSeek} />
+                <Slider value={sliderProgress} onChange={onSeekSong} />
             </div>
 
             <div className="d-flex flex-grow-1 player-holder px-3">
                 <PlayerInfo
-                    currentProgress={progress}
+                    currentProgress={sliderProgress}
                     mediaDuration={ref.current?.getDuration()}
                     currentMedia={currentMedia}
                 />
@@ -238,6 +258,7 @@ const PlayerComponent: React.FC = () => {
                 playing={isPlaying}
                 volume={volume}
                 onProgress={onPlayerProgress}
+                onEnded={onSongFinished}
             />
         </div>
     );

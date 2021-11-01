@@ -1,14 +1,22 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/interactive-supports-focus */
-import React, { FormEvent, useRef, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "src/hooks/typedReduxHooks";
-import { Media, addMedia, setMedia } from "src/stores/app/playlist";
-import { play } from "src/stores/app/player";
+import {
+    Media,
+    addSong,
+    receivePlaylistUpdates,
+    selectSong,
+    removeSong,
+} from "src/stores/app/playlist";
 
 import { Overlay } from "react-bootstrap";
 
 import "./index.css";
 import useInputState from "src/hooks/useInputState";
+import { disconnectSocket } from "src/stores/chat";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const validateYouTubeURL = (url: string) => {
     if (url === undefined || url === null || url === "") return false;
@@ -38,13 +46,8 @@ const AddMediaButton: React.FC = () => {
         // TODO: Basic validation of the url or pass to server to handle
         // TODO: Send url to server for handling (the response should at least contain the title of the song)
         // Note that the duration of the song has been automatically handled by react-player
-        const response: Media = {
-            url,
-            name: url,
-        };
-
         if (validateYouTubeURL(url)) {
-            dispatch(addMedia(response));
+            dispatch(addSong(url));
             setErrorMsg("");
         } else {
             setErrorMsg("Invalid URL has been entered!");
@@ -137,13 +140,19 @@ const PlaylistItem: React.FC<{
     index: number;
     media: Media;
     selected: boolean;
-    setPlaying: (arg: number) => void;
+    selectThis: (arg: string) => void;
+    removeThis: (arg: string) => void;
 }> = (props) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { index, media, selected, setPlaying } = props;
+    const { index, media, selected, selectThis, removeThis } = props;
 
-    const setThisPlaying = () => {
-        setPlaying(index);
+    const selectThisToPlay = () => {
+        selectThis(media.id.toString());
+    };
+
+    const removeThisFromPlaylist = (event: any) => {
+        event.stopPropagation();
+        removeThis(media.id.toString());
     };
 
     return (
@@ -152,18 +161,32 @@ const PlaylistItem: React.FC<{
             className={`PlaylistItem d-flex ${index % 2 ? "odd" : "even"} ${
                 selected ? "selected" : ""
             } py-2`}
-            onClick={setThisPlaying}
+            onClick={selectThisToPlay}
         >
             <div className="my-auto mx-2">
                 <p className="video-index m-0">#{index + 1}</p>
             </div>
             <div className="video-thumbnail" />
-            <div className="d-flex-column align-content-start text-start ms-2">
-                <p className="video-title my-0">{media.name}</p>
-                <a className="video-url" href={media.url}>
-                    {media.url}
-                </a>
+            <div className="d-flex flex-column align-content-start text-start ms-2 flex-grow-1">
+                <div>
+                    <p className="video-title my-0">{media.name}</p>
+                    <a
+                        className="video-url"
+                        href={media.url}
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        {media.url}
+                    </a>
+                </div>
             </div>
+            <FontAwesomeIcon
+                className="player-control-button me-3 my-auto"
+                icon={faTimes}
+                size="1x"
+                color="red"
+                onClick={removeThisFromPlaylist}
+            />
         </div>
     );
 };
@@ -172,12 +195,19 @@ const Playlist: React.FC = () => {
     const dispatch = useAppDispatch();
 
     const medias = useAppSelector((state) => state.playlist.media);
-    const currentIndex = useAppSelector((state) => state.playlist.currentIndex);
+    const current = useAppSelector((state) => state.playlist.current);
 
-    const setCurrentPlaying = (index: number) => {
-        dispatch(setMedia(index));
-        dispatch(play());
+    const setCurrentPlaying = (id: string) => {
+        dispatch(selectSong(id));
     };
+
+    const removeSelected = (id: string) => {
+        dispatch(removeSong(id));
+    };
+
+    useEffect(() => {
+        dispatch(receivePlaylistUpdates()).catch(() => console.log("error"));
+    }, [dispatch]);
 
     const mediaViews = medias.map((media: Media, index: number) => (
         <PlaylistItem
@@ -185,8 +215,9 @@ const Playlist: React.FC = () => {
             key={index}
             index={index}
             media={media}
-            selected={index === currentIndex}
-            setPlaying={setCurrentPlaying}
+            selected={media.id === current?.id}
+            selectThis={setCurrentPlaying}
+            removeThis={removeSelected}
         />
     ));
 

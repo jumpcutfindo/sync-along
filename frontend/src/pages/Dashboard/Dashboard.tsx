@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "src/hooks/typedReduxHooks";
-import { Overlay } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import useInputState from "src/hooks/useInputState";
 import useNavigator from "src/hooks/useNavigator";
 import roomApi from "src/services/room";
@@ -8,16 +8,67 @@ import roomApi from "src/services/room";
 import { joinRoom as joinRoomAction } from "src/stores/chat";
 import { storeRoomCode } from "src/stores/room";
 
+const JoinRoomModal: React.FC<{
+    isShow: boolean;
+    toggleShow: () => void;
+    user: { name: string; id: string } | undefined;
+    joinRoom: (arg0: string) => void;
+}> = (props) => {
+    const dispatch = useAppDispatch();
+
+    const { isShow, toggleShow, user, joinRoom } = props;
+
+    const [roomCode, onChangeRoomCode] = useInputState("");
+
+    const joinExistingRoom = (event: React.FormEvent) => {
+        event.preventDefault();
+        joinRoom(roomCode);
+    };
+
+    return (
+        <Modal className="JoinRoomModal" show={isShow} centered>
+            <div className="d-flex-column text-center p-4">
+                <h2 className="mb-4">Join Room</h2>
+                <p className="mb-2">
+                    <b>Room Code</b>
+                </p>
+                <form onSubmit={joinExistingRoom}>
+                    <input
+                        className="form-control mb-2"
+                        placeholder="Eg: 1234"
+                        value={roomCode}
+                        onChange={onChangeRoomCode}
+                    />
+                    <div className="mt-3">
+                        <button type="submit" className="btn btn-success me-2">
+                            Join
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-outline-danger"
+                            onClick={toggleShow}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+    );
+};
+
 const Dashboard: React.FC = () => {
     const dispatch = useAppDispatch();
-    const joinRoomRef = useRef(null);
-    const [isShowPopover, setShowPopover] = useState(false);
-    const user = useAppSelector((state) => state.app.user);
     const { navToRoom } = useNavigator();
-    const togglePopover = () => {
-        setShowPopover(!isShowPopover);
+
+    const joinRoomRef = useRef(null);
+    const user = useAppSelector((state) => state.app.user);
+
+    const [isShowJoinModal, setShowJoinModal] = useState(false);
+
+    const toggleJoinModal = () => {
+        setShowJoinModal(!isShowJoinModal);
     };
-    const [roomCode, onChangeRoomCode] = useInputState("");
 
     const [generateRoomCode, { data, isLoading, isSuccess }] =
         roomApi.endpoints.generateRoomCode.useMutation();
@@ -35,11 +86,6 @@ const Dashboard: React.FC = () => {
                 .then(() => navToRoom(room))
                 .catch(() => console.log("cannot join room!"));
         }
-    };
-
-    const joinExistingRoom = (event: React.FormEvent) => {
-        event.preventDefault();
-        joinRoom(roomCode);
     };
 
     useEffect(() => {
@@ -70,31 +116,17 @@ const Dashboard: React.FC = () => {
                     <button
                         type="button"
                         className="btn btn-primary"
-                        onClick={togglePopover}
+                        onClick={toggleJoinModal}
                         ref={joinRoomRef}
                     >
                         Join Room
                     </button>
-                    <Overlay
-                        target={joinRoomRef.current}
-                        show={isShowPopover}
-                        placement="bottom"
-                        transition={false}
-                    >
-                        <div className="p-3 mt-2">
-                            <p className="mb-2">
-                                <b>Enter room code: </b>
-                            </p>
-                            <form onSubmit={joinExistingRoom}>
-                                <input
-                                    className="form-control mb-2"
-                                    placeholder="Eg: 1234"
-                                    value={roomCode}
-                                    onChange={onChangeRoomCode}
-                                />
-                            </form>
-                        </div>
-                    </Overlay>
+                    <JoinRoomModal
+                        isShow={isShowJoinModal}
+                        toggleShow={toggleJoinModal}
+                        user={user}
+                        joinRoom={joinRoom}
+                    />
                 </div>
             </div>
         </div>

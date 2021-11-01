@@ -5,6 +5,7 @@ import useNavigator from "src/hooks/useNavigator";
 
 import { appLogout } from "src/stores/app";
 import { updateAccessToken } from "src/stores/auth";
+import { storeRoomCode } from "src/stores/room";
 
 const LogOutButton: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -23,24 +24,36 @@ const LogOutButton: React.FC = () => {
     if (!loggedIn) return null;
 
     return (
-        <button type="button" className="btn btn-danger" onClick={logout}>
+        <button
+            type="button"
+            className="btn btn-outline-danger"
+            onClick={logout}
+        >
             Log Out
         </button>
     );
 };
 
-const RoomButton: React.FC = () => {
-    return (
-        <button type="button" className="btn btn-primary me-2">
-            Room
-        </button>
-    );
-};
+const LeaveRoomButton: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const inRoom = useAppSelector((state) => state.room.roomCode);
+    const { navToDashboard } = useNavigator();
 
-const PlaylistsButton: React.FC = () => {
+    if (!inRoom) return null;
+
+    const leaveRoom = () => {
+        // TODO: Add functionality to actually leave the socket room on pressed
+        dispatch(storeRoomCode(undefined));
+        navToDashboard();
+    };
+
     return (
-        <button type="button" className="btn btn-primary me-2">
-            My Playlists
+        <button
+            type="button"
+            className="btn btn-danger me-2"
+            onClick={leaveRoom}
+        >
+            Leave Room
         </button>
     );
 };
@@ -49,8 +62,7 @@ const DashboardControls: React.FC = () => {
     return (
         <div className="DashboardControls d-flex">
             <div className="DashboardNavigation d-flex align-items-center justify-content-start flex-grow-1">
-                <RoomButton />
-                <PlaylistsButton />
+                <LeaveRoomButton />
             </div>
             <div className="d-flex">
                 <LogOutButton />
