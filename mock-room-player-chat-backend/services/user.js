@@ -66,21 +66,21 @@ async function getUser(username, callback) {
 }
 
 const initUserService = (app) => {
-  app.post("/sign-up", async (req, res) => {
-    console.log(`/sign-up call received at server ${JSON.stringify(req.body)}`);
+  app.post("/register", async (req, res) => {
+    console.log(`/register call received at server ${JSON.stringify(req.body)}`);
 
     const username = req.body.username;
     const password = req.body.password;
 
     if (!(username && password)) {
-      return res.json({
+      return res.status(401).json({
         isSuccessful: false,
         message: "Some fields are missing. Please fill up all the fields."
       });
     }
 
     if (password.length < 6) {
-      return res.json({
+      return res.status(401).json({
         isSuccessful: false,
         message: "Password has to be as least 6 characters"
       });
@@ -88,7 +88,7 @@ const initUserService = (app) => {
 
     checkIfUserExists(username, isUserExists => {
       if (isUserExists) {
-        return res.json({
+        return res.status(400).json({
           isSuccessful: false,
           message: "This e-mail is already registered. Please log in."
         });
@@ -112,7 +112,7 @@ const initUserService = (app) => {
     const password = req.body.password;
 
     if (!username || !password) {
-      return res.json({
+      return res.status(401).json({
         isSuccessful: false,
         message: "Please enter your username and password."
       });
@@ -120,7 +120,7 @@ const initUserService = (app) => {
 
     getUser(username, (hashedPassword) => {
       if (!hashedPassword) { // user not found in the database
-        return res.json({
+        return res.status(401).json({
           isSuccessful: false,
           message: 'Your username or password is incorrect. Please try again. [1]'
         })
@@ -128,14 +128,14 @@ const initUserService = (app) => {
 
       bcrypt.compare(password, hashedPassword, (err, result) => {
         if (err) {
-          return res.json({
+          return res.status(401).json({
             isSuccessful: false,
             message: 'Unknown error occured, error code login-A.'
           });
         }
 
         if (!result) { // password does not match
-          return res.json({
+          return res.status(401).json({
             isSuccessful: false,
             message: 'Your username or password is incorrect. Please try again. [2]'
           });

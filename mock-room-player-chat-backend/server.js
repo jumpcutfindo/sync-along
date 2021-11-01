@@ -4,6 +4,7 @@ const express = require('express');
 const socketio = require('socket.io');
 const bodyParser = require('body-parser');
 const session = require("express-session");
+const cors = require("cors");
 
 const { initRoomService } = require('./services/room');
 const { initChatService } = require('./services/chat');
@@ -12,6 +13,7 @@ const { initUserService } = require('./services/user');
 
 const app = express();
 // set up security
+app.use(cors());
 app.use(
   session({
     secret: "secret",
