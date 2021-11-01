@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { BACKEND_URL } from "src/constants/env";
 
 interface PlaylistParams {
     accessToken: string;
@@ -7,7 +8,7 @@ interface PlaylistParams {
 
 const playlistApi = createApi({
     reducerPath: "userApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:4000" }),
+    baseQuery: fetchBaseQuery({ baseUrl: BACKEND_URL }),
     endpoints: (builder) => ({
         get: builder.mutation<any, PlaylistParams>({
             query: (body) => ({

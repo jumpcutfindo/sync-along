@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { BACKEND_URL } from "src/constants/env";
 
 interface AuthResponse {
     accessToken?: string;
@@ -11,7 +12,7 @@ interface LoginParams {
 
 const userApi = createApi({
     reducerPath: "userApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:4000" }),
+    baseQuery: fetchBaseQuery({ baseUrl: BACKEND_URL }),
     endpoints: (builder) => ({
         login: builder.mutation<AuthResponse, LoginParams>({
             query: (body) => ({
@@ -25,6 +26,12 @@ const userApi = createApi({
                 url: "/register",
                 method: "POST",
                 body,
+            }),
+        }),
+        logout: builder.query({
+            query: () => ({
+                url: "/logout",
+                method: "GET",
             }),
         }),
     }),

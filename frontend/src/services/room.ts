@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { BACKEND_URL } from "src/constants/env";
 
 interface RoomParams {
     accessToken: string;
@@ -10,7 +11,7 @@ interface RoomResponse {
 
 const roomApi = createApi({
     reducerPath: "roomApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:4000" }),
+    baseQuery: fetchBaseQuery({ baseUrl: BACKEND_URL }),
     endpoints: (builder) => ({
         generateRoomCode: builder.mutation<RoomResponse, RoomParams>({
             query: (body) => ({
