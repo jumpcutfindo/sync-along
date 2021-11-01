@@ -22,12 +22,12 @@
   font-size: smaller;
 }
 
-.message-container.even {
-  background: rgba(0, 0, 0, 0.2);
-}
-
 .message {
   font-size: 10pt;
+}
+
+.message-container:nth-child(even) {
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .is-user {
@@ -44,3 +44,4 @@
   position: relative;
   height: 0px;
 }
+

@@ -58,17 +58,12 @@ const MessageInput: React.FC = () => {
     );
 };
 
-const Message: React.FC<{ user: string; message: string; isEven: boolean }> = ({
+const Message: React.FC<{ user: string; message: string }> = ({
     user,
     message,
-    isEven,
 }) => {
     return (
-        <div
-            className={`message-container d-flex p-2 text-start ${
-                isEven ? "even" : ""
-            }`}
-        >
+        <div className="message-container d-flex p-2 text-start">
             <div className="message">
                 <p className="m-0">
                     <b>{user}: </b>
@@ -94,12 +89,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
     return (
         <div ref={ref} className="message-list flex-grow-1">
             {messages.map(({ id, text, username }, index) => (
-                <Message
-                    key={id}
-                    user={username}
-                    message={text}
-                    isEven={index % 2 === 0}
-                />
+                <Message key={id} user={username} message={text} />
             ))}
             <div ref={end} />
         </div>
