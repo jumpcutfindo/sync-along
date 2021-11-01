@@ -2,12 +2,29 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
+const bodyParser = require('body-parser');
+const session = require("express-session");
 
 const { initRoomService } = require('./services/room');
 const { initChatService } = require('./services/chat');
 const { initPlaylistService, initPlayerService } = require('./services/player');
+const { initUserService } = require('./services/user');
 
 const app = express();
+// set up security
+app.use(
+  session({
+    secret: "secret",
+    resave: false,
+    cookie: { secure: false }, // cookie expires in 8 hours
+    saveUninitialized: false,
+  })
+);
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+initUserService(app);
+
 const server = http.createServer(app);
 const io = socketio(server, {
   cors: {

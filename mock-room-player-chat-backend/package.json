@@ -1,18 +1,21 @@
 {
-  "name": "chatcord",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "Realtime chat app with rooms",
+  "description": "Backend for sync-along",
   "main": "server.js",
   "scripts": {
     "start": "node server",
     "dev": "nodemon server"
   },
-  "author": "Brad Traversy",
-  "license": "MIT",
+  "author": "CS3219 Team 6",
   "dependencies": {
     "express": "^4.17.1",
     "moment": "^2.29.1",
-    "socket.io": "^4.3.1"
+    "socket.io": "^4.3.1",
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "express-session": "^1.17.2",
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
