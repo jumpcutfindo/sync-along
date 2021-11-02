@@ -51,7 +51,7 @@ export const RegisterModalContent: React.FC<{
             // TODO: Decide on what to do when registration is successful
             toggleShowRegistration();
         } else {
-            setErrorMessage("Unable to login!");
+            setErrorMessage("Unable to sign up!");
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoading, isSuccess]);
@@ -126,16 +126,13 @@ export const LoginModalContent: React.FC<{
             setErrorMessage("");
             login({ username, password });
         }
-
-        // TODO: Move this function into the if-else once login is handled properly
-        dispatch(appLogin());
-        dispatch(storeUser({ name: username, id: 1 }));
-        navToDashboard();
     };
 
     useEffect(() => {
         if (isSuccess) {
             dispatch(updateAccessToken(data?.accessToken));
+            dispatch(storeUser({ name: data?.username }));
+            dispatch(appLogin());
             navToDashboard();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

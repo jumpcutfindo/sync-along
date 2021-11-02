@@ -11,12 +11,9 @@ import { storeRoomCode } from "src/stores/room";
 const JoinRoomModal: React.FC<{
     isShow: boolean;
     toggleShow: () => void;
-    user: { name: string; id: string } | undefined;
     joinRoom: (arg0: string) => void;
 }> = (props) => {
-    const dispatch = useAppDispatch();
-
-    const { isShow, toggleShow, user, joinRoom } = props;
+    const { isShow, toggleShow, joinRoom } = props;
 
     const [roomCode, onChangeRoomCode] = useInputState("");
 
@@ -75,7 +72,9 @@ const Dashboard: React.FC = () => {
 
     const createNewRoom = (event: React.FormEvent) => {
         event.preventDefault();
-        generateRoomCode({ accessToken: "test" });
+        if (user) {
+            generateRoomCode({ username: user.name });
+        }
     };
 
     // TODO: add error handling
@@ -90,7 +89,7 @@ const Dashboard: React.FC = () => {
 
     useEffect(() => {
         if (!isLoading && isSuccess) {
-            const room = data?.roomCode;
+            const room = data?.code;
             // TODO: replace with error in the UI
             if (!room) {
                 console.log("API did not return room");
@@ -124,7 +123,6 @@ const Dashboard: React.FC = () => {
                     <JoinRoomModal
                         isShow={isShowJoinModal}
                         toggleShow={toggleJoinModal}
-                        user={user}
                         joinRoom={joinRoom}
                     />
                 </div>

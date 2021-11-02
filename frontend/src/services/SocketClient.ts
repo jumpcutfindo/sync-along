@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import io from "socket.io-client";
+import { BACKEND_URL } from "src/constants/env";
+
 import Types from "Types";
 
-const host = "http://localhost:4001";
+const host = BACKEND_URL;
 
 const NoConnectionError = new Error("No socket connection");
 class SocketClient {

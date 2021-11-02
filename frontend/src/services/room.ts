@@ -1,27 +1,28 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { BACKEND_URL } from "src/constants/env";
 
 interface RoomParams {
-    accessToken: string;
+    username: string;
 }
 
 interface RoomResponse {
-    roomCode: string;
+    code: string;
 }
 
 const roomApi = createApi({
     reducerPath: "roomApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:4000" }),
+    baseQuery: fetchBaseQuery({ baseUrl: BACKEND_URL }),
     endpoints: (builder) => ({
         generateRoomCode: builder.mutation<RoomResponse, RoomParams>({
             query: (body) => ({
-                url: "/room/new",
+                url: "/room/create",
                 method: "POST",
                 body,
             }),
         }),
         removeRoom: builder.mutation<any, RoomParams>({
             query: (body) => ({
-                url: "/room/remove",
+                url: "/room/delete",
                 method: "POST",
                 body,
             }),
