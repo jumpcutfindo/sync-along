@@ -39,7 +39,7 @@ const LogOutButton: React.FC = () => {
 
             dispatch(
                 setToastMessage({
-                    type: "danger",
+                    type: "success",
                     message: "Successfully logged out of Sync-Along.",
                 })
             );

@@ -19,11 +19,13 @@ const JoinRoomModal: React.FC<{
 
     const [errorMessage, setErrorMessage] = useState("");
     const [roomCode, onChangeRoomCode] = useInputState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const user = useAppSelector((state) => state.app.user);
 
     const onJoinRoom = (room: string) => {
         if (user && room) {
+            setIsLoading(true);
             dispatch(joinRoom({ username: user.name, room }))
                 .then((response: any) => {
                     if (response.error) {
@@ -36,9 +38,11 @@ const JoinRoomModal: React.FC<{
                         dispatch(storeRoomCode(room));
                         navToRoom(room);
                     }
+                    setIsLoading(false);
                 })
                 .catch((err) => {
                     setErrorMessage("Unable to join room.");
+                    setIsLoading(false);
                 });
         }
     };
@@ -66,9 +70,12 @@ const JoinRoomModal: React.FC<{
                         <p className="text-danger small">{errorMessage}</p>
                     ) : null}
                     <div className="mt-3">
-                        <button type="submit" className="btn btn-success me-2">
-                            Join
-                        </button>
+                        <LoadingButton
+                            type="submit"
+                            className="btn btn-success me-2"
+                            text="Join"
+                            isLoading={isLoading}
+                        />
                         <button
                             type="button"
                             className="btn btn-outline-danger"
