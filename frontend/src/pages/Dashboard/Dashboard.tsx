@@ -9,6 +9,12 @@ import { storeRoomCode, joinRoom } from "src/stores/room";
 import LoadingButton from "src/utils/LoadingButton";
 import { setToastMessage } from "src/stores/app/toasts";
 
+const validateRoomCode = (roomCode: string) => {
+    if (roomCode.length < 5) return false;
+
+    return true;
+};
+
 const JoinRoomModal: React.FC<{
     isShow: boolean;
     toggleShow: () => void;
@@ -24,7 +30,7 @@ const JoinRoomModal: React.FC<{
     const user = useAppSelector((state) => state.app.user);
 
     const onJoinRoom = (room: string) => {
-        if (user && room) {
+        if (user && room && validateRoomCode(room)) {
             setIsLoading(true);
             dispatch(joinRoom({ username: user.name, room }))
                 .then((response: any) => {
@@ -92,6 +98,7 @@ const JoinRoomModal: React.FC<{
 
 const Dashboard: React.FC = () => {
     const dispatch = useAppDispatch();
+    const { navToRoom } = useNavigator();
 
     const user = useAppSelector((state) => state.app.user);
 
@@ -115,7 +122,6 @@ const Dashboard: React.FC = () => {
         if (user) {
             createRoom({ username: user.name })
                 .then((response: any) => {
-                    console.log(response);
                     if (response.error) {
                         dispatch(
                             setToastMessage({
@@ -125,12 +131,16 @@ const Dashboard: React.FC = () => {
                             })
                         );
                     } else {
+                        const roomCode = response.data.code;
+                        console.log(roomCode);
                         dispatch(
                             joinRoom({
                                 username: user.name,
-                                room: response.code,
+                                room: roomCode,
                             })
                         );
+                        dispatch(storeRoomCode(roomCode));
+                        navToRoom(roomCode);
                     }
                 })
                 .catch((err) => {
