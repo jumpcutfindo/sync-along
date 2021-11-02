@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Toast, ToastContainer } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { useAppSelector } from "src/hooks/typedReduxHooks";
+import { setToastMessage } from "src/stores/app/toasts";
 
 const ToastComponent: React.FC = () => {
     const [showToast, setToastShowing] = useState(false);
@@ -9,15 +11,14 @@ const ToastComponent: React.FC = () => {
         setToastShowing(!showToast);
     };
 
-    const message = useAppSelector((state) => state.toasts.message);
-    const type = useAppSelector((state) => state.toasts.type);
+    const { message, type, hasShown } = useAppSelector((state) => state.toasts);
 
     useEffect(() => {
-        setToastShowing(true);
-    }, [message]);
+        if (!hasShown) setToastShowing(true);
+    }, [hasShown, message]);
 
     return (
-        <ToastContainer position="top-center">
+        <ToastContainer position="top-center" className="my-3">
             <Toast
                 bg={type}
                 show={showToast}
@@ -26,7 +27,7 @@ const ToastComponent: React.FC = () => {
                 autohide
             >
                 <Toast.Body>
-                    <p>{message}</p>
+                    <p className="m-0">{message}</p>
                 </Toast.Body>
             </Toast>
         </ToastContainer>
