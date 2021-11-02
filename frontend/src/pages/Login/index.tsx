@@ -139,7 +139,11 @@ export const LoginModalContent: React.FC<{
             setErrorMessage("Please enter a username and password!");
         } else {
             setErrorMessage("");
-            login({ username, password });
+            login({ username, password }).then((response: any) => {
+                if (response.error) {
+                    setErrorMessage(response.error.data.message);
+                }
+            });
         }
     };
 
@@ -148,6 +152,12 @@ export const LoginModalContent: React.FC<{
             dispatch(updateAccessToken(data?.accessToken));
             dispatch(storeUser({ name: data?.username }));
             dispatch(appLogin());
+            dispatch(
+                setToastMessage({
+                    type: "success",
+                    message: `Successfully logged in! Welcome back, ${data?.username}`,
+                })
+            );
             navToDashboard();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

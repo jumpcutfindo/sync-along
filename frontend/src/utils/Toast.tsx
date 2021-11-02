@@ -2,20 +2,24 @@ import React, { useEffect, useState } from "react";
 import { Toast, ToastContainer } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "src/hooks/typedReduxHooks";
-import { setToastMessage } from "src/stores/app/toasts";
+import { setShown } from "src/stores/app/toasts";
 
 const ToastComponent: React.FC = () => {
     const [showToast, setToastShowing] = useState(false);
+    const { message, type, hasShown } = useAppSelector((state) => state.toasts);
+
+    const dispatch = useDispatch();
 
     const toggleToast = () => {
         setToastShowing(!showToast);
     };
 
-    const { message, type, hasShown } = useAppSelector((state) => state.toasts);
-
     useEffect(() => {
-        if (!hasShown) setToastShowing(true);
-    }, [hasShown, message]);
+        if (!hasShown) {
+            setToastShowing(true);
+            dispatch(setShown(true));
+        }
+    }, [hasShown, message, dispatch]);
 
     return (
         <ToastContainer position="top-center" className="my-3">

@@ -19,8 +19,11 @@ export const toastSlice = createSlice({
             state.type = action.payload.type;
             state.hasShown = false;
         },
+        setShown(state, action) {
+            state.hasShown = action.payload;
+        },
     },
 });
 
 export const toastReducer = toastSlice.reducer;
-export const { setToastMessage } = toastSlice.actions;
+export const { setToastMessage, setShown } = toastSlice.actions;
