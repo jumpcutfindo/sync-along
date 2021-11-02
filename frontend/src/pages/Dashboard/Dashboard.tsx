@@ -6,6 +6,8 @@ import useNavigator from "src/hooks/useNavigator";
 import roomApi from "src/services/room";
 
 import { storeRoomCode, joinRoom } from "src/stores/room";
+import LoadingButton from "src/utils/LoadingButton";
+import { setToastMessage } from "src/stores/app/toasts";
 
 const JoinRoomModal: React.FC<{
     isShow: boolean;
@@ -66,17 +68,50 @@ const Dashboard: React.FC = () => {
         setShowJoinModal(!isShowJoinModal);
     };
 
-    const [generateRoomCode, { data, isLoading, isSuccess }] =
-        roomApi.endpoints.generateRoomCode.useMutation();
+    const [
+        createRoom,
+        {
+            data: createRoomData,
+            isLoading: isRoomCreationLoading,
+            isSuccess: isRoomCreationSuccess,
+        },
+    ] = roomApi.endpoints.createRoom.useMutation();
 
     const createNewRoom = (event: React.FormEvent) => {
         event.preventDefault();
         if (user) {
-            generateRoomCode({ username: user.name });
+            createRoom({ username: user.name })
+                .then((response: any) => {
+                    console.log(response);
+                    if (response.error) {
+                        dispatch(
+                            setToastMessage({
+                                type: "danger",
+                                message:
+                                    "Unable to create a room, please try again later.",
+                            })
+                        );
+                    } else {
+                        dispatch(
+                            joinRoom({
+                                username: user.name,
+                                room: response.code,
+                            })
+                        );
+                    }
+                })
+                .catch((err) => {
+                    dispatch(
+                        setToastMessage({
+                            type: "danger",
+                            message:
+                                "Unable to create a room, please try again later.",
+                        })
+                    );
+                });
         }
     };
 
-    // TODO: add error handling
     const onJoinRoom = (room: string) => {
         dispatch(storeRoomCode(room));
         if (user && room) {
@@ -87,8 +122,8 @@ const Dashboard: React.FC = () => {
     };
 
     useEffect(() => {
-        if (!isLoading && isSuccess) {
-            const room = data?.code;
+        if (!isRoomCreationLoading && isRoomCreationSuccess) {
+            const room = createRoomData?.code;
             // TODO: replace with error in the UI
             if (!room) {
                 console.log("API did not return room");
@@ -97,20 +132,20 @@ const Dashboard: React.FC = () => {
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isLoading, isSuccess]);
+    }, [isRoomCreationLoading, isRoomCreationSuccess]);
 
     return (
         <div className="DashboardScreen d-flex mb-2">
             <div className="m-auto d-flex flex-column">
                 <h1 className="my-3">Sync-Along</h1>
                 <div className="d-flex mx-auto">
-                    <button
+                    <LoadingButton
                         type="button"
                         className="btn btn-success me-2"
                         onClick={createNewRoom}
-                    >
-                        Create Room
-                    </button>
+                        isLoading={isRoomCreationLoading}
+                        text="Create Room"
+                    />
                     <button
                         type="button"
                         className="btn btn-primary"

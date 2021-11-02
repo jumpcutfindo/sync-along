@@ -14,7 +14,7 @@ interface ButtonProps
 }
 
 const LoadingButton: React.FC<ButtonProps> = (props) => {
-    const { text, type, isLoading, className } = props;
+    const { text, type, isLoading, className, onClick } = props;
 
     if (isLoading) {
         return (
@@ -24,7 +24,7 @@ const LoadingButton: React.FC<ButtonProps> = (props) => {
         );
     }
     return (
-        <button type={type} className={className}>
+        <button type={type} className={className} onClick={onClick}>
             {text}
         </button>
     );
