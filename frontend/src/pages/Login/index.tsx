@@ -50,11 +50,17 @@ export const RegisterModalContent: React.FC<{
             setErrorMessage("The passwords do not match!");
         } else {
             setErrorMessage("");
-            register({ username, password }).then((response: any) => {
-                if (response.error) {
-                    setErrorMessage(response.error.data.message);
-                }
-            });
+            register({ username, password })
+                .then((response: any) => {
+                    if (response.error) {
+                        setErrorMessage(response.error.data.message);
+                    }
+                })
+                .catch((error) => {
+                    setErrorMessage(
+                        "Unable to register; please try again later."
+                    );
+                });
         }
     };
 
@@ -101,9 +107,12 @@ export const RegisterModalContent: React.FC<{
                     <p className="text-danger small">{errorMessage}</p>
                 ) : null}
                 <div className="mt-3">
-                    <button type="submit" className="btn btn-primary me-2">
-                        {isLoading ? "Loading..." : "Register"}
-                    </button>
+                    <LoadingButton
+                        type="submit"
+                        className="btn btn-primary me-2"
+                        isLoading={isLoading}
+                        text="Register"
+                    />
                     <button
                         type="button"
                         className="btn btn-outline-primary"
