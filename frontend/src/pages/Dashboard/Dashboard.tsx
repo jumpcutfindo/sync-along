@@ -72,7 +72,9 @@ const Dashboard: React.FC = () => {
 
     const createNewRoom = (event: React.FormEvent) => {
         event.preventDefault();
-        generateRoomCode({ accessToken: "test" });
+        if (user) {
+            generateRoomCode({ username: user.name });
+        }
     };
 
     // TODO: add error handling
@@ -87,7 +89,7 @@ const Dashboard: React.FC = () => {
 
     useEffect(() => {
         if (!isLoading && isSuccess) {
-            const room = data?.roomCode;
+            const room = data?.code;
             // TODO: replace with error in the UI
             if (!room) {
                 console.log("API did not return room");

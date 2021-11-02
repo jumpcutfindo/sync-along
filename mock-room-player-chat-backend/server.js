@@ -10,6 +10,7 @@ const { initRoomService } = require('./services/room');
 const { initChatService } = require('./services/chat');
 const { initPlaylistService, initPlayerService } = require('./services/player');
 const { initUserService } = require('./services/user');
+const {initRoomManagementService} = require('./services/room-management');
 
 const app = express();
 // set up security
@@ -30,6 +31,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 initUserService(app);
+initRoomManagementService(app);
 
 const server = http.createServer(app);
 const io = socketio(server, {
