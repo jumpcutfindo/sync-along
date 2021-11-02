@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import cookies from "js-cookie";
 
 interface AppState {
     loggedIn: boolean;
@@ -8,8 +9,11 @@ interface AppState {
 }
 
 const initialState: AppState = {
-    loggedIn: false,
-    user: undefined,
+    loggedIn: cookies.get("connect.sid") !== null,
+    user:
+        localStorage.getItem("user") !== null
+            ? { name: localStorage.getItem("user") as string }
+            : undefined,
 };
 
 export const appSlice = createSlice({
@@ -21,6 +25,8 @@ export const appSlice = createSlice({
             state.user = {
                 name,
             };
+
+            localStorage.setItem("user", name);
         },
         appLogin(state) {
             state.loggedIn = true;
