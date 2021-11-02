@@ -10,6 +10,7 @@ import userApi from "src/services/user";
 import useInputState from "src/hooks/useInputState";
 import { useDispatch } from "react-redux";
 import { setToastMessage } from "src/stores/app/toasts";
+import LoadingButton from "src/utils/LoadingButton";
 import IntroScreen from "./IntroScreen";
 
 import "./Login.css";
@@ -138,11 +139,15 @@ export const LoginModalContent: React.FC<{
             setErrorMessage("Please enter a username and password!");
         } else {
             setErrorMessage("");
-            login({ username, password }).then((response: any) => {
-                if (response.error) {
-                    setErrorMessage(response.error.data.message);
-                }
-            });
+            login({ username, password })
+                .then((response: any) => {
+                    if (response.error) {
+                        setErrorMessage(response.error.data.message);
+                    }
+                })
+                .catch((error) => {
+                    setErrorMessage("Unable to login; please try again later.");
+                });
         }
     };
 
@@ -181,9 +186,12 @@ export const LoginModalContent: React.FC<{
                     <p className="text-danger small">{errorMessage}</p>
                 ) : null}
                 <div className="mt-3">
-                    <button type="submit" className="btn btn-primary me-2">
-                        {isLoading ? "Loading..." : "Log In"}
-                    </button>
+                    <LoadingButton
+                        type="submit"
+                        className="btn btn-primary me-2"
+                        isLoading={isLoading}
+                        text="Log In"
+                    />
                     <button
                         type="button"
                         className="btn btn-outline-primary"
