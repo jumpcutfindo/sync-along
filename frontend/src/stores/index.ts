@@ -7,7 +7,6 @@ import roomApi from "src/services/room";
 import SocketClient from "src/services/SocketClient";
 
 // State slices
-import { authReducer, authSlice } from "./auth";
 import { appReducer, appSlice } from "./app";
 import { roomReducer, roomSlice } from "./room";
 import { playlistReducer, playlistSlice } from "./app/playlist";
@@ -20,7 +19,6 @@ const socketClient = new SocketClient();
 export const rootReducer = combineReducers({
     [userApi.reducerPath]: userApi.reducer,
     [roomApi.reducerPath]: roomApi.reducer,
-    [authSlice.name]: authReducer,
     [appSlice.name]: appReducer,
     [playlistSlice.name]: playlistReducer,
     [playerSlice.name]: playerReducer,

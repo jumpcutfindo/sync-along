@@ -4,7 +4,6 @@ import { Modal, Toast, ToastContainer } from "react-bootstrap";
 
 import useNavigator from "src/hooks/useNavigator";
 import { useAppDispatch } from "src/hooks/typedReduxHooks";
-import { updateAccessToken } from "src/stores/auth";
 import { appLogin, storeUser } from "src/stores/app";
 
 import userApi from "src/services/user";
@@ -149,7 +148,6 @@ export const LoginModalContent: React.FC<{
 
     useEffect(() => {
         if (isSuccess) {
-            dispatch(updateAccessToken(data?.accessToken));
             dispatch(storeUser({ name: data?.username }));
             dispatch(appLogin());
             dispatch(

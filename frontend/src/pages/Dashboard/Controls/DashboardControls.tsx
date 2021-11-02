@@ -5,7 +5,6 @@ import userApi from "src/services/user";
 import useNavigator from "src/hooks/useNavigator";
 
 import { appLogout } from "src/stores/app";
-import { updateAccessToken } from "src/stores/auth";
 import { storeRoomCode } from "src/stores/room";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
@@ -35,7 +34,6 @@ const LogOutButton: React.FC = () => {
         if (isSuccess) {
             dispatch(storeRoomCode(undefined));
             dispatch(appLogout());
-            dispatch(updateAccessToken(undefined));
             navToLogin();
 
             dispatch(
