@@ -9,6 +9,7 @@ import { updateAccessToken } from "src/stores/auth";
 import { storeRoomCode } from "src/stores/room";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { setToastMessage, toastSlice } from "src/stores/app/toasts";
 
 const UserInfoButton: React.FC = () => {
     const username = useAppSelector((state) => state.app.user?.name);
@@ -32,9 +33,17 @@ const LogOutButton: React.FC = () => {
 
     useEffect(() => {
         if (isSuccess) {
+            dispatch(storeRoomCode(undefined));
             dispatch(appLogout());
             dispatch(updateAccessToken(undefined));
             navToLogin();
+
+            dispatch(
+                setToastMessage({
+                    type: "danger",
+                    message: "Successfully logged out of Sync-Along.",
+                })
+            );
         }
     }, [isSuccess, isLoading]);
 

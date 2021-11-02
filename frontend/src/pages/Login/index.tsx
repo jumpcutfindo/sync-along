@@ -155,7 +155,7 @@ export const LoginModalContent: React.FC<{
             dispatch(
                 setToastMessage({
                     type: "success",
-                    message: `Successfully logged in! Welcome back, ${data?.username}`,
+                    message: `Successfully logged in! Welcome back, ${data?.username}.`,
                 })
             );
             navToDashboard();
