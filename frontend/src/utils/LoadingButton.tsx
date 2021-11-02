@@ -4,11 +4,13 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 
-interface ButtonProps {
+interface ButtonProps
+    extends React.DetailedHTMLProps<
+        React.ButtonHTMLAttributes<HTMLButtonElement>,
+        HTMLButtonElement
+    > {
     text?: string;
-    type?: "button" | "submit" | "reset" | undefined;
     isLoading: boolean;
-    className: string | undefined;
 }
 
 const LoadingButton: React.FC<ButtonProps> = (props) => {
