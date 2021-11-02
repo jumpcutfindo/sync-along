@@ -7,6 +7,21 @@ import useNavigator from "src/hooks/useNavigator";
 import { appLogout } from "src/stores/app";
 import { updateAccessToken } from "src/stores/auth";
 import { storeRoomCode } from "src/stores/room";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+
+const UserInfoButton: React.FC = () => {
+    const username = useAppSelector((state) => state.app.user?.name);
+
+    if (!username) return null;
+
+    return (
+        <button type="button" className="btn btn-outline-light d-flex me-2">
+            <FontAwesomeIcon icon={faUser} className="my-auto me-2" />
+            {username}
+        </button>
+    );
+};
 
 const LogOutButton: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -69,6 +84,7 @@ const DashboardControls: React.FC = () => {
                 <LeaveRoomButton />
             </div>
             <div className="d-flex">
+                <UserInfoButton />
                 <LogOutButton />
             </div>
         </div>
