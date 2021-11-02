@@ -14,7 +14,6 @@ import { Overlay } from "react-bootstrap";
 
 import "./index.css";
 import useInputState from "src/hooks/useInputState";
-import { disconnectSocket } from "src/stores/chat";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -43,9 +42,6 @@ const AddMediaButton: React.FC = () => {
     const handleSubmit = (event: FormEvent) => {
         event.preventDefault();
 
-        // TODO: Basic validation of the url or pass to server to handle
-        // TODO: Send url to server for handling (the response should at least contain the title of the song)
-        // Note that the duration of the song has been automatically handled by react-player
         if (validateYouTubeURL(url)) {
             dispatch(addSong(url));
             setErrorMsg("");
@@ -120,9 +116,6 @@ const PlaylistHeaderButtons: React.FC = () => {
     return (
         <div className="PlaylistHeaderButtons d-flex w-100 justify-content-end">
             <AddMediaButton />
-            <button type="button" className="btn btn-success my-auto">
-                Import Playlist
-            </button>
         </div>
     );
 };
