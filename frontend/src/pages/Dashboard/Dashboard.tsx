@@ -12,11 +12,36 @@ import { setToastMessage } from "src/stores/app/toasts";
 const JoinRoomModal: React.FC<{
     isShow: boolean;
     toggleShow: () => void;
-    onJoinRoom: (arg0: string) => void;
 }> = (props) => {
-    const { isShow, toggleShow, onJoinRoom } = props;
+    const dispatch = useAppDispatch();
+    const { navToRoom } = useNavigator();
+    const { isShow, toggleShow } = props;
 
+    const [errorMessage, setErrorMessage] = useState("");
     const [roomCode, onChangeRoomCode] = useInputState("");
+
+    const user = useAppSelector((state) => state.app.user);
+
+    const onJoinRoom = (room: string) => {
+        if (user && room) {
+            dispatch(joinRoom({ username: user.name, room }))
+                .then((response: any) => {
+                    if (response.error) {
+                        if (response.error.data?.message) {
+                            setErrorMessage(response.error.data.message);
+                        } else {
+                            setErrorMessage("Unable to join room.");
+                        }
+                    } else {
+                        dispatch(storeRoomCode(room));
+                        navToRoom(room);
+                    }
+                })
+                .catch((err) => {
+                    setErrorMessage("Unable to join room.");
+                });
+        }
+    };
 
     const joinExistingRoom = (event: React.FormEvent) => {
         event.preventDefault();
@@ -37,6 +62,9 @@ const JoinRoomModal: React.FC<{
                         value={roomCode}
                         onChange={onChangeRoomCode}
                     />
+                    {errorMessage !== "" ? (
+                        <p className="text-danger small">{errorMessage}</p>
+                    ) : null}
                     <div className="mt-3">
                         <button type="submit" className="btn btn-success me-2">
                             Join
@@ -57,9 +85,7 @@ const JoinRoomModal: React.FC<{
 
 const Dashboard: React.FC = () => {
     const dispatch = useAppDispatch();
-    const { navToRoom } = useNavigator();
 
-    const joinRoomRef = useRef(null);
     const user = useAppSelector((state) => state.app.user);
 
     const [isShowJoinModal, setShowJoinModal] = useState(false);
@@ -112,28 +138,6 @@ const Dashboard: React.FC = () => {
         }
     };
 
-    const onJoinRoom = (room: string) => {
-        dispatch(storeRoomCode(room));
-        if (user && room) {
-            dispatch(joinRoom({ username: user.name, room }))
-                .then(() => navToRoom(room))
-                .catch(() => console.log("cannot join room!"));
-        }
-    };
-
-    useEffect(() => {
-        if (!isRoomCreationLoading && isRoomCreationSuccess) {
-            const room = createRoomData?.code;
-            // TODO: replace with error in the UI
-            if (!room) {
-                console.log("API did not return room");
-            } else {
-                onJoinRoom(room);
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isRoomCreationLoading, isRoomCreationSuccess]);
-
     return (
         <div className="DashboardScreen d-flex mb-2">
             <div className="m-auto d-flex flex-column">
@@ -150,14 +154,12 @@ const Dashboard: React.FC = () => {
                         type="button"
                         className="btn btn-primary"
                         onClick={toggleJoinModal}
-                        ref={joinRoomRef}
                     >
                         Join Room
                     </button>
                     <JoinRoomModal
                         isShow={isShowJoinModal}
                         toggleShow={toggleJoinModal}
-                        onJoinRoom={onJoinRoom}
                     />
                 </div>
             </div>
