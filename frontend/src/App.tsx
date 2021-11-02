@@ -13,7 +13,7 @@ import "./App.css";
 import ToastComponent from "./utils/Toast";
 import DashboardControls from "./pages/Dashboard/Controls/DashboardControls";
 
-function App() {
+const App: React.FC = () => {
     return (
         <div className="App d-flex">
             <Provider store={store}>
@@ -37,6 +37,6 @@ function App() {
             </Provider>
         </div>
     );
-}
+};
 
 export default App;
