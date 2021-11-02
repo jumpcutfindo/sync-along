@@ -122,7 +122,7 @@ const PlaylistHeaderButtons: React.FC = () => {
 
 const PlaylistHeader: React.FC = () => (
     <div className="PlaylistHeader d-flex">
-        <div className="d-flex w-100 m-2">
+        <div className="d-flex w-100 m-3">
             <h2 className="my-auto">PLAYLIST</h2>
             <PlaylistHeaderButtons />
         </div>

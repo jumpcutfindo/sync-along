@@ -13,14 +13,28 @@ import {
 
 import "./index.css";
 
+const validateChatMessage = (chatMessage: string) => {
+    if (
+        chatMessage === "" ||
+        chatMessage === undefined ||
+        chatMessage === null
+    ) {
+        return false;
+    }
+
+    return true;
+};
+
 const MessageInput: React.FC = () => {
     const ref = useRef<HTMLFormElement>(null);
     const [messageInput, updateMessageInput, clearInput] = useTextAreaState("");
     const dispatch = useAppDispatch();
 
     const sendMessage = () => {
-        dispatch(sendMessageAction(messageInput));
-        clearInput();
+        if (validateChatMessage(messageInput)) {
+            dispatch(sendMessageAction(messageInput));
+            clearInput();
+        }
     };
 
     const onSubmit = (event: React.FormEvent) => {
