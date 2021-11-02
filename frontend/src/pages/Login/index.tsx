@@ -42,16 +42,17 @@ export const RegisterModalContent: React.FC<{
             setErrorMessage("The passwords do not match!");
         } else {
             setErrorMessage("");
-            register({ username, password });
+            register({ username, password }).then((response: any) => {
+                if (response.error) {
+                    setErrorMessage(response.error.data.message);
+                }
+            });
         }
     };
 
     useEffect(() => {
         if (isSuccess) {
-            // TODO: Decide on what to do when registration is successful
             toggleShowRegistration();
-        } else {
-            setErrorMessage("Unable to sign up!");
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoading, isSuccess]);
