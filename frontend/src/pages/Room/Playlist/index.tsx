@@ -55,7 +55,7 @@ const AddMediaButton: React.FC = () => {
     };
 
     return (
-        <div className="AddMediaButton me-2">
+        <div className="AddMediaButton my-auto">
             <button
                 ref={ref}
                 type="button"
@@ -122,8 +122,8 @@ const PlaylistHeaderButtons: React.FC = () => {
 
 const PlaylistHeader: React.FC = () => (
     <div className="PlaylistHeader d-flex">
-        <div className="d-flex w-100 m-3">
-            <h2 className="m-0">PLAYLIST</h2>
+        <div className="d-flex w-100 m-2">
+            <h2 className="my-auto">PLAYLIST</h2>
             <PlaylistHeaderButtons />
         </div>
     </div>
