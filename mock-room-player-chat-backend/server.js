@@ -13,12 +13,16 @@ const { initUserService } = require('./services/user');
 
 const app = express();
 // set up security
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3000",
+  methods: [ "GET", "POST" ],
+  credentials: true,
+}));
 app.use(
   session({
     secret: "secret",
     resave: false,
-    cookie: { secure: false }, // cookie expires in 8 hours
+    cookie: { secure: false, path: "/" }, // cookie expires in 8 hours
     saveUninitialized: false,
   })
 );

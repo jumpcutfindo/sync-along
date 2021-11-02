@@ -146,20 +146,21 @@ const initUserService = (app) => {
 
         return res.json({
           isSuccessful: true,
-          message: "Login successful.",
+          username,
         });
       });
     });
   });
 
   /* user logs out */
-  app.get("/logout", (req, res) => {
+  app.post("/logout", (req, res) => {
     if (!req.session || !req.session.isLoggedIn) {
+      console.log("not successful logout")
       return res.json({
         isSuccessful: false, // user is already logged out
       });
     }
-
+    console.log("successful logout!");
     req.session.destroy();
     return res.json({
       isSuccessful: true,
