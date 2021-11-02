@@ -4,7 +4,6 @@ interface AppState {
     loggedIn: boolean;
     user?: {
         name: string;
-        id: string;
     };
 }
 
@@ -18,10 +17,9 @@ export const appSlice = createSlice({
     initialState,
     reducers: {
         storeUser(state, action) {
-            const { name, id } = action.payload;
+            const { name } = action.payload;
             state.user = {
                 name,
-                id,
             };
         },
         appLogin(state) {

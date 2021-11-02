@@ -11,12 +11,9 @@ import { storeRoomCode } from "src/stores/room";
 const JoinRoomModal: React.FC<{
     isShow: boolean;
     toggleShow: () => void;
-    user: { name: string; id: string } | undefined;
     joinRoom: (arg0: string) => void;
 }> = (props) => {
-    const dispatch = useAppDispatch();
-
-    const { isShow, toggleShow, user, joinRoom } = props;
+    const { isShow, toggleShow, joinRoom } = props;
 
     const [roomCode, onChangeRoomCode] = useInputState("");
 
@@ -124,7 +121,6 @@ const Dashboard: React.FC = () => {
                     <JoinRoomModal
                         isShow={isShowJoinModal}
                         toggleShow={toggleJoinModal}
-                        user={user}
                         joinRoom={joinRoom}
                     />
                 </div>

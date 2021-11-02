@@ -161,9 +161,16 @@ const initUserService = (app) => {
       });
     }
     console.log("successful logout!");
-    req.session.destroy();
-    return res.json({
-      isSuccessful: true,
+    req.session.destroy((err) => {
+      if (err) {
+        res.json({
+          isSuccessful: false,
+        });
+      } else {
+        res.clearCookie("connect.sid", {path: "/"}).json({
+          isSuccessful: true,
+        });
+      }
     });
   });
 };

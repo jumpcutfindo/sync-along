@@ -1,6 +1,7 @@
-import React from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "src/hooks/typedReduxHooks";
-
+import userApi from "src/services/user";
 import useNavigator from "src/hooks/useNavigator";
 
 import { appLogout } from "src/stores/app";
@@ -11,13 +12,16 @@ const LogOutButton: React.FC = () => {
     const dispatch = useAppDispatch();
     const { navToLogin } = useNavigator();
 
-    const logout = () => {
-        // Set app's state to logged out, and also remove the access token
-        dispatch(appLogout());
-        dispatch(updateAccessToken(undefined));
+    const [logout, { isSuccess, isLoading }] =
+        userApi.endpoints.logout.useMutation();
 
-        navToLogin();
-    };
+    useEffect(() => {
+        if (isSuccess) {
+            dispatch(appLogout());
+            dispatch(updateAccessToken(undefined));
+            navToLogin();
+        }
+    }, [isSuccess, isLoading]);
 
     const loggedIn = useAppSelector((state) => state.app.loggedIn);
 
