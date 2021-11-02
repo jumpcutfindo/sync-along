@@ -10,14 +10,16 @@ import store from "src/stores";
 import { Provider } from "react-redux";
 
 import "./App.css";
+import ToastComponent from "./utils/Toast";
 import DashboardControls from "./pages/Dashboard/Controls/DashboardControls";
 
 function App() {
     return (
         <div className="App d-flex">
             <Provider store={store}>
-                <div className="Container m-auto d-flex">
-                    <div className="Screen m-auto d-flex-column">
+                <div className="Container m-auto d-flex flex-column">
+                    <ToastComponent />
+                    <div className="Screen m-auto d-flex flex-column">
                         <Router>
                             <Switch>
                                 <Route path="/login" component={LoginPage} />

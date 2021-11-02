@@ -13,6 +13,7 @@ import { roomReducer, roomSlice } from "./room";
 import { playlistReducer, playlistSlice } from "./app/playlist";
 import { playerReducer, playerSlice } from "./app/player";
 import { chatSlice, chatReducer } from "./chat";
+import { toastReducer, toastSlice } from "./app/toasts";
 
 const socketClient = new SocketClient();
 
@@ -25,6 +26,7 @@ export const rootReducer = combineReducers({
     [playerSlice.name]: playerReducer,
     [roomSlice.name]: roomReducer,
     [chatSlice.name]: chatReducer,
+    [toastSlice.name]: toastReducer,
 });
 
 const store = configureStore({

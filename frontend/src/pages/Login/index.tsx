@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from "react";
-import { Modal } from "react-bootstrap";
+import { Modal, Toast, ToastContainer } from "react-bootstrap";
 
 import useNavigator from "src/hooks/useNavigator";
 import { useAppDispatch } from "src/hooks/typedReduxHooks";
@@ -9,6 +9,8 @@ import { appLogin, storeUser } from "src/stores/app";
 
 import userApi from "src/services/user";
 import useInputState from "src/hooks/useInputState";
+import { useDispatch } from "react-redux";
+import { setToastMessage } from "src/stores/app/toasts";
 import IntroScreen from "./IntroScreen";
 
 import "./Login.css";
@@ -18,6 +20,7 @@ export const RegisterModalContent: React.FC<{
     toggleShow: () => void;
     toggleShowRegistration: () => void;
 }> = (props) => {
+    const dispatch = useDispatch();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { toggleShow, toggleShowRegistration } = props;
 
@@ -26,9 +29,14 @@ export const RegisterModalContent: React.FC<{
     const [retypePassword, onChangeRetypePassword] = useInputState("");
 
     const [errorMessage, setErrorMessage] = useState("");
+    const [showSuccessToast, setShowSuccessToast] = useState(false);
 
     const [register, { isLoading, isSuccess }] =
         userApi.endpoints.register.useMutation();
+
+    const toggleSuccessToast = () => {
+        setShowSuccessToast(!showSuccessToast);
+    };
 
     const registrationHandler = (event: React.FormEvent) => {
         event.preventDefault();
@@ -52,6 +60,12 @@ export const RegisterModalContent: React.FC<{
 
     useEffect(() => {
         if (isSuccess) {
+            dispatch(
+                setToastMessage({
+                    message: "Successfully registered an account!",
+                    type: "success",
+                })
+            );
             toggleShowRegistration();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
