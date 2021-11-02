@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import cookies from "js-cookie";
 
 interface AppState {
     loggedIn: boolean;
@@ -9,11 +8,15 @@ interface AppState {
 }
 
 const initialState: AppState = {
-    loggedIn: cookies.get("connect.sid") !== null,
+    loggedIn: localStorage.getItem("user") !== null,
     user:
         localStorage.getItem("user") !== null
             ? { name: localStorage.getItem("user") as string }
             : undefined,
+};
+
+const saveUsernameLocal = (username: string | undefined) => {
+    if (username) localStorage.setItem("user", username);
 };
 
 export const appSlice = createSlice({
@@ -25,15 +28,15 @@ export const appSlice = createSlice({
             state.user = {
                 name,
             };
-
-            localStorage.setItem("user", name);
         },
         appLogin(state) {
             state.loggedIn = true;
+            saveUsernameLocal(state.user?.name);
         },
         appLogout(state) {
             state.loggedIn = false;
             state.user = undefined;
+            saveUsernameLocal(undefined);
         },
     },
 });

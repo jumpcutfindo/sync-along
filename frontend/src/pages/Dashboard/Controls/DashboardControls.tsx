@@ -11,9 +11,10 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { setToastMessage, toastSlice } from "src/stores/app/toasts";
 
 const UserInfoButton: React.FC = () => {
+    const isLoggedIn = useAppSelector((state) => state.app.loggedIn);
     const username = useAppSelector((state) => state.app.user?.name);
 
-    if (!username) return null;
+    if (!isLoggedIn || !username) return null;
 
     return (
         <button type="button" className="btn btn-outline-light d-flex me-2">

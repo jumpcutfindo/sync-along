@@ -12,6 +12,7 @@ import { Provider } from "react-redux";
 import "./App.css";
 import ToastComponent from "./utils/Toast";
 import DashboardControls from "./pages/Dashboard/Controls/DashboardControls";
+import { PrivateRoute, PublicRoute } from "./router/routes";
 
 const App: React.FC = () => {
     return (
@@ -22,13 +23,19 @@ const App: React.FC = () => {
                     <div className="Screen m-auto d-flex flex-column">
                         <Router>
                             <Switch>
-                                <Route path="/login" component={LoginPage} />
-                                <Route
+                                <PublicRoute
+                                    path="/login"
+                                    component={LoginPage}
+                                />
+                                <PrivateRoute
                                     path="/dashboard"
                                     component={DashboardPage}
                                 />
-                                <Route path="/room" component={RoomPage} />
-                                <Route exact path="/" component={LoginPage} />
+                                <PrivateRoute
+                                    path="/room"
+                                    component={RoomPage}
+                                />
+                                <PublicRoute path="/" component={LoginPage} />
                             </Switch>
                             <DashboardControls />
                         </Router>
