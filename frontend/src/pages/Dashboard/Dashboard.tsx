@@ -5,21 +5,20 @@ import useInputState from "src/hooks/useInputState";
 import useNavigator from "src/hooks/useNavigator";
 import roomApi from "src/services/room";
 
-import { joinRoom as joinRoomAction } from "src/stores/chat";
-import { storeRoomCode } from "src/stores/room";
+import { storeRoomCode, joinRoom } from "src/stores/room";
 
 const JoinRoomModal: React.FC<{
     isShow: boolean;
     toggleShow: () => void;
-    joinRoom: (arg0: string) => void;
+    onJoinRoom: (arg0: string) => void;
 }> = (props) => {
-    const { isShow, toggleShow, joinRoom } = props;
+    const { isShow, toggleShow, onJoinRoom } = props;
 
     const [roomCode, onChangeRoomCode] = useInputState("");
 
     const joinExistingRoom = (event: React.FormEvent) => {
         event.preventDefault();
-        joinRoom(roomCode);
+        onJoinRoom(roomCode);
     };
 
     return (
@@ -78,10 +77,10 @@ const Dashboard: React.FC = () => {
     };
 
     // TODO: add error handling
-    const joinRoom = (room: string) => {
+    const onJoinRoom = (room: string) => {
         dispatch(storeRoomCode(room));
         if (user && room) {
-            dispatch(joinRoomAction({ username: user.name, room }))
+            dispatch(joinRoom({ username: user.name, room }))
                 .then(() => navToRoom(room))
                 .catch(() => console.log("cannot join room!"));
         }
@@ -94,7 +93,7 @@ const Dashboard: React.FC = () => {
             if (!room) {
                 console.log("API did not return room");
             } else {
-                joinRoom(room);
+                onJoinRoom(room);
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -123,7 +122,7 @@ const Dashboard: React.FC = () => {
                     <JoinRoomModal
                         isShow={isShowJoinModal}
                         toggleShow={toggleJoinModal}
-                        joinRoom={joinRoom}
+                        onJoinRoom={onJoinRoom}
                     />
                 </div>
             </div>
