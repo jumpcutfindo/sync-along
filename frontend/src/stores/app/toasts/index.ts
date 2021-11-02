@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 interface ToastStore {
     message?: string;
     type?: string;
-    hasShown: boolean;
+    hasShown?: boolean;
 }
 
 const initialState: ToastStore = {
@@ -14,7 +14,7 @@ export const toastSlice = createSlice({
     name: "toasts",
     initialState,
     reducers: {
-        setToastMessage(state, action) {
+        setToastMessage(state, action: { payload: ToastStore }) {
             state.message = action.payload.message;
             state.type = action.payload.type;
             state.hasShown = false;
