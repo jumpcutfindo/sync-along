@@ -103,7 +103,8 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
     return (
         <div ref={ref} className="message-list flex-grow-1">
             {messages.map(({ id, text, username }, index) => (
-                <Message key={id} user={username} message={text} />
+                // eslint-disable-next-line react/no-array-index-key
+                <Message key={index} user={username} message={text} />
             ))}
             <div ref={end} />
         </div>
