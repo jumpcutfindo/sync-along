@@ -100,7 +100,9 @@ export const playlistSlice = createSlice({
     initialState,
     reducers: {
         resetPlaylist(state) {
-            state = JSON.parse(JSON.stringify(initialState));
+            state.media = [];
+            state.current = null;
+            state.currentIndex = -1;
         },
     },
     extraReducers: (builder) => {

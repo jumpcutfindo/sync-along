@@ -137,7 +137,6 @@ const Dashboard: React.FC = () => {
                         );
                     } else {
                         const roomCode = response.data.code;
-                        console.log(roomCode);
                         dispatch(
                             joinRoom({
                                 username: user.name,

@@ -85,9 +85,9 @@ export const playerSlice = createSlice({
             state.isPlaying = false;
         },
         resetPlayer(state) {
-            state.isPlaying = initialState.isPlaying;
-            state.lastScrubTime = initialState.lastScrubTime;
-            state.lastUpdateTime = initialState.lastUpdateTime;
+            state.isPlaying = false;
+            state.lastScrubTime = 0;
+            state.lastUpdateTime = -1;
         },
         setPlayerVolume(state, action) {
             const newVolume = action.payload;
