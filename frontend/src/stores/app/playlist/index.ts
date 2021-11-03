@@ -98,7 +98,11 @@ export const receivePlaylistUpdates = createAsyncThunk<
 export const playlistSlice = createSlice({
     name: "playlist",
     initialState,
-    reducers: {},
+    reducers: {
+        resetPlaylist(state) {
+            state = JSON.parse(JSON.stringify(initialState));
+        },
+    },
     extraReducers: (builder) => {
         builder.addCase(updatePlaylist, (state, action) => {
             const { playlist, current } = action.payload;
@@ -126,3 +130,4 @@ export const playlistSlice = createSlice({
 });
 
 export const playlistReducer = playlistSlice.reducer;
+export const { resetPlaylist } = playlistSlice.actions;

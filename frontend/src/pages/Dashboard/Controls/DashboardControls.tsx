@@ -9,6 +9,8 @@ import { storeRoomCode } from "src/stores/room";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { setToastMessage, toastSlice } from "src/stores/app/toasts";
+import { resetPlaylist } from "src/stores/app/playlist";
+import { resetPlayer } from "src/stores/app/player";
 
 const UserInfoButton: React.FC = () => {
     const isLoggedIn = useAppSelector((state) => state.app.loggedIn);
@@ -71,6 +73,8 @@ const LeaveRoomButton: React.FC = () => {
     const leaveRoom = () => {
         // TODO: Add functionality to actually leave the socket room on pressed
         dispatch(storeRoomCode(undefined));
+        dispatch(resetPlaylist());
+        dispatch(resetPlayer());
         navToDashboard();
     };
 

@@ -72,7 +72,17 @@ export const receivePlayerUpdates = createAsyncThunk<
 export const playerSlice = createSlice({
     name: "player",
     initialState,
-    reducers: {},
+    reducers: {
+        startPlayer(state) {
+            state.isPlaying = true;
+        },
+        stopPlayer(state) {
+            state.isPlaying = false;
+        },
+        resetPlayer(state) {
+            state = JSON.parse(JSON.stringify(initialState));
+        },
+    },
     extraReducers: (builder) => {
         builder.addCase(updatePlayer, (state, action) => {
             const { isPlaying, lastScrubTime, lastUpdateTime } = action.payload;
@@ -85,3 +95,4 @@ export const playerSlice = createSlice({
 });
 
 export const playerReducer = playerSlice.reducer;
+export const { startPlayer, stopPlayer, resetPlayer } = playerSlice.actions;

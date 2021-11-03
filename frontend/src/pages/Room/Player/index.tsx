@@ -13,6 +13,8 @@ import {
     playSong,
     receivePlayerUpdates,
     seekSong,
+    startPlayer,
+    stopPlayer,
 } from "src/stores/app/player";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -183,8 +185,13 @@ const PlayerComponent: React.FC = () => {
     );
 
     const setPlaying = (shouldPlay: boolean) => {
-        if (shouldPlay) dispatch(playSong(sliderProgress));
-        else dispatch(pauseSong(sliderProgress));
+        if (shouldPlay) {
+            dispatch(startPlayer());
+            dispatch(playSong(sliderProgress));
+        } else {
+            dispatch(stopPlayer());
+            dispatch(pauseSong(sliderProgress));
+        }
     };
 
     // Methods for client side
