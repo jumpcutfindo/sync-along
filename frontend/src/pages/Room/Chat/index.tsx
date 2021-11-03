@@ -99,6 +99,15 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
 
     useEffect(() => scrollBottom());
 
+    if (messages.length === 0)
+        return (
+            <div className="message-list flex-grow-1">
+                <p className="m-0 small text-muted">
+                    No messages yet; try sending one below!
+                </p>
+            </div>
+        );
+
     return (
         <div ref={ref} className="message-list flex-grow-1">
             {messages.map(({ id, text, username }, index) => (
