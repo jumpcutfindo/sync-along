@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import SocketClient from "src/services/SocketClient";
+import SocketClient from "src/services/socket/SocketClient";
 import Types from "Types";
 
 import { joinRoomAction, leaveRoomAction } from "./actions";

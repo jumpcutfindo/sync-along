@@ -29,7 +29,6 @@ import {
     faVolumeUp,
     faVolumeMute,
 } from "@fortawesome/free-solid-svg-icons";
-import { disconnectSocket } from "src/stores/chat";
 
 const PlayerInfo: React.FC<{
     currentProgress: number | undefined;

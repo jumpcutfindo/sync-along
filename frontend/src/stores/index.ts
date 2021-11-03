@@ -4,7 +4,7 @@ import userApi from "src/services/user";
 import roomApi from "src/services/room";
 
 // external clients and adapters
-import SocketClient from "src/services/SocketClient";
+import SocketClient from "src/services/socket/SocketClient";
 
 // State slices
 import { appReducer, appSlice } from "./app";

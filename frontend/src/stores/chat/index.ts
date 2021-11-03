@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice, createAction, createAsyncThunk } from "@reduxjs/toolkit";
-import SocketClient from "src/services/SocketClient";
+import SocketClient from "src/services/socket/SocketClient";
 import {
-    connectSocketAction,
-    disconnectSocketAction,
     receiveMessagesAction,
     sendMessageAction,
     updateMessagesAction,
@@ -40,28 +38,6 @@ export const receiveMessages = createAsyncThunk<
     return socketClient.on("message", (data) => dispatch(updateMessages(data)));
 });
 
-// Created an additional function for connecting sockets in case we want to reuse the socket for music
-// management
-export const connectSocket = createAsyncThunk<
-    unknown,
-    undefined,
-    {
-        extra: SocketClient;
-    }
->(connectSocketAction, (_, { extra: socketClient }) => {
-    return socketClient.connect();
-});
-
-export const disconnectSocket = createAsyncThunk<
-    unknown,
-    undefined,
-    {
-        extra: SocketClient;
-    }
->(disconnectSocketAction, (_, { extra: socketClient }) => {
-    return socketClient.disconnect();
-});
-
 export type Messages = {
     id: string;
     text: string;
@@ -79,19 +55,14 @@ export const chatSlice = createSlice({
     } as ChatState,
     reducers: {},
     extraReducers: (builder) => {
-        builder
-            .addCase(updateMessages, (state, action) => {
-                const { id, username, text } = action.payload;
-                state.messages.push({
-                    id,
-                    text,
-                    username,
-                });
-            })
-            .addCase(disconnectSocket.fulfilled, (state) => {
-                state.messages = [];
-                return state;
+        builder.addCase(updateMessages, (state, action) => {
+            const { id, username, text } = action.payload;
+            state.messages.push({
+                id,
+                text,
+                username,
             });
+        });
     },
 });
 

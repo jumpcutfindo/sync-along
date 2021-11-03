@@ -1,5 +1,5 @@
 import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import SocketClient from "src/services/SocketClient";
+import SocketClient from "src/services/socket/SocketClient";
 import {
     completeAction,
     playAction,

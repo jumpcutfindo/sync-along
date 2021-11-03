@@ -7,7 +7,7 @@ import {
 } from "@reduxjs/toolkit";
 import { url } from "inspector";
 import { useAppSelector } from "src/hooks/typedReduxHooks";
-import SocketClient from "src/services/SocketClient";
+import SocketClient from "src/services/socket/SocketClient";
 import { RootState } from "Types";
 
 import {

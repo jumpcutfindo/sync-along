@@ -8,7 +8,6 @@ import {
     sendMessage as sendMessageAction,
     receiveMessages,
     Messages,
-    disconnectSocket,
 } from "src/stores/chat";
 
 import "./index.css";
@@ -118,9 +117,6 @@ const ChatComponent: React.FC = () => {
         dispatch(receiveMessages())
             .catch(() => console.log("error"))
             .finally(() => setIsLoading(false));
-        return () => {
-            dispatch(disconnectSocket());
-        };
     }, []);
     const messages = useAppSelector((state) => state.chat.messages);
     // TODO: error handling
