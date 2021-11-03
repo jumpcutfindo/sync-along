@@ -70,7 +70,6 @@ const LogOutButton: React.FC<{ leaveRoom: () => void }> = (props) => {
 const LeaveRoomButton: React.FC<{ leaveRoom: () => void }> = (props) => {
     const { leaveRoom } = props;
 
-    const dispatch = useAppDispatch();
     const inRoom = useAppSelector((state) => state.room.roomCode);
 
     if (!inRoom) return null;

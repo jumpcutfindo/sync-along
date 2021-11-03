@@ -17,6 +17,7 @@ const initialState: AppState = {
 
 const saveUsernameLocal = (username: string | undefined) => {
     if (username) localStorage.setItem("user", username);
+    else localStorage.removeItem("user");
 };
 
 export const appSlice = createSlice({
