@@ -174,6 +174,20 @@ app.post("/login", async (req, res) => {
   });
 });
 
+app.get("/check-session", (req, res) => {
+  if (!req.session || !req.session.isLoggedIn) {
+    return res.json({
+      isSuccessful: false,
+    });
+  }
+
+  return res.json({
+    isSuccessful: true,
+    username: req.session.username,
+  });
+})
+
+
 /* user logs out */
 app.get("/logout", (req, res) => {
   if (!req.session || !req.session.isLoggedIn) {
