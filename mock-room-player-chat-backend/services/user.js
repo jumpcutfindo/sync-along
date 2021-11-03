@@ -173,6 +173,19 @@ const initUserService = (app) => {
       }
     });
   });
+
+  app.get("/check-session", (req, res) => {
+    if (!req.session || !req.session.isLoggedIn) {
+      return res.json({
+        isSuccessful: false,
+      });
+    }
+  
+    return res.json({
+      isSuccessful: true,
+      username: req.session.username,
+    });
+  })
 };
 
 module.exports = {initUserService};
