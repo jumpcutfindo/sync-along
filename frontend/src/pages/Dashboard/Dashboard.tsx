@@ -30,7 +30,12 @@ const JoinRoomModal: React.FC<{
     const user = useAppSelector((state) => state.app.user);
 
     const onJoinRoom = (room: string) => {
-        if (user && room && validateRoomCode(room)) {
+        if (!validateRoomCode(room)) {
+            setErrorMessage("Invalid room code entered!");
+            return;
+        }
+
+        if (user && room) {
             setIsLoading(true);
             dispatch(joinRoom({ username: user.name, room }))
                 .then((response: any) => {
