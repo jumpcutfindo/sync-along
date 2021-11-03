@@ -53,7 +53,11 @@ export const chatSlice = createSlice({
     initialState: {
         messages: [],
     } as ChatState,
-    reducers: {},
+    reducers: {
+        resetChat(state) {
+            state.messages = [];
+        },
+    },
     extraReducers: (builder) => {
         builder.addCase(updateMessages, (state, action) => {
             const { id, username, text } = action.payload;
@@ -67,3 +71,4 @@ export const chatSlice = createSlice({
 });
 
 export const chatReducer = chatSlice.reducer;
+export const { resetChat } = chatSlice.actions;

@@ -11,6 +11,7 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { setToastMessage, toastSlice } from "src/stores/app/toasts";
 import { resetPlaylist } from "src/stores/app/playlist";
 import { resetPlayer } from "src/stores/app/player";
+import { resetChat } from "src/stores/chat";
 
 const UserInfoButton: React.FC = () => {
     const isLoggedIn = useAppSelector((state) => state.app.loggedIn);
@@ -95,6 +96,7 @@ const DashboardControls: React.FC = () => {
         dispatch(storeRoomCode(undefined));
         dispatch(resetPlaylist());
         dispatch(resetPlayer());
+        dispatch(resetChat());
         navToDashboard();
     };
 
