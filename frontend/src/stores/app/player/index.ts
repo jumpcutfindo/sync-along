@@ -11,12 +11,17 @@ interface PlayerState {
     isPlaying: boolean;
     lastScrubTime: number;
     lastUpdateTime: number;
+    volume: number;
 }
 
 const initialState: PlayerState = {
     isPlaying: false,
     lastScrubTime: 0,
     lastUpdateTime: Date.now(),
+    volume:
+        localStorage.getItem("playerVolume") !== null
+            ? Number(localStorage.getItem("playerVolume"))
+            : 0.5,
 };
 
 export const updatePlayer = createAction(updatePlayerAction, (data) => {
@@ -80,7 +85,15 @@ export const playerSlice = createSlice({
             state.isPlaying = false;
         },
         resetPlayer(state) {
-            state = JSON.parse(JSON.stringify(initialState));
+            state.isPlaying = initialState.isPlaying;
+            state.lastScrubTime = initialState.lastScrubTime;
+            state.lastUpdateTime = initialState.lastUpdateTime;
+        },
+        setPlayerVolume(state, action) {
+            const newVolume = action.payload;
+            localStorage.setItem("playerVolume", newVolume);
+
+            state.volume = newVolume;
         },
     },
     extraReducers: (builder) => {
@@ -95,4 +108,5 @@ export const playerSlice = createSlice({
 });
 
 export const playerReducer = playerSlice.reducer;
-export const { startPlayer, stopPlayer, resetPlayer } = playerSlice.actions;
+export const { startPlayer, stopPlayer, resetPlayer, setPlayerVolume } =
+    playerSlice.actions;

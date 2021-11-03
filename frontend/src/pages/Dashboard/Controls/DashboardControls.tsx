@@ -26,16 +26,19 @@ const UserInfoButton: React.FC = () => {
     );
 };
 
-const LogOutButton: React.FC = () => {
+const LogOutButton: React.FC<{ leaveRoom: () => void }> = (props) => {
+    const { leaveRoom } = props;
     const dispatch = useAppDispatch();
     const { navToLogin } = useNavigator();
+
+    const inRoom = useAppSelector((state) => state.room.roomCode);
 
     const [logout, { isSuccess, isLoading }] =
         userApi.endpoints.logout.useMutation();
 
     useEffect(() => {
         if (isSuccess) {
-            dispatch(storeRoomCode(undefined));
+            if (inRoom) leaveRoom();
             dispatch(appLogout());
             navToLogin();
 
@@ -63,26 +66,21 @@ const LogOutButton: React.FC = () => {
     );
 };
 
-const LeaveRoomButton: React.FC = () => {
+const LeaveRoomButton: React.FC<{ leaveRoom: () => void }> = (props) => {
+    const { leaveRoom } = props;
+
     const dispatch = useAppDispatch();
     const inRoom = useAppSelector((state) => state.room.roomCode);
-    const { navToDashboard } = useNavigator();
 
     if (!inRoom) return null;
 
-    const leaveRoom = () => {
-        // TODO: Add functionality to actually leave the socket room on pressed
-        dispatch(storeRoomCode(undefined));
-        dispatch(resetPlaylist());
-        dispatch(resetPlayer());
-        navToDashboard();
-    };
+    const onLeaveRoom = () => leaveRoom();
 
     return (
         <button
             type="button"
             className="btn btn-danger me-2"
-            onClick={leaveRoom}
+            onClick={onLeaveRoom}
         >
             Leave Room
         </button>
@@ -90,14 +88,24 @@ const LeaveRoomButton: React.FC = () => {
 };
 
 const DashboardControls: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const { navToDashboard } = useNavigator();
+
+    const leaveRoom = () => {
+        dispatch(storeRoomCode(undefined));
+        dispatch(resetPlaylist());
+        dispatch(resetPlayer());
+        navToDashboard();
+    };
+
     return (
         <div className="DashboardControls d-flex">
             <div className="DashboardNavigation d-flex align-items-center justify-content-start flex-grow-1">
-                <LeaveRoomButton />
+                <LeaveRoomButton leaveRoom={leaveRoom} />
             </div>
             <div className="d-flex">
                 <UserInfoButton />
-                <LogOutButton />
+                <LogOutButton leaveRoom={leaveRoom} />
             </div>
         </div>
     );

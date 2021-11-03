@@ -13,6 +13,7 @@ import {
     playSong,
     receivePlayerUpdates,
     seekSong,
+    setPlayerVolume,
     startPlayer,
     stopPlayer,
 } from "src/stores/app/player";
@@ -166,7 +167,8 @@ const PlayerComponent: React.FC = () => {
     const dispatch = useAppDispatch();
 
     const [sliderProgress, setSliderProgress] = useState(0);
-    const [volume, setVolume] = useState(0.5);
+
+    const volume: number = useAppSelector((state) => state.player.volume);
 
     const currentMedia: Media | null = useAppSelector(
         (state) => state.playlist.current
@@ -183,6 +185,10 @@ const PlayerComponent: React.FC = () => {
     const seekTime: number = useAppSelector(
         (state) => state.player.lastScrubTime
     );
+
+    const setVolume = (vol: number) => {
+        dispatch(setPlayerVolume(vol));
+    };
 
     const setPlaying = (shouldPlay: boolean) => {
         if (shouldPlay) {
