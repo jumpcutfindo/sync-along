@@ -12,7 +12,7 @@ import { Provider } from "react-redux";
 import "./App.css";
 import ToastComponent from "./utils/Toast";
 import DashboardControls from "./pages/Dashboard/Controls/DashboardControls";
-import { PrivateRoute, PublicRoute } from "./router/routes";
+import { PrivateRoute, PublicRoute, RoomRoute } from "./router/routes";
 
 const App: React.FC = () => {
     return (
@@ -31,10 +31,7 @@ const App: React.FC = () => {
                                     path="/dashboard"
                                     component={DashboardPage}
                                 />
-                                <PrivateRoute
-                                    path="/room"
-                                    component={RoomPage}
-                                />
+                                <RoomRoute path="/room" component={RoomPage} />
                                 <PublicRoute path="/" component={LoginPage} />
                             </Switch>
                             <DashboardControls />
