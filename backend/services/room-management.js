@@ -14,7 +14,7 @@ const initRoomManagementService = (app) => {
             })
         }
 
-            const code = Math.random().toString(36).substr(2, 5).toUpperCase();
+        const code = Math.random().toString(36).substr(2, 5).toUpperCase();
     
         if (!rooms.has(code)) { // new room code
             rooms.set(code, username);
