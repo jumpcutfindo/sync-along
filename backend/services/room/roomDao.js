@@ -47,8 +47,8 @@ const doesRoomExist = async (code) => {
   );
 };
 
-const addUserToRoom = (username, room) => {
-  return new Promise((resolve, reject) =>
+const addUserToRoom = async (username, room) => {
+  return new Promise((resolve, reject) => {
     redisClient.get(room, (err, reply) => {
       if (err) {
         reject(err);
@@ -57,9 +57,10 @@ const addUserToRoom = (username, room) => {
         redisClient.set(`OWNER${room}`, username);
       }
       redisClient.sadd(room, username);
-      resolve(true);
+      resolve(room);
     }
-  ));
-}
+    );
+  });
+};
 
 module.exports = {doesRoomExist, addUserToRoom};
