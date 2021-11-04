@@ -18,7 +18,7 @@ const SALT_NO_ROUNDS = 10;
 
 const addUser = async (username, password) => {
   try {
-    const hashedPassword = bcrypt.hash(password, SALT_NO_ROUNDS);
+    const hashedPassword = await bcrypt.hash(password, SALT_NO_ROUNDS);
     const newlyCreatedUser = await User.create({
       username,
       password: hashedPassword

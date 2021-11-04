@@ -40,23 +40,28 @@ const handleUserRegistration = async (req, res) => {
   }
 
   try {
-    const userStatus = await doesUserExist(username);
-    if (!userStatus) {
+    const userExists = await doesUserExist(username);
+    if (userExists) {
       return res.status(400).json({
         isSuccessful: false,
         message: ALREADY_REGISTERED_ERROR,
       });
     }
     addUser(username, password)
-    .then(() => res.json({
-      isSuccessful: true,
-      message: USER_REGISTRATION_SUCCESS,
-    }))
-    .catch(() => res.json({
-        isSuccessful: false,
-        message: ERROR_CREATING_USER,
+      .then((result) => {
+        console.log(result);
+        return res.json({
+          isSuccessful: true,
+          message: USER_REGISTRATION_SUCCESS,
+        });
       })
-    );
+      .catch((err) => {
+        console.log(err);
+        return res.status(400).json({
+          isSuccessful: false,
+          message: ERROR_CREATING_USER,
+        });
+      });
   } catch (err) {
     return res.status(400).json({
       isSuccessful: false,
@@ -101,7 +106,8 @@ const handleUserLogout = (req, res) => {
       isSuccessful: false,
     });
   }
-
+  
+  // todo: add clean up
   req.session.destroy((err) => {
     if (err) {
       res.status(400).json({
