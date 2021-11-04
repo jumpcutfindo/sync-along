@@ -23,12 +23,15 @@ player: {
   time: currentTime,
 }
 */
+
+const test = (test) => console.log(test);
 class RoomController {
   constructor(socket, io) {
     this.socket = socket;
     this.io = io;
   }
   
+  test = (test) => console.log(test);
   handleCreateRoom = async ({username}, callback) => {
     if (!username) {
       return callback({
@@ -40,7 +43,6 @@ class RoomController {
   
     let generatedCode = generateRoomCode();
     while (await doesRoomExist(generatedCode)) {
-      console.log(generatedCode);
       generatedCode = generateRoomCode();
     }
     addUserToRoom(username, generatedCode)
@@ -55,8 +57,8 @@ class RoomController {
       }));
   };
 
-  handleJoinRoom = async ({username, code}, callback) => {
-    if (!(username && code)) {
+  handleJoinRoom = async ({username, room}, callback) => {
+    if (!(username && room)) {
       return callback({
         status: 400,
         isSuccessful: false,
@@ -64,7 +66,7 @@ class RoomController {
       });
     }
   
-    const roomExists = await roomExists(code);
+    const roomExists = await doesRoomExist(room);
     if (!roomExists) {
       return callback({
         status: 400,
@@ -74,11 +76,11 @@ class RoomController {
     }
   
     try {
-      await addUserToRoom(username, code);
+      await addUserToRoom(username, room);
       return callback({
         status: 200,
         isSuccessful: true,
-        code,
+        room,
         users: 1,
         playlist: [],
         songs: "",
