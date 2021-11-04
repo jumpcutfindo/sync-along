@@ -2,29 +2,17 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
+const bodyParser = require('body-parser');
 const session = require("express-session");
 const cors = require("cors");
-const app = express();
-const mongoose = require('mongoose');
-require('dotenv/config');
 
-
-
-// Import Routes
 const { initRoomService } = require('./services/room');
 const { initChatService } = require('./services/chat');
-const {  initPlayerService } = require('./services/player');
+const { initPlaylistService, initPlayerService } = require('./services/player');
 const { initUserService } = require('./services/user');
-const { initRoomManagementService } = require('./services/room-management');
-const {initPlaylistService} = require('./services/playlist');
-//const playlistRoute = require('./services/playlist');
+const {initRoomManagementService} = require('./services/room-management');
 
-
-//app.use('/playlist', playlistRoute);
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
+const app = express();
 // set up security
 app.use(cors({
   origin: "http://localhost:3000",
@@ -39,10 +27,11 @@ app.use(
     saveUninitialized: false,
   })
 );
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 initUserService(app);
 initRoomManagementService(app);
-initPlaylistService(app);
 
 const server = http.createServer(app);
 const io = socketio(server, {
@@ -54,11 +43,6 @@ const io = socketio(server, {
 
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Connect to playlist DB
-mongoose.connect(process.env.DB_CONNECTION ,{useNewUrlParser: true}, () => 
-  console.log('Connected to PlaylistDB!')
-);
 
 // Run when client connects
 io.on('connection', socket => {
