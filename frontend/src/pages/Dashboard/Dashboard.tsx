@@ -8,7 +8,10 @@ import {
     joinRoom as joinRoomAction,
     createRoom,
     storeRoomCode,
+    CreateRoomResponse,
 } from "src/stores/room";
+
+import { connectSocket } from "src/stores/chat";
 
 const JoinRoomModal: React.FC<{
     isShow: boolean;
@@ -69,11 +72,20 @@ const Dashboard: React.FC = () => {
         setShowJoinModal(!isShowJoinModal);
     };
 
+    useEffect(() => {
+        dispatch(connectSocket()).then((res) => console.log(res));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const createNewRoom = (event: React.FormEvent) => {
         event.preventDefault();
         if (user) {
             dispatch(createRoom({ username: user.name }))
-                .then(({ code }) => navToRoom(code))
+                .unwrap()
+                .then((res: CreateRoomResponse) => {
+                    dispatch(storeRoomCode(res.code));
+                    navToRoom(res.code);
+                })
                 .catch((err) => console.log(err));
         }
     };

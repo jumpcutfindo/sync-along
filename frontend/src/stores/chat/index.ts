@@ -21,7 +21,6 @@ export const updateMessages = createAction(updateMessagesAction, (data) => {
 
 // type LeaveRoomArgs
 
-
 // export const leaveRoom = createAsyncThunk<void, LeaveRoomArgs, {
 //     extra: SocketClient;
 // }>(leaveRoomAction, async() => {

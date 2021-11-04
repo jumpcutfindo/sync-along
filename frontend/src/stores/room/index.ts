@@ -22,7 +22,7 @@ type CreateRoomArgs = {
     username: string;
 };
 
-type CreateRoomResponse = {
+export type CreateRoomResponse = {
     code: string;
     playlist: PlaylistState;
     player: PlayerState;
@@ -36,42 +36,25 @@ export const createRoom = createAsyncThunk<
     }
 >(createRoomAction, async ({ username }, thunkApi) => {
     const socketClient = thunkApi.extra;
-    return new Promise((resolve, reject) => {
-        socketClient
-            .connect()
-            .then(() => {
-                return socketClient.emit("room/create", {
-                    username,
-                });
-            })
-            .then((res) => {
-                return resolve(res);
-            })
-            .catch((err) => reject(err));
-    });
+    return socketClient.emit<CreateRoomArgs, CreateRoomResponse>(
+        "room/create",
+        {
+            username,
+        }
+    );
 });
 
 export const joinRoom = createAsyncThunk<
-    void,
+    CreateRoomResponse,
     JoinRoomArgs,
     {
         extra: SocketClient;
     }
 >(joinRoomAction, async ({ username, room }, thunkApi) => {
     const socketClient = thunkApi.extra;
-    return new Promise((resolve, reject) => {
-        socketClient
-            .connect()
-            .then(() => {
-                return socketClient.emit("room/join", {
-                    username,
-                    room,
-                });
-            })
-            .then((res) => {
-                return resolve(res);
-            })
-            .catch((err) => reject(err));
+    return socketClient.emit("room/join", {
+        username,
+        room,
     });
 });
 

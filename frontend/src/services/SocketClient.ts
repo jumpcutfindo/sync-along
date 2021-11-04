@@ -13,6 +13,10 @@ class SocketClient {
     connect(): Promise<string> {
         this.socket = io(host);
         return new Promise((resolve, reject) => {
+            if (this.socket?.connected) {
+                resolve("Connected!");
+                return;
+            }
             this.socket?.on("connect", () => resolve("Connected!"));
             this.socket?.on("connect_error", (error: Error) => reject(error));
         });
@@ -35,21 +39,23 @@ class SocketClient {
     }
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    emit(event: string, data: any): any {
+    emit<EmitArgs, EmitResponse>(
+        event: string,
+        data: EmitArgs
+    ): Promise<EmitResponse> {
         return new Promise((resolve, reject) => {
             if (!this.socket) {
                 return reject(NoConnectionError);
             }
-
             return this.socket.emit(
                 event,
                 data,
-                (response: { error: Error }) => {
-                    if (response.error) {
-                        console.error(response.error);
-                        return reject(response.error);
+                (response: EmitResponse & { error: Error }) => {
+                    if (response?.error) {
+                        console.error(response?.error);
+                        return reject(response?.error);
                     }
-                    return resolve("Emited event");
+                    return resolve(response);
                 }
             );
         });
