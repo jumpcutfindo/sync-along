@@ -30,14 +30,11 @@ const addUser = async (username, password) => {
 };
 
 const doesUserExist = async (username) => {
-  try {
-    const doesUserExist = await User.exists({
-      username
-    });
-    return doesUserExist;
-  } catch (err) {
-    throw err;
-  }
+  return new Promise((resolve, reject) =>
+      User.exists({ username})
+        .then((doesUserExist) => resolve(doesUserExist))
+        .catch((err) => reject(err))
+  );
 };
 
 module.exports = {addUser, doesUserExist};

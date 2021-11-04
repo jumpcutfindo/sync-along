@@ -14,7 +14,7 @@ require('dotenv/config');
 const { initRoomService } = require('./services/room');
 const { initChatService } = require('./services/chat');
 const {  initPlayerService, initPlaylistService } = require('./services/player');
-const { initUserService } = require('./services/user');
+const { initUserService } = require('./services/user/index');
 const { initRoomManagementService } = require('./services/room-management');
 // const {initPlaylistService} = require('./services/playlist');
 //const playlistRoute = require('./services/playlist');
@@ -47,7 +47,7 @@ initRoomManagementService(app);
 const server = http.createServer(app);
 const io = socketio(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.FRONTEND_URL,
     methods: ["GET", "POST"],
   },
 });
