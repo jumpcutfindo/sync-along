@@ -3,10 +3,12 @@ import { useAppDispatch, useAppSelector } from "src/hooks/typedReduxHooks";
 import { Modal } from "react-bootstrap";
 import useInputState from "src/hooks/useInputState";
 import useNavigator from "src/hooks/useNavigator";
-import roomApi from "src/services/room";
 
-import { joinRoom as joinRoomAction } from "src/stores/chat";
-import { storeRoomCode } from "src/stores/room";
+import {
+    joinRoom as joinRoomAction,
+    createRoom,
+    storeRoomCode,
+} from "src/stores/room";
 
 const JoinRoomModal: React.FC<{
     isShow: boolean;
@@ -67,13 +69,12 @@ const Dashboard: React.FC = () => {
         setShowJoinModal(!isShowJoinModal);
     };
 
-    const [generateRoomCode, { data, isLoading, isSuccess }] =
-        roomApi.endpoints.generateRoomCode.useMutation();
-
     const createNewRoom = (event: React.FormEvent) => {
         event.preventDefault();
         if (user) {
-            generateRoomCode({ username: user.name });
+            dispatch(createRoom({ username: user.name }))
+                .then(({ code }) => navToRoom(code))
+                .catch((err) => console.log(err));
         }
     };
 
@@ -86,19 +87,6 @@ const Dashboard: React.FC = () => {
                 .catch(() => console.log("cannot join room!"));
         }
     };
-
-    useEffect(() => {
-        if (!isLoading && isSuccess) {
-            const room = data?.code;
-            // TODO: replace with error in the UI
-            if (!room) {
-                console.log("API did not return room");
-            } else {
-                joinRoom(room);
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isLoading, isSuccess]);
 
     return (
         <div className="DashboardScreen d-flex mb-2">
