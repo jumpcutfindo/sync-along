@@ -25,6 +25,8 @@ type JoinRoomArgs = {
     room: string;
 };
 
+type LeaveRoomArgs
+
 export const joinRoom = createAsyncThunk<
     void,
     JoinRoomArgs,
@@ -48,6 +50,17 @@ export const joinRoom = createAsyncThunk<
             .catch((err) => reject(err));
     });
 });
+
+export const leaveRoom = createAsyncThunk<void, LeaveRoomArgs, {
+    extra: SocketClient;
+}>(leaveRoomAction, async() => {
+    const socketClient = thunkApi.extra;
+    return new Promise((resolve, reject) => {
+        return socketClient.emit("leaveRoom", {})
+        .then((res) => resolve(res))
+        .catch((err) => reject(err));
+    })
+})
 
 export const sendMessage = createAsyncThunk<
     unknown,

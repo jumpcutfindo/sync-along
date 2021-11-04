@@ -13,10 +13,10 @@ require('dotenv/config');
 // Import Routes
 const { initRoomService } = require('./services/room');
 const { initChatService } = require('./services/chat');
-const {  initPlayerService } = require('./services/player');
+const {  initPlayerService, initPlaylistService } = require('./services/player');
 const { initUserService } = require('./services/user');
 const { initRoomManagementService } = require('./services/room-management');
-const {initPlaylistService} = require('./services/playlist');
+// const {initPlaylistService} = require('./services/playlist');
 //const playlistRoute = require('./services/playlist');
 
 
@@ -42,7 +42,7 @@ app.use(
 
 initUserService(app);
 initRoomManagementService(app);
-initPlaylistService(app);
+// initPlaylistService(app);
 
 const server = http.createServer(app);
 const io = socketio(server, {
@@ -56,9 +56,9 @@ const io = socketio(server, {
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Connect to playlist DB
-mongoose.connect(process.env.DB_CONNECTION ,{useNewUrlParser: true}, () => 
-  console.log('Connected to PlaylistDB!')
-);
+// mongoose.connect(process.env.DB_CONNECTION ,{useNewUrlParser: true}, () => 
+//   console.log('Connected to PlaylistDB!')
+// );
 
 // Run when client connects
 io.on('connection', socket => {

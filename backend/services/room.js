@@ -9,7 +9,7 @@ const {
 const {
     addRoomPlaylistEntry,
     addRoomPlayerEntry
-} = require("../services/player");
+} = require("./player");
 
 const initRoomService = (io, socket) => {
     socket.on("joinRoom", ({ username, room }, callback) => {
@@ -18,7 +18,7 @@ const initRoomService = (io, socket) => {
         socket.join(user.room);
 
         // Welcome current user
-        socket.emit("message", formatMessage("ChatCord", "Welcome to ChatCord!"));
+        socket.emit("message", formatMessage("Sync-Along", "Welcome to Sync-Along!"));
 
         // Send users and room info
         io.to(user.room).emit("roomUsers", {
