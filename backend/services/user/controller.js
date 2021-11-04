@@ -22,7 +22,7 @@ const USER_DOES_NOT_EXIST_ERROR = "The user does not exist in this app.";
  * handleLogout;
  * }
  */
-const handleUserRegistration = (req, res) => {
+const handleUserRegistration = async (req, res) => {
   const {username, password} = req.body;
 
   if (requiredFieldsMissing(username, password)) {
@@ -39,14 +39,15 @@ const handleUserRegistration = (req, res) => {
     });
   }
 
-  if (doesUserExist(username)) {
-    return res.status(400).json({
-      isSuccessful: false,
-      message: ALREADY_REGISTERED_ERROR,
-    });
-  }
-
-  addUser(username, password)
+  try {
+    const userStatus = await doesUserExist(username);
+    if (!userStatus) {
+      return res.status(400).json({
+        isSuccessful: false,
+        message: ALREADY_REGISTERED_ERROR,
+      });
+    }
+    addUser(username, password)
     .then(() => res.json({
       isSuccessful: true,
       message: USER_REGISTRATION_SUCCESS,
@@ -56,6 +57,12 @@ const handleUserRegistration = (req, res) => {
         message: ERROR_CREATING_USER,
       })
     );
+  } catch (err) {
+    return res.status(400).json({
+      isSuccessful: false,
+      message: ALREADY_REGISTERED_ERROR,
+    });
+  }  
 }
 
 const handleUserLogin = (req, res) => {
