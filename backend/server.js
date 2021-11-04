@@ -53,12 +53,12 @@ const io = socketio(server, {
 });
 
 // Set static folder
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
-// Connect to playlist DB
-// mongoose.connect(process.env.DB_CONNECTION ,{useNewUrlParser: true}, () => 
-//   console.log('Connected to PlaylistDB!')
-// );
+// Connect to playlist DB 
+mongoose.connect(process.env.DB_CONNECTION ,{useNewUrlParser: true}, () => 
+  console.log('Connected to PlaylistDB!')
+);
 
 // Run when client connects
 io.on('connection', socket => {
