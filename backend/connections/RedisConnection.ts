@@ -1,9 +1,9 @@
-const redis = require("redis");
+import redis from "redis";
 
 class RedisConnection {
-  static connection;
+  private static connection;
 
-  static getConnection() {
+  public static getConnection() {
     if (!this.connection) {
       this.connection = redis.createClient({
         url: process.env.REDIS_URL,
@@ -12,7 +12,7 @@ class RedisConnection {
     return this.connection;  
   }
 
-  static disconnect() {
+  public static disconnect() {
     if (this.connection) {
       this.connection.quit();
       this.connection = undefined;

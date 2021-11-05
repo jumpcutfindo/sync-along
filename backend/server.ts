@@ -1,25 +1,25 @@
-const path = require('path');
-const http = require('http');
-const express = require('express');
-const socketio = require('socket.io');
-const session = require("express-session");
-const cors = require("cors");
+import path from 'path';
+import http from 'http';
+import express from 'express';
+import { Server } from 'socket.io';
+import session from "express-session";
+import cors from "cors";
+import dotenv from "dotenv";
 const app = express();
-require('dotenv/config');
+dotenv.config();
 
 
 
 // Import Routes
-const { initChatService } = require('./services/chat/index');
-const {  initPlayerService, initPlaylistService } = require('./services/player');
-const {initUserService} = require('./services/user/index');
-const {initRoomService} = require('./services/room/index');
+import {initChatService} from './services/chat/index';
+import {initPlayerService,initPlaylistService} from './services/player';
+import {initUserService} from './services/user/index';
+import {initRoomService} from './services/room/index';
 // const { initRoomManagementService } = require('./services/room-management');
 // const {initPlaylistService} = require('./services/playlist');
-//const playlistRoute = require('./services/playlist');
 
 // Import Databases and Resources
-const {MongodbConnection} = require("./connections/MongodbConnection");
+import {MongodbConnection} from "./connections/MongodbConnection";
 
 //app.use('/playlist', playlistRoute);
 
@@ -28,7 +28,7 @@ app.use(express.json());
 
 // set up security
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: process.env.FRONTEND_URL,
   methods: [ "GET", "POST" ],
   credentials: true,
 }));
@@ -44,7 +44,7 @@ app.use(
 initUserService(app);
 
 const server = http.createServer(app);
-const io = socketio(server, {
+const io = new Server(server, {
   cors: {
     origin: process.env.FRONTEND_URL,
     methods: ["GET", "POST"],
