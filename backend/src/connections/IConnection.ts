@@ -1,8 +1,8 @@
 export interface IConnection {
 }
 
-export interface IConnectionConstructor {
+export interface IConnectionConstructor<Conn> {
   new(): IConnection;
-  getConnection();
-  disconnect();
+  getConnection(): Conn;
+  disconnect(): unknown;
 }

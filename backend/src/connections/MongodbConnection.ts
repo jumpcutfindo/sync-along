@@ -1,8 +1,10 @@
 import {connect} from 'mongoose';
 import {IConnectionConstructor} from './IConnection';
 
-const MongodbConnection: IConnectionConstructor = class {
-  private static connection;
+type MongoConnection = ReturnType<typeof connect>;
+
+const MongodbConnection: IConnectionConstructor<MongoConnection> = class {
+  private static connection: MongoConnection;
 
   public static getConnection() {
     if (!this.connection) {
