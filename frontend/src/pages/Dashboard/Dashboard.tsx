@@ -4,9 +4,15 @@ import { Modal } from "react-bootstrap";
 import useInputState from "src/hooks/useInputState";
 import useNavigator from "src/hooks/useNavigator";
 
-import { storeRoomCode, joinRoom, CreateRoomResponse } from "src/stores/room";
+import {
+    storeRoomCode,
+    joinRoom,
+    CreateRoomResponse,
+    createRoom,
+} from "src/stores/room";
 import LoadingButton from "src/utils/LoadingButton";
 import { setToastMessage } from "src/stores/app/toasts";
+import { connectSocket } from "src/services/socket/SocketClient";
 
 const validateRoomCode = (roomCode: string) => {
     if (roomCode.length < 5) return false;
@@ -106,20 +112,13 @@ const Dashboard: React.FC = () => {
 
     const user = useAppSelector((state) => state.app.user);
 
+    const [isRoomCreationLoading, setRoomCreationLoading] = useState(false);
     const [isShowJoinModal, setShowJoinModal] = useState(false);
 
     const toggleJoinModal = () => {
         setShowJoinModal(!isShowJoinModal);
     };
 
-    const [
-        createRoom,
-        {
-            data: createRoomData,
-            isLoading: isRoomCreationLoading,
-            isSuccess: isRoomCreationSuccess,
-        },
-    ] = roomApi.endpoints.createRoom.useMutation();
     useEffect(() => {
         dispatch(connectSocket()).then((res) => console.log(res));
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -128,7 +127,8 @@ const Dashboard: React.FC = () => {
     const createNewRoom = (event: React.FormEvent) => {
         event.preventDefault();
         if (user) {
-            createRoom({ username: user.name })
+            setRoomCreationLoading(true);
+            dispatch(createRoom({ username: user.name }))
                 .unwrap()
                 .then((response: CreateRoomResponse) => {
                     if (!response) {
