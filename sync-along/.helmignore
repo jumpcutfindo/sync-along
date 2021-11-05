@@ -22,13 +22,11 @@
 *.tmproj
 .vscode/
 
-backend-deployment.yaml
-backend-service.yaml
-example-redis-config.yaml
-frontend-deployment.yaml
-frontend-service.yaml
 hpa.yaml
+backend-deployment.yaml    
 pv-claim.yaml
+backend-service.yaml       
 pv-volume.yaml
+example-redis-config.yaml  
 redis-pod.yaml
 redis-service.yaml
