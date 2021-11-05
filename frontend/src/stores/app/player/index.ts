@@ -1,5 +1,5 @@
 import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import SocketClient from "src/services/SocketClient";
+import SocketClient from "src/services/socket/SocketClient";
 import {
     completeAction,
     playAction,
@@ -11,12 +11,17 @@ export interface PlayerState {
     isPlaying: boolean;
     lastScrubTime: number;
     lastUpdateTime: number;
+    volume: number;
 }
 
 const initialState: PlayerState = {
     isPlaying: false,
     lastScrubTime: 0,
     lastUpdateTime: Date.now(),
+    volume:
+        localStorage.getItem("playerVolume") !== null
+            ? Number(localStorage.getItem("playerVolume"))
+            : 0.5,
 };
 
 export const updatePlayer = createAction(updatePlayerAction, (data) => {
@@ -72,7 +77,25 @@ export const receivePlayerUpdates = createAsyncThunk<
 export const playerSlice = createSlice({
     name: "player",
     initialState,
-    reducers: {},
+    reducers: {
+        startPlayer(state) {
+            state.isPlaying = true;
+        },
+        stopPlayer(state) {
+            state.isPlaying = false;
+        },
+        resetPlayer(state) {
+            state.isPlaying = false;
+            state.lastScrubTime = 0;
+            state.lastUpdateTime = -1;
+        },
+        setPlayerVolume(state, action) {
+            const newVolume = action.payload;
+            localStorage.setItem("playerVolume", newVolume);
+
+            state.volume = newVolume;
+        },
+    },
     extraReducers: (builder) => {
         builder.addCase(updatePlayer, (state, action) => {
             const { isPlaying, lastScrubTime, lastUpdateTime } = action.payload;
@@ -85,3 +108,5 @@ export const playerSlice = createSlice({
 });
 
 export const playerReducer = playerSlice.reducer;
+export const { startPlayer, stopPlayer, resetPlayer, setPlayerVolume } =
+    playerSlice.actions;

@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import Types from "Types";
-import SocketClient from "src/services/SocketClient";
+import SocketClient from "src/services/socket/SocketClient";
 
 import { PlayerState } from "src/stores/app/player";
 import { PlaylistState } from "src/stores/app/playlist";
-import { createRoomAction, joinRoomAction } from "./actions";
+import { createRoomAction, joinRoomAction, leaveRoomAction } from "./actions";
 
 interface RoomStore {
     roomCode?: string;

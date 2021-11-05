@@ -10,23 +10,29 @@ import store from "src/stores";
 import { Provider } from "react-redux";
 
 import "./App.css";
+import ToastComponent from "./utils/Toast";
 import DashboardControls from "./pages/Dashboard/Controls/DashboardControls";
+import { PrivateRoute, PublicRoute, RoomRoute } from "./router/routes";
 
-function App() {
+const App: React.FC = () => {
     return (
         <div className="App d-flex">
             <Provider store={store}>
-                <div className="Container m-auto d-flex">
-                    <div className="Screen m-auto d-flex-column">
+                <div className="Container m-auto d-flex flex-column">
+                    <ToastComponent />
+                    <div className="Screen m-auto d-flex flex-column">
                         <Router>
                             <Switch>
-                                <Route path="/login" component={LoginPage} />
-                                <Route
+                                <PublicRoute
+                                    path="/login"
+                                    component={LoginPage}
+                                />
+                                <PrivateRoute
                                     path="/dashboard"
                                     component={DashboardPage}
                                 />
-                                <Route path="/room" component={RoomPage} />
-                                <Route exact path="/" component={LoginPage} />
+                                <RoomRoute path="/room" component={RoomPage} />
+                                <PublicRoute path="/" component={LoginPage} />
                             </Switch>
                             <DashboardControls />
                         </Router>
@@ -35,6 +41,6 @@ function App() {
             </Provider>
         </div>
     );
-}
+};
 
 export default App;

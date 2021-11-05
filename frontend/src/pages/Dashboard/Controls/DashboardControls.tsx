@@ -5,21 +5,50 @@ import userApi from "src/services/user";
 import useNavigator from "src/hooks/useNavigator";
 
 import { appLogout } from "src/stores/app";
-import { updateAccessToken } from "src/stores/auth";
 import { storeRoomCode } from "src/stores/room";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { setToastMessage, toastSlice } from "src/stores/app/toasts";
+import { resetPlaylist } from "src/stores/app/playlist";
+import { resetPlayer } from "src/stores/app/player";
+import { resetChat } from "src/stores/chat";
 
-const LogOutButton: React.FC = () => {
+const UserInfoButton: React.FC = () => {
+    const isLoggedIn = useAppSelector((state) => state.app.loggedIn);
+    const username = useAppSelector((state) => state.app.user?.name);
+
+    if (!isLoggedIn || !username) return null;
+
+    return (
+        <button type="button" className="btn btn-outline-light d-flex me-2">
+            <FontAwesomeIcon icon={faUser} className="my-auto me-2" />
+            {username}
+        </button>
+    );
+};
+
+const LogOutButton: React.FC<{ leaveRoom: () => void }> = (props) => {
+    const { leaveRoom } = props;
     const dispatch = useAppDispatch();
     const { navToLogin } = useNavigator();
+
+    const inRoom = useAppSelector((state) => state.room.roomCode);
 
     const [logout, { isSuccess, isLoading }] =
         userApi.endpoints.logout.useMutation();
 
     useEffect(() => {
         if (isSuccess) {
+            if (inRoom) leaveRoom();
             dispatch(appLogout());
-            dispatch(updateAccessToken(undefined));
             navToLogin();
+
+            dispatch(
+                setToastMessage({
+                    type: "success",
+                    message: "Successfully logged out of Sync-Along.",
+                })
+            );
         }
     }, [isSuccess, isLoading]);
 
@@ -38,24 +67,20 @@ const LogOutButton: React.FC = () => {
     );
 };
 
-const LeaveRoomButton: React.FC = () => {
-    const dispatch = useAppDispatch();
+const LeaveRoomButton: React.FC<{ leaveRoom: () => void }> = (props) => {
+    const { leaveRoom } = props;
+
     const inRoom = useAppSelector((state) => state.room.roomCode);
-    const { navToDashboard } = useNavigator();
 
     if (!inRoom) return null;
 
-    const leaveRoom = () => {
-        // TODO: Add functionality to actually leave the socket room on pressed
-        dispatch(storeRoomCode(undefined));
-        navToDashboard();
-    };
+    const onLeaveRoom = () => leaveRoom();
 
     return (
         <button
             type="button"
             className="btn btn-danger me-2"
-            onClick={leaveRoom}
+            onClick={onLeaveRoom}
         >
             Leave Room
         </button>
@@ -63,13 +88,25 @@ const LeaveRoomButton: React.FC = () => {
 };
 
 const DashboardControls: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const { navToDashboard } = useNavigator();
+
+    const leaveRoom = () => {
+        dispatch(storeRoomCode(undefined));
+        dispatch(resetPlaylist());
+        dispatch(resetPlayer());
+        dispatch(resetChat());
+        navToDashboard();
+    };
+
     return (
         <div className="DashboardControls d-flex">
             <div className="DashboardNavigation d-flex align-items-center justify-content-start flex-grow-1">
-                <LeaveRoomButton />
+                <LeaveRoomButton leaveRoom={leaveRoom} />
             </div>
             <div className="d-flex">
-                <LogOutButton />
+                <UserInfoButton />
+                <LogOutButton leaveRoom={leaveRoom} />
             </div>
         </div>
     );

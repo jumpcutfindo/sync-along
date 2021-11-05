@@ -13,7 +13,7 @@ const roomApi = createApi({
     reducerPath: "roomApi",
     baseQuery: fetchBaseQuery({ baseUrl: BACKEND_URL }),
     endpoints: (builder) => ({
-        generateRoomCode: builder.mutation<RoomResponse, RoomParams>({
+        createRoom: builder.mutation<RoomResponse, RoomParams>({
             query: (body) => ({
                 url: "/room/create",
                 method: "POST",

@@ -1,14 +1,21 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from "react";
-import { Modal } from "react-bootstrap";
+import { Modal, Toast, ToastContainer } from "react-bootstrap";
 
 import useNavigator from "src/hooks/useNavigator";
 import { useAppDispatch } from "src/hooks/typedReduxHooks";
-import { updateAccessToken } from "src/stores/auth";
 import { appLogin, storeUser } from "src/stores/app";
+
+import {
+    validateLoginInput,
+    validateRegistrationInput,
+} from "src/utils/validation/validator";
 
 import userApi from "src/services/user";
 import useInputState from "src/hooks/useInputState";
+import { useDispatch } from "react-redux";
+import { setToastMessage } from "src/stores/app/toasts";
+import LoadingButton from "src/utils/LoadingButton";
 import IntroScreen from "./IntroScreen";
 
 import "./Login.css";
@@ -18,6 +25,7 @@ export const RegisterModalContent: React.FC<{
     toggleShow: () => void;
     toggleShowRegistration: () => void;
 }> = (props) => {
+    const dispatch = useDispatch();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { toggleShow, toggleShowRegistration } = props;
 
@@ -26,32 +34,49 @@ export const RegisterModalContent: React.FC<{
     const [retypePassword, onChangeRetypePassword] = useInputState("");
 
     const [errorMessage, setErrorMessage] = useState("");
+    const [showSuccessToast, setShowSuccessToast] = useState(false);
 
     const [register, { isLoading, isSuccess }] =
         userApi.endpoints.register.useMutation();
 
+    const toggleSuccessToast = () => {
+        setShowSuccessToast(!showSuccessToast);
+    };
+
     const registrationHandler = (event: React.FormEvent) => {
         event.preventDefault();
-        if (username === "") {
-            setErrorMessage("Please enter a username!");
-        } else if (password === "") {
-            setErrorMessage("Please enter a password!");
-        } else if (retypePassword === "") {
-            setErrorMessage("Please retype your password!");
-        } else if (password !== retypePassword) {
-            setErrorMessage("The passwords do not match!");
-        } else {
-            setErrorMessage("");
-            register({ username, password });
+        const validation = validateRegistrationInput(
+            username,
+            password,
+            retypePassword
+        );
+
+        if (!validation.valid) {
+            if (validation.error) setErrorMessage(validation.error);
+            return;
         }
+
+        setErrorMessage("");
+        register({ username, password })
+            .then((response: any) => {
+                if (response.error) {
+                    setErrorMessage(response.error.data.message);
+                }
+            })
+            .catch((error) => {
+                setErrorMessage("Unable to register; please try again later.");
+            });
     };
 
     useEffect(() => {
         if (isSuccess) {
-            // TODO: Decide on what to do when registration is successful
+            dispatch(
+                setToastMessage({
+                    message: "Successfully registered an account!",
+                    type: "success",
+                })
+            );
             toggleShowRegistration();
-        } else {
-            setErrorMessage("Unable to sign up!");
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoading, isSuccess]);
@@ -86,9 +111,12 @@ export const RegisterModalContent: React.FC<{
                     <p className="text-danger small">{errorMessage}</p>
                 ) : null}
                 <div className="mt-3">
-                    <button type="submit" className="btn btn-primary me-2">
-                        {isLoading ? "Loading..." : "Register"}
-                    </button>
+                    <LoadingButton
+                        type="submit"
+                        className="btn btn-primary me-2"
+                        isLoading={isLoading}
+                        text="Register"
+                    />
                     <button
                         type="button"
                         className="btn btn-outline-primary"
@@ -120,19 +148,35 @@ export const LoginModalContent: React.FC<{
     const loginHandler = (event: React.FormEvent) => {
         event.preventDefault();
 
-        if (username === "" || password === "") {
-            setErrorMessage("Please enter a username and password!");
-        } else {
-            setErrorMessage("");
-            login({ username, password });
+        const validation = validateLoginInput(username, password);
+
+        if (!validation.valid) {
+            if (validation.error) setErrorMessage(validation.error);
+            return;
         }
+
+        setErrorMessage("");
+        login({ username, password })
+            .then((response: any) => {
+                if (response.error) {
+                    setErrorMessage(response.error.data.message);
+                }
+            })
+            .catch((error) => {
+                setErrorMessage("Unable to login; please try again later.");
+            });
     };
 
     useEffect(() => {
         if (isSuccess) {
-            dispatch(updateAccessToken(data?.accessToken));
             dispatch(storeUser({ name: data?.username }));
             dispatch(appLogin());
+            dispatch(
+                setToastMessage({
+                    type: "success",
+                    message: `Successfully logged in! Welcome back, ${data?.username}.`,
+                })
+            );
             navToDashboard();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -158,9 +202,12 @@ export const LoginModalContent: React.FC<{
                     <p className="text-danger small">{errorMessage}</p>
                 ) : null}
                 <div className="mt-3">
-                    <button type="submit" className="btn btn-primary me-2">
-                        {isLoading ? "Loading..." : "Log In"}
-                    </button>
+                    <LoadingButton
+                        type="submit"
+                        className="btn btn-primary me-2"
+                        isLoading={isLoading}
+                        text="Log In"
+                    />
                     <button
                         type="button"
                         className="btn btn-outline-primary"

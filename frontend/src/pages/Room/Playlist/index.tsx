@@ -14,19 +14,9 @@ import { Overlay } from "react-bootstrap";
 
 import "./index.css";
 import useInputState from "src/hooks/useInputState";
-import { disconnectSocket } from "src/stores/chat";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-const validateYouTubeURL = (url: string) => {
-    if (url === undefined || url === null || url === "") return false;
-    const p =
-        /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-
-    const flag = url.match(p);
-    if (flag) return flag[1];
-    return false;
-};
+import { validateAddMedia } from "src/utils/validation/validator";
 
 const AddMediaButton: React.FC = () => {
     const ref = useRef(null);
@@ -43,15 +33,15 @@ const AddMediaButton: React.FC = () => {
     const handleSubmit = (event: FormEvent) => {
         event.preventDefault();
 
-        // TODO: Basic validation of the url or pass to server to handle
-        // TODO: Send url to server for handling (the response should at least contain the title of the song)
-        // Note that the duration of the song has been automatically handled by react-player
-        if (validateYouTubeURL(url)) {
-            dispatch(addSong(url));
-            setErrorMsg("");
-        } else {
-            setErrorMsg("Invalid URL has been entered!");
+        const validation = validateAddMedia(url);
+
+        if (!validation.valid) {
+            if (validation.error) setErrorMsg(validation.error);
+            return;
         }
+
+        setErrorMsg("");
+        dispatch(addSong(url));
     };
 
     const isError = () => {
@@ -59,7 +49,7 @@ const AddMediaButton: React.FC = () => {
     };
 
     return (
-        <div className="AddMediaButton me-2">
+        <div className="AddMediaButton my-auto">
             <button
                 ref={ref}
                 type="button"
@@ -120,9 +110,6 @@ const PlaylistHeaderButtons: React.FC = () => {
     return (
         <div className="PlaylistHeaderButtons d-flex w-100 justify-content-end">
             <AddMediaButton />
-            <button type="button" className="btn btn-success my-auto">
-                Import Playlist
-            </button>
         </div>
     );
 };
@@ -130,7 +117,7 @@ const PlaylistHeaderButtons: React.FC = () => {
 const PlaylistHeader: React.FC = () => (
     <div className="PlaylistHeader d-flex">
         <div className="d-flex w-100 m-3">
-            <h2 className="m-0">PLAYLIST</h2>
+            <h2 className="my-auto">PLAYLIST</h2>
             <PlaylistHeaderButtons />
         </div>
     </div>

@@ -8,8 +8,16 @@ interface AppState {
 }
 
 const initialState: AppState = {
-    loggedIn: false,
-    user: undefined,
+    loggedIn: localStorage.getItem("user") !== null,
+    user:
+        localStorage.getItem("user") !== null
+            ? { name: localStorage.getItem("user") as string }
+            : undefined,
+};
+
+const saveUsernameLocal = (username: string | undefined) => {
+    if (username) localStorage.setItem("user", username);
+    else localStorage.removeItem("user");
 };
 
 export const appSlice = createSlice({
@@ -24,10 +32,12 @@ export const appSlice = createSlice({
         },
         appLogin(state) {
             state.loggedIn = true;
+            saveUsernameLocal(state.user?.name);
         },
         appLogout(state) {
             state.loggedIn = false;
             state.user = undefined;
+            saveUsernameLocal(undefined);
         },
     },
 });

@@ -13,6 +13,9 @@ import {
     playSong,
     receivePlayerUpdates,
     seekSong,
+    setPlayerVolume,
+    startPlayer,
+    stopPlayer,
 } from "src/stores/app/player";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -26,7 +29,6 @@ import {
     faVolumeUp,
     faVolumeMute,
 } from "@fortawesome/free-solid-svg-icons";
-import { disconnectSocket } from "src/stores/chat";
 
 const PlayerInfo: React.FC<{
     currentProgress: number | undefined;
@@ -164,7 +166,8 @@ const PlayerComponent: React.FC = () => {
     const dispatch = useAppDispatch();
 
     const [sliderProgress, setSliderProgress] = useState(0);
-    const [volume, setVolume] = useState(0.5);
+
+    const volume: number = useAppSelector((state) => state.player.volume);
 
     const currentMedia: Media | null = useAppSelector(
         (state) => state.playlist.current
@@ -182,9 +185,18 @@ const PlayerComponent: React.FC = () => {
         (state) => state.player.lastScrubTime
     );
 
+    const setVolume = (vol: number) => {
+        dispatch(setPlayerVolume(vol));
+    };
+
     const setPlaying = (shouldPlay: boolean) => {
-        if (shouldPlay) dispatch(playSong(sliderProgress));
-        else dispatch(pauseSong(sliderProgress));
+        if (shouldPlay) {
+            dispatch(startPlayer());
+            dispatch(playSong(sliderProgress));
+        } else {
+            dispatch(stopPlayer());
+            dispatch(pauseSong(sliderProgress));
+        }
     };
 
     // Methods for client side

@@ -1,12 +1,37 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import io from "socket.io-client";
 import { BACKEND_URL } from "src/constants/env";
 
 import Types from "Types";
+import { connectSocketAction, disconnectSocketAction } from "./actions";
 
 const host = BACKEND_URL;
 
 const NoConnectionError = new Error("No socket connection");
+
+// Created an additional function for connecting sockets in case we want to reuse the socket for music
+// management
+export const connectSocket = createAsyncThunk<
+    unknown,
+    undefined,
+    {
+        extra: SocketClient;
+    }
+>(connectSocketAction, (_, { extra: socketClient }) => {
+    return socketClient.connect();
+});
+
+export const disconnectSocket = createAsyncThunk<
+    unknown,
+    undefined,
+    {
+        extra: SocketClient;
+    }
+>(disconnectSocketAction, (_, { extra: socketClient }) => {
+    return socketClient.disconnect();
+});
+
 class SocketClient {
     socket: Types.Socket | undefined;
 
