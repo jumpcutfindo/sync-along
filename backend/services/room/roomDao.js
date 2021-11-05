@@ -26,6 +26,7 @@
  */
 
 const redis = require("redis");
+const {ROOM_NOT_FOUND} = require("./constants");
 
 const redisClient = redis.createClient({
   url: process.env.REDIS_URL,
@@ -49,7 +50,7 @@ const doesRoomExist = async (code) => {
 
 const addUserToRoom = async (username, room) => {
   return new Promise((resolve, reject) => {
-    redisClient.get(room, (err, reply) => {
+    redisClient.smembers(room, (err, reply) => {
       if (err) {
         reject(err);
       }
@@ -63,4 +64,19 @@ const addUserToRoom = async (username, room) => {
   });
 };
 
-module.exports = {doesRoomExist, addUserToRoom};
+const getUsersInRoom = async (room) => {
+  return new Promise((resolve, reject) => {
+    redisClient.smembers(room, (err, reply) => 
+    {
+      if (err) {
+        reject(err);
+      }
+      if (!reply) {
+        reject(new Error(ROOM_NOT_FOUND))
+      }
+      resolve(reply);
+    })
+  })
+}
+
+module.exports = {doesRoomExist, addUserToRoom, getUsersInRoom};

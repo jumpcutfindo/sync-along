@@ -11,7 +11,6 @@ require('dotenv/config');
 
 
 // Import Routes
-// const { initRoomService } = require('./services/room');
 const { initChatService } = require('./services/chat');
 const {  initPlayerService, initPlaylistService } = require('./services/player');
 const {initUserService} = require('./services/user/index');
@@ -42,9 +41,6 @@ app.use(
 );
 
 initUserService(app);
-// initRoomManagementService(app);
-initRoomService(app);
-// initPlaylistService(app);
 
 const server = http.createServer(app);
 const io = socketio(server, {
@@ -64,7 +60,7 @@ mongoose.connect(process.env.DB_CONNECTION ,{useNewUrlParser: true}, () =>
 
 // Run when client connects
 io.on('connection', socket => {
-  // initRoomService(io, socket);
+  initRoomService(io, socket);
   initChatService(io, socket);
   initPlaylistService(io, socket);
   initPlayerService(io, socket);

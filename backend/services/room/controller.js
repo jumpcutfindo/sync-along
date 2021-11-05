@@ -4,12 +4,8 @@
  */
 
 const {generateRoomCode} = require("./utils");
-const {doesRoomExist, addUserToRoom} = require("./roomDao");
-const NO_USERNAME_PROVIDED = "Please provide a username to create a room";
-const ERROR_JOINING_ROOM = "Unable to join a room";
-const MISSING_ROOM_CODE_USERNAME = "Please provide a username and room code to join a room";
-const ROOM_NOT_FOUND = "The requested room cannot be found.";
-
+const {doesRoomExist, addUserToRoom, getUsersInRoom} = require("./roomDao");
+const {NO_USERNAME_PROVIDED, ERROR_JOINING_ROOM, MISSING_ROOM_CODE_USERNAME, ROOM_NOT_FOUND} = require("./constants");
 /* 
 Room Info needed:
 number of users in the room
@@ -24,7 +20,6 @@ player: {
 }
 */
 
-const test = (test) => console.log(test);
 class RoomController {
   constructor(socket, io) {
     this.socket = socket;
@@ -77,13 +72,13 @@ class RoomController {
   
     try {
       await addUserToRoom(username, room);
+      const users = await getUsersInRoom(room);
       return callback({
         status: 200,
         isSuccessful: true,
         room,
-        users: 1,
+        users,
         playlist: [],
-        songs: "",
         player: {
           state: "pause",
           time: 0,
