@@ -3,8 +3,8 @@
  * Handles requests from web clients and interfaces with various subsystems of the app
  */
 
-const {addUser, doesUserExist} = require("./userDao");
-const {requiredFieldsMissing, isValidPassword, isValidSession} = require("./utils");
+import {addUser,doesUserExist} from "./userDao";
+import {requiredFieldsMissing,isValidPassword,isValidSession} from "./utils";
 
 const MISSING_FIELDS_ERROR = "Some fields are missing. Please fill up all the fields";
 const INVALID_PASSWORD_ERROR = "Passwords have to be at least 6 characters.";
@@ -22,7 +22,7 @@ const USER_DOES_NOT_EXIST_ERROR = "The user does not exist in this app.";
  * handleLogout;
  * }
  */
-const handleUserRegistration = async (req, res) => {
+export const handleUserRegistration = async (req, res) => {
   const {username, password} = req.body;
 
   if (requiredFieldsMissing(username, password)) {
@@ -70,7 +70,7 @@ const handleUserRegistration = async (req, res) => {
   }  
 }
 
-const handleUserLogin = (req, res) => {
+export const handleUserLogin = (req, res) => {
   const {username, password} = req.body;
   if (requiredFieldsMissing(username, password)) {
     return res.status(401).json({
@@ -100,7 +100,7 @@ const handleUserLogin = (req, res) => {
   }))
 };
 
-const handleUserLogout = (req, res) => {
+export const handleUserLogout = (req, res) => {
   if (isValidSession(req.session)) {
     return res.json({
       isSuccessful: false,
@@ -120,6 +120,3 @@ const handleUserLogout = (req, res) => {
     }
   });
 };
-
-
-module.exports = {handleUserRegistration, handleUserLogin, handleUserLogout};

@@ -29,10 +29,8 @@ class Player {
     }
 }
 
-function getPlayerUpdateData(player) {
+export function getPlayerUpdateData(player) {
     return JSON.stringify(player);
 }
 
-module.exports = {
-    Player, getPlayerUpdateData
-};
+export default Player;

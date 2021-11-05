@@ -1,5 +1,5 @@
-const {formatMessage} = require("./utils");
-const {getCurrentUser} = require("./chatDao");
+import {formatMessage} from "./utils";
+import {getCurrentUser} from "./chatDao";
 /**
  * A Controller that handles chat messages from web clients
  */
@@ -17,4 +17,4 @@ class ChatController {
   }
 }
 
-module.exports = {ChatController};
+export default ChatController;

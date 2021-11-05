@@ -1,7 +1,7 @@
 /**
  * Models a User in the database
  */
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const UserSchema = mongoose.Schema({
     username: {
@@ -22,4 +22,4 @@ UserSchema.set('toJSON', {
   }
 });
 
-module.exports = mongoose.model('Users', UserSchema);
+export default mongoose.model('Users', UserSchema);

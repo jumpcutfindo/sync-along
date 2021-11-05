@@ -13,7 +13,7 @@ const {
 const roomPlayerMap = {};
 const roomPlaylistMap = {};
 
-const initPlaylistService = (io, socket) => {
+export const initPlaylistService = (io, socket) => {
     socket.on("playlist/add", ({ url }, callback) => {
         const user = getCurrentUser(socket.id);
 
@@ -79,7 +79,7 @@ const initPlaylistService = (io, socket) => {
     });
 };
 
-const initPlayerService = (io, socket) => {
+export const initPlayerService = (io, socket) => {
     socket.on("player/play", (time, callback) => {
         const user = getCurrentUser(socket.id);
 
@@ -138,13 +138,13 @@ const initPlayerService = (io, socket) => {
     });
 };
 
-const addRoomPlaylistEntry = (roomCode) => {
+export const addRoomPlaylistEntry = (roomCode) => {
     if(!roomPlaylistMap[roomCode]) roomPlaylistMap[roomCode] = new Playlist(roomCode);
 
     console.log(`Added a room-playlist mapping, roomPlaylistMap now has ${Object.keys(roomPlaylistMap)}`);
 };
 
-const playlistNext = (io, socket) => {
+export const playlistNext = (io, socket) => {
     const user = getCurrentUser(socket.id);
 
     if (user) {
@@ -156,12 +156,12 @@ const playlistNext = (io, socket) => {
     }
 };
 
-const removeRoomPlaylistEntry = (roomCode) => {
+export const removeRoomPlaylistEntry = (roomCode) => {
     delete roomPlaylistMap[roomCode];
     console.log(`Removed a room-playlist mapping, roomPlaylistMap looks like this: ${roomPlaylistMap}`);
 };
 
-const resetSongProgress = (io, socket) => {
+export const resetSongProgress = (io, socket) => {
     const user = getCurrentUser(socket.id);
 
     if (user) {
@@ -171,12 +171,8 @@ const resetSongProgress = (io, socket) => {
     }
 };
 
-const addRoomPlayerEntry = (roomCode) => {
+export const addRoomPlayerEntry = (roomCode) => {
     if (!roomPlayerMap[roomCode]) roomPlayerMap[roomCode] = new Player();
 
     console.log(`Added a room-player mapping, roomPlayerMap now has ${Object.keys(roomPlayerMap)}`);
-};
-
-module.exports = {
-    initPlayerService, initPlaylistService, addRoomPlayerEntry, addRoomPlaylistEntry, resetSongProgress,
 };

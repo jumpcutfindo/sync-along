@@ -29,13 +29,13 @@
  * })
  */
 
-const {RedisConnection} = require("../../connections/RedisConnection");
+import RedisConnection from "../../connections/RedisConnection";
 
-const {ROOM_NOT_FOUND} = require("./constants");
+import {ROOM_NOT_FOUND} from "./constants";
 
 const redisClient = RedisConnection.getConnection();
 
-const doesRoomExist = async (room) => {
+export const doesRoomExist = async (room) => {
   return new Promise((resolve, reject) =>
     redisClient.exists(`ROOM:${room}`, (err, reply) => {
       if (err) {
@@ -67,7 +67,7 @@ const addUserToRoom = async (username, room) => {
   });
 };
 
-const getUsersInRoom = async (room) => {
+export const getUsersInRoom = async (room) => {
   return new Promise((resolve, reject) => {
     redisClient.smembers(`ROOM:${room}`, (err, reply) => 
     {
@@ -82,7 +82,7 @@ const getUsersInRoom = async (room) => {
   })
 }
 
-const addUserToRoomCache = async (id, username, room) => {
+export const addUserToRoomCache = async (id, username, room) => {
   return new Promise((resolve, reject) => {
     redisClient.set(`USER:${id}`, JSON.stringify({
       id,
@@ -96,5 +96,3 @@ const addUserToRoomCache = async (id, username, room) => {
     });
   });
 }
-
-module.exports = {doesRoomExist, addUserToRoom, getUsersInRoom, addUserToRoomCache};

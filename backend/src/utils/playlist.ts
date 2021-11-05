@@ -1,4 +1,4 @@
-class Playlist {
+export class Playlist {
     constructor(roomCode) {
         this.roomCode = roomCode;
         this.songs = [];
@@ -48,20 +48,16 @@ class Playlist {
     }
 }
 
-class Song {
+export class Song {
     constructor(id, url) {
         this.id = id;
         this.url = url;
     }
 }
 
-function getPlaylistUpdateData(playlist) {
+export function getPlaylistUpdateData(playlist) {
     return JSON.stringify({
         playlist: playlist.songs,
         current: playlist.activeSong 
     });
-};
-
-module.exports = {
-    Playlist, Song, getPlaylistUpdateData
 };
