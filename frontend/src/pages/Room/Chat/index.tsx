@@ -9,20 +9,9 @@ import {
     receiveMessages,
     Messages,
 } from "src/stores/chat";
+import { validateChatMessage } from "src/utils/validation/validator";
 
 import "./index.css";
-
-const validateChatMessage = (chatMessage: string) => {
-    if (
-        chatMessage === "" ||
-        chatMessage === undefined ||
-        chatMessage === null
-    ) {
-        return false;
-    }
-
-    return true;
-};
 
 const MessageInput: React.FC = () => {
     const ref = useRef<HTMLFormElement>(null);
@@ -30,7 +19,9 @@ const MessageInput: React.FC = () => {
     const dispatch = useAppDispatch();
 
     const sendMessage = () => {
-        if (validateChatMessage(messageInput)) {
+        const validation = validateChatMessage(messageInput);
+
+        if (validation.valid) {
             dispatch(sendMessageAction(messageInput));
             clearInput();
         }

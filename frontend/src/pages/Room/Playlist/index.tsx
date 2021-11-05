@@ -16,16 +16,7 @@ import "./index.css";
 import useInputState from "src/hooks/useInputState";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-const validateYouTubeURL = (url: string) => {
-    if (url === undefined || url === null || url === "") return false;
-    const p =
-        /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-
-    const flag = url.match(p);
-    if (flag) return flag[1];
-    return false;
-};
+import { validateAddMedia } from "src/utils/validation/validator";
 
 const AddMediaButton: React.FC = () => {
     const ref = useRef(null);
@@ -42,12 +33,15 @@ const AddMediaButton: React.FC = () => {
     const handleSubmit = (event: FormEvent) => {
         event.preventDefault();
 
-        if (validateYouTubeURL(url)) {
-            dispatch(addSong(url));
-            setErrorMsg("");
-        } else {
-            setErrorMsg("Invalid URL has been entered!");
+        const validation = validateAddMedia(url);
+
+        if (!validation.valid) {
+            if (validation.error) setErrorMsg(validation.error);
+            return;
         }
+
+        setErrorMsg("");
+        dispatch(addSong(url));
     };
 
     const isError = () => {

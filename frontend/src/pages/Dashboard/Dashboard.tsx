@@ -13,12 +13,7 @@ import {
 import LoadingButton from "src/utils/LoadingButton";
 import { setToastMessage } from "src/stores/app/toasts";
 import { connectSocket } from "src/services/socket/SocketClient";
-
-const validateRoomCode = (roomCode: string) => {
-    if (roomCode.length < 5) return false;
-
-    return true;
-};
+import { validateRoomCode } from "src/utils/validation/validator";
 
 const JoinRoomModal: React.FC<{
     isShow: boolean;
@@ -35,8 +30,10 @@ const JoinRoomModal: React.FC<{
     const user = useAppSelector((state) => state.app.user);
 
     const onJoinRoom = (room: string) => {
-        if (!validateRoomCode(room)) {
-            setErrorMessage("Invalid room code entered!");
+        const validation = validateRoomCode(room);
+
+        if (!validation.valid) {
+            if (validation.error) setErrorMessage(validation.error);
             return;
         }
 

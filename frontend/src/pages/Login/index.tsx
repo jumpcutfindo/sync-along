@@ -6,6 +6,11 @@ import useNavigator from "src/hooks/useNavigator";
 import { useAppDispatch } from "src/hooks/typedReduxHooks";
 import { appLogin, storeUser } from "src/stores/app";
 
+import {
+    validateLoginInput,
+    validateRegistrationInput,
+} from "src/utils/validation/validator";
+
 import userApi from "src/services/user";
 import useInputState from "src/hooks/useInputState";
 import { useDispatch } from "react-redux";
@@ -40,28 +45,27 @@ export const RegisterModalContent: React.FC<{
 
     const registrationHandler = (event: React.FormEvent) => {
         event.preventDefault();
-        if (username === "") {
-            setErrorMessage("Please enter a username!");
-        } else if (password === "") {
-            setErrorMessage("Please enter a password!");
-        } else if (retypePassword === "") {
-            setErrorMessage("Please retype your password!");
-        } else if (password !== retypePassword) {
-            setErrorMessage("The passwords do not match!");
-        } else {
-            setErrorMessage("");
-            register({ username, password })
-                .then((response: any) => {
-                    if (response.error) {
-                        setErrorMessage(response.error.data.message);
-                    }
-                })
-                .catch((error) => {
-                    setErrorMessage(
-                        "Unable to register; please try again later."
-                    );
-                });
+        const validation = validateRegistrationInput(
+            username,
+            password,
+            retypePassword
+        );
+
+        if (!validation.valid) {
+            if (validation.error) setErrorMessage(validation.error);
+            return;
         }
+
+        setErrorMessage("");
+        register({ username, password })
+            .then((response: any) => {
+                if (response.error) {
+                    setErrorMessage(response.error.data.message);
+                }
+            })
+            .catch((error) => {
+                setErrorMessage("Unable to register; please try again later.");
+            });
     };
 
     useEffect(() => {
@@ -144,20 +148,23 @@ export const LoginModalContent: React.FC<{
     const loginHandler = (event: React.FormEvent) => {
         event.preventDefault();
 
-        if (username === "" || password === "") {
-            setErrorMessage("Please enter a username and password!");
-        } else {
-            setErrorMessage("");
-            login({ username, password })
-                .then((response: any) => {
-                    if (response.error) {
-                        setErrorMessage(response.error.data.message);
-                    }
-                })
-                .catch((error) => {
-                    setErrorMessage("Unable to login; please try again later.");
-                });
+        const validation = validateLoginInput(username, password);
+
+        if (!validation.valid) {
+            if (validation.error) setErrorMessage(validation.error);
+            return;
         }
+
+        setErrorMessage("");
+        login({ username, password })
+            .then((response: any) => {
+                if (response.error) {
+                    setErrorMessage(response.error.data.message);
+                }
+            })
+            .catch((error) => {
+                setErrorMessage("Unable to login; please try again later.");
+            });
     };
 
     useEffect(() => {
