@@ -23,18 +23,21 @@
  *  users: //
  * } -> store it as a set.
  * to store owners: owner[roomCode]: username -> O(1) access
+ * online users: JSON.stringify({
+ *  user id
+ * username
+ * })
  */
 
-const redis = require("redis");
+const {RedisConnection} = require("../../connections/RedisConnection");
+
 const {ROOM_NOT_FOUND} = require("./constants");
 
-const redisClient = redis.createClient({
-  url: process.env.REDIS_URL,
-})
+const redisClient = RedisConnection.getConnection();
 
-const doesRoomExist = async (code) => {
+const doesRoomExist = async (room) => {
   return new Promise((resolve, reject) =>
-    redisClient.exists(code, (err, reply) => {
+    redisClient.exists(`ROOM:${room}`, (err, reply) => {
       if (err) {
         reject(err);
       } else {
@@ -50,14 +53,14 @@ const doesRoomExist = async (code) => {
 
 const addUserToRoom = async (username, room) => {
   return new Promise((resolve, reject) => {
-    redisClient.smembers(room, (err, reply) => {
+    redisClient.scard(`ROOM:${room}`, (err, reply) => {
       if (err) {
         reject(err);
       }
-      if (!reply) {
-        redisClient.set(`OWNER${room}`, username);
+      if (reply === 0) {
+        redisClient.set(`OWNER:${room}`, username);
       }
-      redisClient.sadd(room, username);
+      redisClient.sadd(`ROOM:${room}`, username);
       resolve(room);
     }
     );
@@ -66,7 +69,7 @@ const addUserToRoom = async (username, room) => {
 
 const getUsersInRoom = async (room) => {
   return new Promise((resolve, reject) => {
-    redisClient.smembers(room, (err, reply) => 
+    redisClient.smembers(`ROOM:${room}`, (err, reply) => 
     {
       if (err) {
         reject(err);
@@ -79,4 +82,19 @@ const getUsersInRoom = async (room) => {
   })
 }
 
-module.exports = {doesRoomExist, addUserToRoom, getUsersInRoom};
+const addUserToRoomCache = async (id, username, room) => {
+  return new Promise((resolve, reject) => {
+    redisClient.set(`USER:${id}`, JSON.stringify({
+      id,
+      username,
+      room
+    }), (err, reply) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(true);
+    });
+  });
+}
+
+module.exports = {doesRoomExist, addUserToRoom, getUsersInRoom, addUserToRoomCache};

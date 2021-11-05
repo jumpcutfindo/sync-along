@@ -10,7 +10,7 @@ require('dotenv/config');
 
 
 // Import Routes
-const { initChatService } = require('./services/chat');
+const { initChatService } = require('./services/chat/index');
 const {  initPlayerService, initPlaylistService } = require('./services/player');
 const {initUserService} = require('./services/user/index');
 const {initRoomService} = require('./services/room/index');
@@ -41,13 +41,7 @@ app.use(
   })
 );
 
-const redis = require("redis");
-const redisClient = redis.createClient({
-  url: process.env.REDIS_URL,
-})
-
-
-initUserService(app, redisClient);
+initUserService(app);
 
 const server = http.createServer(app);
 const io = socketio(server, {
@@ -61,7 +55,7 @@ const io = socketio(server, {
 // app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialise Connections
-const mongodbConnection = MongodbConnection.getInstance();
+const mongodbConnection = MongodbConnection.getConnection();
 
 // Run when client connects
 io.on('connection', socket => {
