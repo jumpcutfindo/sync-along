@@ -10,6 +10,6 @@ COPY build build/
 
 # front-end is running on port 3000
 EXPOSE 3000 
-# RUN npm install -g serve
+RUN npm install -g serve
 CMD ["serve", "-s", "build"]
 # CMD ["se
