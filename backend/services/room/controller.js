@@ -4,7 +4,7 @@
  */
 
 const {generateRoomCode} = require("./utils");
-const {doesRoomExist, addUserToRoom, getUsersInRoom} = require("./roomDao");
+const {doesRoomExist, addUserToRoom, getUsersInRoom, addUserToRoomCache} = require("./roomDao");
 const {NO_USERNAME_PROVIDED, ERROR_JOINING_ROOM, MISSING_ROOM_CODE_USERNAME, ROOM_NOT_FOUND} = require("./constants");
 /* 
 Room Info needed:
@@ -21,12 +21,11 @@ player: {
 */
 
 class RoomController {
-  constructor(socket, io) {
+  constructor(io, socket) {
     this.socket = socket;
     this.io = io;
   }
   
-  test = (test) => console.log(test);
   handleCreateRoom = async ({username}, callback) => {
     if (!username) {
       return callback({
@@ -41,6 +40,8 @@ class RoomController {
       generatedCode = generateRoomCode();
     }
     addUserToRoom(username, generatedCode)
+      .then(() => addUserToRoomCache(this.socket.id, username, generatedCode))
+      .then(() => this.socket.join(generatedCode))
       .then(() => callback({
         status: 200,
         code: generatedCode,
@@ -72,7 +73,10 @@ class RoomController {
   
     try {
       await addUserToRoom(username, room);
+      await addUserToRoomCache(this.socket.id, username, room);
       const users = await getUsersInRoom(room);
+      this.socket.join(room);
+
       return callback({
         status: 200,
         isSuccessful: true,
