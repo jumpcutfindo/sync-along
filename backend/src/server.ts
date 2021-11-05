@@ -53,7 +53,7 @@ export type ServiceEntryHandler = (io: IO, socket: Socket) => void;
 export type AppEntryHandler = (app: Express) => void;
 
 // Initialise Connections
-const mongodbConnection = MongodbConnection.getConnection();
+// const mongodbConnection = MongodbConnection.getConnection();
 
 initUserService(app);
 // Run when client connects
@@ -64,6 +64,9 @@ io.on('connection', socket => {
   initPlayerService(io, socket);
 });
 
+app.get('/', (req, res) => {
+  res.send('Backend running successful');
+});
 const PORT = process.env.PORT || 4001;
 
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

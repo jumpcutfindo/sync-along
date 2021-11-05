@@ -21,3 +21,14 @@
 .idea/
 *.tmproj
 .vscode/
+
+backend-deployment.yaml
+backend-service.yaml
+example-redis-config.yaml
+frontend-deployment.yaml
+frontend-service.yaml
+hpa.yaml
+pv-claim.yaml
+pv-volume.yaml
+redis-pod.yaml
+redis-service.yaml

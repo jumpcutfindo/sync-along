@@ -5569,6 +5569,11 @@
     "combined-stream" "^1.0.8"
     "mime-types" "^2.1.12"
 
+"format@^0.2.2":
+  "integrity" "sha1-1hcBB+nv3E7TDJ3DkBbflCtctYs="
+  "resolved" "https://registry.npmjs.org/format/-/format-0.2.2.tgz"
+  "version" "0.2.2"
+
 "forwarded@0.2.0":
   "integrity" "sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow=="
   "resolved" "https://registry.npmjs.org/forwarded/-/forwarded-0.2.0.tgz"
