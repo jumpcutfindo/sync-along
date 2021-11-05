@@ -1,25 +1,22 @@
-const path = require('path');
-const http = require('http');
-const express = require('express');
-const socketio = require('socket.io');
-const session = require("express-session");
-const cors = require("cors");
+import http from 'http';
+import express, {Express} from 'express';
+import { Server, Socket } from 'socket.io';
+import session from "express-session";
+import cors from "cors";
+import dotenv from "dotenv";
 const app = express();
-require('dotenv/config');
-
+dotenv.config();
 
 
 // Import Routes
-const { initChatService } = require('./services/chat/index');
-const {  initPlayerService, initPlaylistService } = require('./services/player');
-const {initUserService} = require('./services/user/index');
-const {initRoomService} = require('./services/room/index');
-// const { initRoomManagementService } = require('./services/room-management');
-// const {initPlaylistService} = require('./services/playlist');
-//const playlistRoute = require('./services/playlist');
+import initChatService from './services/chat/index';
+import {initPlayerService,initPlaylistService} from './services/player';
+import initUserService from './services/user/index';
+import initRoomService from './services/room/index';
+
 
 // Import Databases and Resources
-const {MongodbConnection} = require("./connections/MongodbConnection");
+import MongodbConnection from "./connections/MongodbConnection";
 
 //app.use('/playlist', playlistRoute);
 
@@ -28,7 +25,7 @@ app.use(express.json());
 
 // set up security
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: process.env.FRONTEND_URL,
   methods: [ "GET", "POST" ],
   credentials: true,
 }));
@@ -41,22 +38,24 @@ app.use(
   })
 );
 
-initUserService(app);
-
 const server = http.createServer(app);
-const io = socketio(server, {
+const io = new Server<any, any>(server, {
   cors: {
     origin: process.env.FRONTEND_URL,
     methods: ["GET", "POST"],
   },
 });
 
-// Set static folder
-// app.use(express.static(path.join(__dirname, 'public')));
+export type IO = typeof io;
+export type SocketType = Socket;
+export type ServiceEntryHandler = (io: IO, socket: Socket) => void;
+
+export type AppEntryHandler = (app: Express) => void;
 
 // Initialise Connections
 const mongodbConnection = MongodbConnection.getConnection();
 
+initUserService(app);
 // Run when client connects
 io.on('connection', socket => {
   initRoomService(io, socket);

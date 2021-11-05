@@ -1,7 +1,12 @@
-const {RedisConnection} = require("../../connections/RedisConnection");
+import RedisConnection from "../../connections/RedisConnection";
 const redisClient = RedisConnection.getConnection();
 
-const getCurrentUser = async (id) => {
+type User = {
+  id: string;
+  username: string;
+  room: string;
+}
+export const getCurrentUser = async (id: string): Promise<User> => {
   return new Promise((resolve, reject) => {
     redisClient.get(`USER:${id}`, (err, reply) => {
       if (err) {
@@ -17,5 +22,3 @@ const getCurrentUser = async (id) => {
     });
   });
 };
-
-module.exports = {getCurrentUser};

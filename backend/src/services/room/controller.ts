@@ -3,9 +3,11 @@
  * Interfaces with subsystems of the backend.
  */
 
-const {generateRoomCode} = require("./utils");
-const {doesRoomExist, addUserToRoom, getUsersInRoom, addUserToRoomCache} = require("./roomDao");
-const {NO_USERNAME_PROVIDED, ERROR_JOINING_ROOM, MISSING_ROOM_CODE_USERNAME, ROOM_NOT_FOUND} = require("./constants");
+import {generateRoomCode} from "./utils";
+import {doesRoomExist,addUserToRoom,getUsersInRoom,addUserToRoomCache} from "./roomDao";
+import {NO_USERNAME_PROVIDED,ERROR_JOINING_ROOM,MISSING_ROOM_CODE_USERNAME,ROOM_NOT_FOUND} from "./constants";
+import {IO, SocketType} from "server";
+
 /* 
 Room Info needed:
 number of users in the room
@@ -21,7 +23,9 @@ player: {
 */
 
 class RoomController {
-  constructor(io, socket) {
+  io: IO;
+  socket: SocketType;
+  constructor(io: IO, socket: SocketType) {
     this.socket = socket;
     this.io = io;
   }
@@ -99,4 +103,4 @@ class RoomController {
 
 }
 
-module.exports = {RoomController};
+export default RoomController;
