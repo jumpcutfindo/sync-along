@@ -1,3 +1,6 @@
 /* eslint-disable import/prefer-default-export */
-export const BACKEND_URL =
-    process.env.REACT_APP_BACKEND_URL || "http://localhost:4001";
+const LOCAL_HOST = "http://localhost:4001";
+export const BACKEND_URL = 
+    process.env.BACKEND_SVC_SERVICE_HOST ?
+    `http://${process.env.BACKEND_SVC_SERVICE_HOST}:${process.env.BACKEND_SVC_SERVICE_PORT}`
+    : LOCAL_HOST;
