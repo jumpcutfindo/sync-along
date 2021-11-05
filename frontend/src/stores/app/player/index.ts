@@ -7,7 +7,7 @@ import {
     updatePlayerAction,
 } from "./actions";
 
-interface PlayerState {
+export interface PlayerState {
     isPlaying: boolean;
     lastScrubTime: number;
     lastUpdateTime: number;

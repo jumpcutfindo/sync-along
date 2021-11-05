@@ -25,7 +25,7 @@ export interface Media {
     name: string;
 }
 
-interface PlaylistState {
+export interface PlaylistState {
     media: Media[];
     current: Media | null;
     currentIndex: number;

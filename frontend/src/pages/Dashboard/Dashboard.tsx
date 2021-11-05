@@ -3,9 +3,8 @@ import { useAppDispatch, useAppSelector } from "src/hooks/typedReduxHooks";
 import { Modal } from "react-bootstrap";
 import useInputState from "src/hooks/useInputState";
 import useNavigator from "src/hooks/useNavigator";
-import roomApi from "src/services/room";
 
-import { storeRoomCode, joinRoom } from "src/stores/room";
+import { storeRoomCode, joinRoom, CreateRoomResponse } from "src/stores/room";
 import LoadingButton from "src/utils/LoadingButton";
 import { setToastMessage } from "src/stores/app/toasts";
 
@@ -121,13 +120,18 @@ const Dashboard: React.FC = () => {
             isSuccess: isRoomCreationSuccess,
         },
     ] = roomApi.endpoints.createRoom.useMutation();
+    useEffect(() => {
+        dispatch(connectSocket()).then((res) => console.log(res));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const createNewRoom = (event: React.FormEvent) => {
         event.preventDefault();
         if (user) {
             createRoom({ username: user.name })
-                .then((response: any) => {
-                    if (response.error) {
+                .unwrap()
+                .then((response: CreateRoomResponse) => {
+                    if (!response) {
                         dispatch(
                             setToastMessage({
                                 type: "danger",
@@ -136,18 +140,12 @@ const Dashboard: React.FC = () => {
                             })
                         );
                     } else {
-                        const roomCode = response.data.code;
-                        dispatch(
-                            joinRoom({
-                                username: user.name,
-                                room: roomCode,
-                            })
-                        );
+                        const roomCode = response.code;
                         dispatch(storeRoomCode(roomCode));
                         navToRoom(roomCode);
                     }
                 })
-                .catch((err) => {
+                .catch(() => {
                     dispatch(
                         setToastMessage({
                             type: "danger",
