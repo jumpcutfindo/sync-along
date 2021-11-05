@@ -25,4 +25,4 @@ const MongodbConnection: IConnectionConstructor = class {
   }
 }
 
-export default {MongodbConnection};
+export default MongodbConnection;

@@ -20,4 +20,4 @@ class RedisConnection {
   }
 }
 
-module.exports = {RedisConnection};
+export default RedisConnection;
