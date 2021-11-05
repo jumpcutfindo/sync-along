@@ -5,26 +5,64 @@ import useInputState from "src/hooks/useInputState";
 import useNavigator from "src/hooks/useNavigator";
 
 import {
-    joinRoom as joinRoomAction,
-    createRoom,
     storeRoomCode,
+    joinRoom,
     CreateRoomResponse,
+    createRoom,
 } from "src/stores/room";
-
-import { connectSocket } from "src/stores/chat";
+import LoadingButton from "src/utils/LoadingButton";
+import { setToastMessage } from "src/stores/app/toasts";
+import { connectSocket } from "src/services/socket/SocketClient";
+import { validateRoomCode } from "src/utils/validation/validator";
 
 const JoinRoomModal: React.FC<{
     isShow: boolean;
     toggleShow: () => void;
-    joinRoom: (arg0: string) => void;
 }> = (props) => {
-    const { isShow, toggleShow, joinRoom } = props;
+    const dispatch = useAppDispatch();
+    const { navToRoom } = useNavigator();
+    const { isShow, toggleShow } = props;
 
+    const [errorMessage, setErrorMessage] = useState("");
     const [roomCode, onChangeRoomCode] = useInputState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+    const user = useAppSelector((state) => state.app.user);
+
+    const onJoinRoom = (room: string) => {
+        const validation = validateRoomCode(room);
+
+        if (!validation.valid) {
+            if (validation.error) setErrorMessage(validation.error);
+            return;
+        }
+
+        if (user && room) {
+            setIsLoading(true);
+            dispatch(joinRoom({ username: user.name, room }))
+                .then((response: any) => {
+                    if (response.error) {
+                        if (response.error.data?.message) {
+                            setErrorMessage(response.error.data.message);
+                        } else {
+                            setErrorMessage("Unable to join room.");
+                        }
+                    } else {
+                        dispatch(storeRoomCode(room));
+                        navToRoom(room);
+                    }
+                    setIsLoading(false);
+                })
+                .catch((err) => {
+                    setErrorMessage("Unable to join room.");
+                    setIsLoading(false);
+                });
+        }
+    };
 
     const joinExistingRoom = (event: React.FormEvent) => {
         event.preventDefault();
-        joinRoom(roomCode);
+        onJoinRoom(roomCode);
     };
 
     return (
@@ -41,10 +79,16 @@ const JoinRoomModal: React.FC<{
                         value={roomCode}
                         onChange={onChangeRoomCode}
                     />
+                    {errorMessage !== "" ? (
+                        <p className="text-danger small">{errorMessage}</p>
+                    ) : null}
                     <div className="mt-3">
-                        <button type="submit" className="btn btn-success me-2">
-                            Join
-                        </button>
+                        <LoadingButton
+                            type="submit"
+                            className="btn btn-success me-2"
+                            text="Join"
+                            isLoading={isLoading}
+                        />
                         <button
                             type="button"
                             className="btn btn-outline-danger"
@@ -63,9 +107,9 @@ const Dashboard: React.FC = () => {
     const dispatch = useAppDispatch();
     const { navToRoom } = useNavigator();
 
-    const joinRoomRef = useRef(null);
     const user = useAppSelector((state) => state.app.user);
 
+    const [isRoomCreationLoading, setRoomCreationLoading] = useState(false);
     const [isShowJoinModal, setShowJoinModal] = useState(false);
 
     const toggleJoinModal = () => {
@@ -80,23 +124,33 @@ const Dashboard: React.FC = () => {
     const createNewRoom = (event: React.FormEvent) => {
         event.preventDefault();
         if (user) {
+            setRoomCreationLoading(true);
             dispatch(createRoom({ username: user.name }))
                 .unwrap()
-                .then((res: CreateRoomResponse) => {
-                    dispatch(storeRoomCode(res.code));
-                    navToRoom(res.code);
+                .then((response: CreateRoomResponse) => {
+                    if (!response) {
+                        dispatch(
+                            setToastMessage({
+                                type: "danger",
+                                message:
+                                    "Unable to create a room, please try again later.",
+                            })
+                        );
+                    } else {
+                        const roomCode = response.code;
+                        dispatch(storeRoomCode(roomCode));
+                        navToRoom(roomCode);
+                    }
                 })
-                .catch((err) => console.log(err));
-        }
-    };
-
-    // TODO: add error handling
-    const joinRoom = (room: string) => {
-        dispatch(storeRoomCode(room));
-        if (user && room) {
-            dispatch(joinRoomAction({ username: user.name, room }))
-                .then(() => navToRoom(room))
-                .catch(() => console.log("cannot join room!"));
+                .catch(() => {
+                    dispatch(
+                        setToastMessage({
+                            type: "danger",
+                            message:
+                                "Unable to create a room, please try again later.",
+                        })
+                    );
+                });
         }
     };
 
@@ -105,25 +159,23 @@ const Dashboard: React.FC = () => {
             <div className="m-auto d-flex flex-column">
                 <h1 className="my-3">Sync-Along</h1>
                 <div className="d-flex mx-auto">
-                    <button
+                    <LoadingButton
                         type="button"
                         className="btn btn-success me-2"
                         onClick={createNewRoom}
-                    >
-                        Create Room
-                    </button>
+                        isLoading={isRoomCreationLoading}
+                        text="Create Room"
+                    />
                     <button
                         type="button"
                         className="btn btn-primary"
                         onClick={toggleJoinModal}
-                        ref={joinRoomRef}
                     >
                         Join Room
                     </button>
                     <JoinRoomModal
                         isShow={isShowJoinModal}
                         toggleShow={toggleJoinModal}
-                        joinRoom={joinRoom}
                     />
                 </div>
             </div>

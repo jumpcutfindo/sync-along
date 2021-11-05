@@ -10,6 +10,7 @@
   "author": "CS3219 Team 6",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
@@ -17,9 +18,10 @@
     "moment": "^2.29.1",
     "mongoose": "^6.0.12",
     "redis": "^3.1.2",
-    "socket.io": "^4.3.1"
+    "socket.io": "^4.3.1",
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.14"
+    "nodemon": "^2.0.2"
   }
 }

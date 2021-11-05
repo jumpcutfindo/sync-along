@@ -8,8 +8,8 @@ import {
     sendMessage as sendMessageAction,
     receiveMessages,
     Messages,
-    disconnectSocket,
 } from "src/stores/chat";
+import { validateChatMessage } from "src/utils/validation/validator";
 
 import "./index.css";
 
@@ -19,8 +19,12 @@ const MessageInput: React.FC = () => {
     const dispatch = useAppDispatch();
 
     const sendMessage = () => {
-        dispatch(sendMessageAction(messageInput));
-        clearInput();
+        const validation = validateChatMessage(messageInput);
+
+        if (validation.valid) {
+            dispatch(sendMessageAction(messageInput));
+            clearInput();
+        }
     };
 
     const onSubmit = (event: React.FormEvent) => {
@@ -86,10 +90,20 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
 
     useEffect(() => scrollBottom());
 
+    if (messages.length === 0)
+        return (
+            <div className="message-list flex-grow-1">
+                <p className="m-0 small text-muted">
+                    No messages yet; try sending one below!
+                </p>
+            </div>
+        );
+
     return (
         <div ref={ref} className="message-list flex-grow-1">
             {messages.map(({ id, text, username }, index) => (
-                <Message key={id} user={username} message={text} />
+                // eslint-disable-next-line react/no-array-index-key
+                <Message key={index} user={username} message={text} />
             ))}
             <div ref={end} />
         </div>
@@ -103,9 +117,6 @@ const ChatComponent: React.FC = () => {
         dispatch(receiveMessages())
             .catch(() => console.log("error"))
             .finally(() => setIsLoading(false));
-        return () => {
-            dispatch(disconnectSocket());
-        };
     }, []);
     const messages = useAppSelector((state) => state.chat.messages);
     // TODO: error handling

@@ -7,7 +7,7 @@ import {
 } from "@reduxjs/toolkit";
 import { url } from "inspector";
 import { useAppSelector } from "src/hooks/typedReduxHooks";
-import SocketClient from "src/services/SocketClient";
+import SocketClient from "src/services/socket/SocketClient";
 import { RootState } from "Types";
 
 import {
@@ -98,7 +98,13 @@ export const receivePlaylistUpdates = createAsyncThunk<
 export const playlistSlice = createSlice({
     name: "playlist",
     initialState,
-    reducers: {},
+    reducers: {
+        resetPlaylist(state) {
+            state.media = [];
+            state.current = null;
+            state.currentIndex = -1;
+        },
+    },
     extraReducers: (builder) => {
         builder.addCase(updatePlaylist, (state, action) => {
             const { playlist, current } = action.payload;
@@ -126,3 +132,4 @@ export const playlistSlice = createSlice({
 });
 
 export const playlistReducer = playlistSlice.reducer;
+export const { resetPlaylist } = playlistSlice.actions;

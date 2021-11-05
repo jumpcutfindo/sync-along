@@ -3,17 +3,9 @@
     border-radius: 10px 0px 0px 0px;
 }
 
-.PlaylistHeader {
-    height: 10%;
-}
-
 .PlaylistHeader h1, h2, h3, h4, h5, h6 {
     font-family: 'Inter', sans-serif;
     font-weight: 800;
-}
-
-.Playlist {
-    height: 90%;
 }
 
 .PlaylistItem:hover {
