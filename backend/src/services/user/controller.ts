@@ -94,10 +94,12 @@ export const handleUserLogin = (req, res) => {
           message: USER_DOES_NOT_EXIST_ERROR,
         });
       }
-  }).catch(() => res.status(400).json({
+  }).catch((err) => {
+    console.log(err);
+    return res.status(400).json({
     isSuccessful: false,
     message: ERROR_CREATING_USER,
-  }))
+  })});
 };
 
 export const handleUserLogout = (req, res) => {

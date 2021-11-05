@@ -1,4 +1,3 @@
-import path from 'path';
 import http from 'http';
 import express, {Express} from 'express';
 import { Server, Socket } from 'socket.io';
@@ -53,13 +52,10 @@ export type ServiceEntryHandler = (io: IO, socket: Socket) => void;
 
 export type AppEntryHandler = (app: Express) => void;
 
-initUserService(app);
-// Set static folder
-// app.use(express.static(path.join(__dirname, 'public')));
-
 // Initialise Connections
 const mongodbConnection = MongodbConnection.getConnection();
 
+initUserService(app);
 // Run when client connects
 io.on('connection', socket => {
   initRoomService(io, socket);
