@@ -1,9 +1,13 @@
 /**
  * Models a User in the database
  */
-import mongoose from 'mongoose';
+import {Schema, model} from 'mongoose';
 
-const UserSchema = mongoose.Schema({
+type UserType = {
+  username: string;
+  password: string;
+}
+const UserSchema = new Schema<UserType>({
     username: {
         type: String,
         required: true,
@@ -22,4 +26,6 @@ UserSchema.set('toJSON', {
   }
 });
 
-export default mongoose.model('Users', UserSchema);
+const UserModel = model<UserType>('Users', UserSchema);
+
+export default UserModel;

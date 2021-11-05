@@ -1,27 +1,24 @@
-import {connect} from 'mongoose';
+import mongoose, {Connection} from 'mongoose';
 import {IConnectionConstructor} from './IConnection';
 
-type MongoConnection = ReturnType<typeof connect>;
+type MongoConnection = Connection;
 
 const MongodbConnection: IConnectionConstructor<MongoConnection> = class {
   private static connection: MongoConnection;
 
-  public static getConnection() {
+  public static async getConnection() {
     if (!this.connection) {
-      this.connection = connect(process.env.DB_CONNECTION, {
+      await mongoose.connect(process.env.DB_CONNECTION, {
         useNewUrlParser: true
-      }, () => console.log("Connected to MongoDB!"));
+      });
+      this.connection = mongoose.connection;
     }
     return this.connection;
   }
 
-  public static test() {
-    
-  }
-
-  public static disconnect() {
+  public static async disconnect() {
     if (this.connection) {
-      this.connection.disconnect();
+      await this.connection.close();
       this.connection = undefined;
     }
   }

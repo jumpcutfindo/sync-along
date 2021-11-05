@@ -51,7 +51,7 @@ export const doesRoomExist = async (room) => {
   );
 };
 
-const addUserToRoom = async (username, room) => {
+export const addUserToRoom = async (username, room) => {
   return new Promise((resolve, reject) => {
     redisClient.scard(`ROOM:${room}`, (err, reply) => {
       if (err) {
