@@ -11,11 +11,11 @@ require('dotenv/config');
 
 
 // Import Routes
-const { initRoomService } = require('./services/room');
 const { initChatService } = require('./services/chat');
 const {  initPlayerService, initPlaylistService } = require('./services/player');
-const { initUserService } = require('./services/user/index');
-const { initRoomManagementService } = require('./services/room-management');
+const {initUserService} = require('./services/user/index');
+const {initRoomService} = require('./services/room/index');
+// const { initRoomManagementService } = require('./services/room-management');
 // const {initPlaylistService} = require('./services/playlist');
 //const playlistRoute = require('./services/playlist');
 
@@ -41,8 +41,6 @@ app.use(
 );
 
 initUserService(app);
-initRoomManagementService(app);
-// initPlaylistService(app);
 
 const server = http.createServer(app);
 const io = socketio(server, {

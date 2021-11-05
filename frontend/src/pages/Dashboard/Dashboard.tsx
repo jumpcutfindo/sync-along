@@ -3,10 +3,15 @@ import { useAppDispatch, useAppSelector } from "src/hooks/typedReduxHooks";
 import { Modal } from "react-bootstrap";
 import useInputState from "src/hooks/useInputState";
 import useNavigator from "src/hooks/useNavigator";
-import roomApi from "src/services/room";
 
-import { joinRoom as joinRoomAction } from "src/stores/chat";
-import { storeRoomCode } from "src/stores/room";
+import {
+    joinRoom as joinRoomAction,
+    createRoom,
+    storeRoomCode,
+    CreateRoomResponse,
+} from "src/stores/room";
+
+import { connectSocket } from "src/stores/chat";
 
 const JoinRoomModal: React.FC<{
     isShow: boolean;
@@ -67,13 +72,21 @@ const Dashboard: React.FC = () => {
         setShowJoinModal(!isShowJoinModal);
     };
 
-    const [generateRoomCode, { data, isLoading, isSuccess }] =
-        roomApi.endpoints.generateRoomCode.useMutation();
+    useEffect(() => {
+        dispatch(connectSocket()).then((res) => console.log(res));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const createNewRoom = (event: React.FormEvent) => {
         event.preventDefault();
         if (user) {
-            generateRoomCode({ username: user.name });
+            dispatch(createRoom({ username: user.name }))
+                .unwrap()
+                .then((res: CreateRoomResponse) => {
+                    dispatch(storeRoomCode(res.code));
+                    navToRoom(res.code);
+                })
+                .catch((err) => console.log(err));
         }
     };
 
@@ -86,19 +99,6 @@ const Dashboard: React.FC = () => {
                 .catch(() => console.log("cannot join room!"));
         }
     };
-
-    useEffect(() => {
-        if (!isLoading && isSuccess) {
-            const room = data?.code;
-            // TODO: replace with error in the UI
-            if (!room) {
-                console.log("API did not return room");
-            } else {
-                joinRoom(room);
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isLoading, isSuccess]);
 
     return (
         <div className="DashboardScreen d-flex mb-2">
