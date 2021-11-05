@@ -1,11 +1,10 @@
-import {IConnectionConstructor} from "connections/IConnection";
 import {createClient} from "redis";
 
 type RedisConn = ReturnType<typeof createClient>;
-const RedisConnection: IConnectionConstructor<RedisConn> = class {
+class RedisConnection {
   private static connection: RedisConn;
 
-  public static getConnection() {
+  public static getConnection(): RedisConn {
     if (!this.connection) {
       this.connection = createClient({
         url: process.env.REDIS_URL,
