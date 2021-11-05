@@ -1,4 +1,19 @@
-class Player {
+interface IPlayer {
+    lastScrubTime: number;
+    lastUpdateTime: Date;
+    isPlaying: boolean;
+    waiting: number;
+
+    scrubTo: (time: number) => void;
+    setPlaying: (isPlaying: boolean) => void;
+    addToWaiting: () => void;
+    canContinuePlaying: (userCount: number) => boolean;
+}
+class Player implements IPlayer {
+    lastScrubTime;
+    lastUpdateTime;
+    isPlaying;
+    waiting;
     constructor() {
         this.lastScrubTime = 0;
         this.lastUpdateTime = Date.now();

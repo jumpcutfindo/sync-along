@@ -1,18 +1,36 @@
-export class Playlist {
-    constructor(roomCode) {
+interface IPlaylist {
+    roomCode: string;
+    songs: Song[];
+    activeSong: Song;
+    nextId: number;
+
+    addSong;
+    removeSong;
+    setActiveSong;
+    getNextId();
+    nextSong();
+    prevSong();
+
+}
+export class Playlist implements IPlaylist {
+    roomCode;
+    songs;
+    activeSong;
+    nextId;
+    constructor(roomCode: string) {
         this.roomCode = roomCode;
         this.songs = [];
         this.activeSong = undefined;
         this.nextId = 0;
     }
 
-    addSong(song) {
+    addSong(song: Song) {
         this.songs.push(song);
 
         if (!this.activeSong && this.songs.length > 0) this.activeSong = this.songs[0];
     }
 
-    removeSong(id) {
+    removeSong(id: number) {
         const songToRemove = this.songs.find(song => song.id === id);
 
         if (songToRemove === this.activeSong) {
@@ -22,7 +40,7 @@ export class Playlist {
         this.songs = this.songs.filter(s => s.id !== id);
     }
 
-    setActiveSong(id) {
+    setActiveSong(id: number) {
         this.activeSong = this.songs.find(song => song.id === id);
     }
 
@@ -48,8 +66,14 @@ export class Playlist {
     }
 }
 
-export class Song {
-    constructor(id, url) {
+interface ISong {
+    id: number;
+    url: string;
+}
+export class Song implements ISong {
+    id;
+    url;
+    constructor(id: number, url: string) {
         this.id = id;
         this.url = url;
     }

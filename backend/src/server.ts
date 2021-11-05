@@ -48,7 +48,7 @@ const io = new Server<any, any>(server, {
 });
 
 export type IO = typeof io;
-export type SocketType = typeof Socket;
+export type SocketType = Socket;
 export type ServiceEntryHandler = (io: IO, socket: Socket) => void;
 
 export type AppEntryHandler = (app: Express) => void;
