@@ -5,18 +5,33 @@
 replicaCount: 1
 
 
-room-management-component:
+backend-component:
   deployment:
-    name: room-management-deployment
+    name: backend-deployment
     image:
-      repository: baodinh/room-management
+      repository: backend
       pullPolicy: IfNotPresent
       # Overrides the image tag whose default is the chart appVersion.
       tag: latest
   service:
-    name: room-management-svc
+    name: backend-svc
     type: LoadBalancer
-    port: 8080
+    port: 4001 # external port
+    targetPort: 4001 # internal port
+
+frontend-component:
+  deployment:
+    name: frontend-deployment
+    image:
+      repository: frontend
+      pullPolicy: IfNotPresent
+      # Overrides the image tag whose default is the chart appVersion.
+      tag: latest
+  service:
+    name: frontend-svc
+    type: LoadBalancer
+    port: 3000
+    targetPort: 3000
 
 imagePullSecrets: []
 nameOverride: ""

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ index .Values "room-management-component" "deployment" "name" }}
+  name: {{ index .Values "backend-component" "deployment" "name" }}
   labels:
     {{- include "sync-along.labels" . | nindent 4 }}
 spec:
@@ -20,6 +20,10 @@ spec:
       labels:
         {{- include "sync-along.selectorLabels" . | nindent 8 }}
     spec:
+      volumes:
+        - name: task-pv-volume
+          persistentVolumeClaim:
+            claimName: task-pv-claim
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -31,22 +35,25 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ index .Values "room-management-component" "deployment" "image" "repository" }}:{{ index .Values "room-management-component" "deployment" "image" "tag" | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ index .Values "room-management-component" "deployment" "image" "pullPolicy" }}
+          image: "{{ index .Values "backend-component" "deployment" "image" "repository" }}:{{ index .Values "backend-component" "deployment" "image" "tag" | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ index .Values "backend-component" "deployment" "image" "pullPolicy" }}
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 4001
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: "/src/database/"
+              name: task-pv-volume
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
