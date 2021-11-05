@@ -24,7 +24,7 @@ export const sendMessage = createAsyncThunk<
         extra: SocketClient;
     }
 >(sendMessageAction, (text: string, { extra: socketClient }) => {
-    return socketClient.emit("chatMessage", text);
+    return socketClient.emit("chat/message", text);
 });
 
 // TODO: add handlers if socket.io times out.

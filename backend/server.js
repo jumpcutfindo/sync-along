@@ -5,13 +5,12 @@ const socketio = require('socket.io');
 const session = require("express-session");
 const cors = require("cors");
 const app = express();
-const mongoose = require('mongoose');
 require('dotenv/config');
 
 
 
 // Import Routes
-const { initChatService } = require('./services/chat');
+const { initChatService } = require('./services/chat/index');
 const {  initPlayerService, initPlaylistService } = require('./services/player');
 const {initUserService} = require('./services/user/index');
 const {initRoomService} = require('./services/room/index');
@@ -19,6 +18,8 @@ const {initRoomService} = require('./services/room/index');
 // const {initPlaylistService} = require('./services/playlist');
 //const playlistRoute = require('./services/playlist');
 
+// Import Databases and Resources
+const {MongodbConnection} = require("./connections/MongodbConnection");
 
 //app.use('/playlist', playlistRoute);
 
@@ -53,10 +54,8 @@ const io = socketio(server, {
 // Set static folder
 // app.use(express.static(path.join(__dirname, 'public')));
 
-// Connect to playlist DB 
-mongoose.connect(process.env.DB_CONNECTION ,{useNewUrlParser: true}, () => 
-  console.log('Connected to PlaylistDB!')
-);
+// Initialise Connections
+const mongodbConnection = MongodbConnection.getConnection();
 
 // Run when client connects
 io.on('connection', socket => {
