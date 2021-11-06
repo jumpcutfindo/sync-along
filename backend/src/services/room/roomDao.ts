@@ -1,6 +1,8 @@
 import Serialiser from "esserializer";
 import Room from "./model";
-import RedisConnection from "src/connections/RedisConnection";
+
+import { ROOM_NOT_FOUND } from "./constants";
+import RedisConnection from "../../connections/RedisConnection";
 
 const redisClient = RedisConnection.getConnection();
 class RoomDao {
@@ -12,7 +14,7 @@ class RoomDao {
 
   static async save(room: Room) {
     return new Promise((resolve, reject) => {
-      const roomCode = room.roomCode;
+      const roomCode = room.getRoomCode();
       const serialisedRoom = Serialiser.serialize(room);
       redisClient.set(`ROOM:${roomCode}`, serialisedRoom, (err) => {
         if (err) {
@@ -43,7 +45,7 @@ class RoomDao {
         }
         try {
           if (!reply) {
-            resolve(reply);
+            reject(new Error(ROOM_NOT_FOUND));
           } else {
             const room = Serialiser.deserialize(reply, [Room]);
             resolve(room);

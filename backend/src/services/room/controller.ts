@@ -5,9 +5,9 @@
 
 import {generateRoomCode} from "./utils";
 import {doesRoomExist,addUserToRoom,getUsersInRoom,addUserToRoomCache, isOwner, removeUserFromRoom, removeUserFromRoomCache, getRoomStatus} from "./roomRepo";
-import {NO_USERNAME_PROVIDED, NO_ROOM_PROVIDED, ERROR_JOINING_ROOM,MISSING_ROOM_CODE_USERNAME,ROOM_NOT_FOUND, SUCCESSFULL_LEFT_ROOM} from "./constants";
+import {NO_USERNAME_PROVIDED, NO_ROOM_PROVIDED, ERROR_JOINING_ROOM,MISSING_ROOM_CODE_USERNAME,ROOM_NOT_FOUND, SUCCESSFUL_LEFT_ROOM, ERROR_LEFT_ROOM} from "./constants";
 import {IO, SocketType} from "server";
-import {getCurrentUser} from "services/chat/chatDao";
+import {getCurrentUser} from "../chat/chatDao";
 
 /* 
 Room Info needed:
@@ -44,7 +44,7 @@ class RoomController {
     while (await doesRoomExist(generatedCode)) {
       generatedCode = generateRoomCode();
     }
-    addUserToRoom(username, generatedCode)
+    addUserToRoom(this.socket.id, generatedCode)
       .then(() => addUserToRoomCache(this.socket.id, username, generatedCode))
       .then(() => this.socket.join(generatedCode))
       .then(() => callback({
@@ -77,7 +77,7 @@ class RoomController {
     }
   
     try {
-      await addUserToRoom(username, room);
+      await addUserToRoom(this.socket.id, room);
       await addUserToRoomCache(this.socket.id, username, room);
       const users = await getUsersInRoom(room);
       this.socket.join(room);
@@ -102,18 +102,11 @@ class RoomController {
     }
   }
 
-  handleLeaveRoom = async ({room}, callback) => {
-    if (!room) {
-      return callback({
-        status: 400,
-        isSuccessful: false,
-        message: NO_ROOM_PROVIDED,
-      });
-    }
-
+  handleLeaveRoom = async (_: unknown, callback) => {
+    console.log("in leave room")
     try {
-      const {username, room} = await getCurrentUser(this.socket.id);
-      const isOwnerOfRoom = await isOwner(username, room);
+      const {room} = await getCurrentUser(this.socket.id);
+      const isOwnerOfRoom = await isOwner(this.socket.id, room);
       if (isOwnerOfRoom) {
         const users = await getUsersInRoom(room);
         for (const user of users) {
@@ -125,15 +118,21 @@ class RoomController {
         callback({
           status: 200,
           isSuccessful: true,
-          message: SUCCESSFULL_LEFT_ROOM,
+          message: SUCCESSFUL_LEFT_ROOM,
         });
       } else {
-        await removeUserFromRoom(username, room);
-        await removeUserFromRoomCache(username);
+        await removeUserFromRoom(this.socket.id, room);
+        await removeUserFromRoomCache(this.socket.id);
         this.socket.leave(room);
         const roomStatus = await getRoomStatus(room);
         this.io.to(room).emit("room/update", JSON.stringify(roomStatus));
       }
+    } catch {
+      return callback({
+        status: 400,
+        isSuccessful: false,
+        message: ERROR_LEFT_ROOM,
+      });
     }
   }
 

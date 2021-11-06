@@ -5,7 +5,7 @@ import userApi from "src/services/user";
 import useNavigator from "src/hooks/useNavigator";
 
 import { appLogout } from "src/stores/app";
-import { storeRoomCode } from "src/stores/room";
+import { storeRoomCode, leaveRoom as leaveRoomAction } from "src/stores/room";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { setToastMessage, toastSlice } from "src/stores/app/toasts";
@@ -92,6 +92,7 @@ const DashboardControls: React.FC = () => {
     const { navToDashboard } = useNavigator();
 
     const leaveRoom = () => {
+        dispatch(leaveRoomAction());
         dispatch(storeRoomCode(undefined));
         dispatch(resetPlaylist());
         dispatch(resetPlayer());

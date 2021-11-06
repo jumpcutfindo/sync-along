@@ -9,6 +9,7 @@ import {
     joinRoom,
     CreateRoomResponse,
     createRoom,
+    leaveRoomListener,
 } from "src/stores/room";
 import LoadingButton from "src/utils/LoadingButton";
 import { setToastMessage } from "src/stores/app/toasts";
@@ -20,7 +21,7 @@ const JoinRoomModal: React.FC<{
     toggleShow: () => void;
 }> = (props) => {
     const dispatch = useAppDispatch();
-    const { navToRoom } = useNavigator();
+    const { navToRoom, navToDashboard } = useNavigator();
     const { isShow, toggleShow } = props;
 
     const [errorMessage, setErrorMessage] = useState("");
@@ -49,6 +50,7 @@ const JoinRoomModal: React.FC<{
                         }
                     } else {
                         dispatch(storeRoomCode(room));
+                        dispatch(leaveRoomListener(navToDashboard));
                         navToRoom(room);
                     }
                     setIsLoading(false);

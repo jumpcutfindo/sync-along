@@ -30,7 +30,7 @@
  */
 
 import RoomDao from "./roomDao";
-import UserDao from "services/room/userDao";
+import UserDao from "./userDao";
 
 export const doesRoomExist = async (room) => {
   return RoomDao.exists(room);
@@ -43,7 +43,7 @@ export const addUserToRoom = async (userId, room) => {
       if (roomExists) {
         const roomObj = await RoomDao.find(room);
         roomObj.addUser(userId);
-        await RoomDao.save(room);
+        await RoomDao.save(roomObj);
         resolve(roomObj);
       } else {
         const newRoom = RoomDao.create(userId, room);
@@ -51,17 +51,19 @@ export const addUserToRoom = async (userId, room) => {
         resolve(newRoom);
       }
     } catch (err) {
+      console.log(err);
       reject(err);
     }
   });
 };
 
-export const getUsersInRoom = async (roomCode) => {
+export const getUsersInRoom = async (roomCode): Promise<Set<string>> => {
   return new Promise(async (resolve, reject) => {
     try {
       const room = await RoomDao.find(roomCode);
       resolve(room.getUsers());
     } catch (err) {
+      console.log(err);
       reject(err);
     }
   });
@@ -72,15 +74,23 @@ export const addUserToRoomCache = async (id, username, room) => {
     const user = UserDao.create(id, username, room);
     UserDao.save(user)
     .then((res) => resolve(res))
-    .catch((err) => reject(err));
+    .catch((err) => {
+      console.log(err);
+      return reject(err);
+    });
   });
 }
 
 export const isOwner = async (userId, room) => {
   return new Promise(async (resolve, reject) => {
     RoomDao.find(room)
-      .then((res) => resolve(room.owner === userId))
-      .catch((err) => reject(err));
+      .then((foundRoom) => {
+        resolve(foundRoom.getOwner() === userId);
+      })
+      .catch((err) => {
+        console.log(err);
+        reject(err)
+      });
   });
 }
 
@@ -97,6 +107,7 @@ export const removeUserFromRoom = async (userId, room) => {
         resolve(res);
       }
     } catch (err) {
+      console.log(err);
       reject(err);
     }
   })

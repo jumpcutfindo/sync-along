@@ -1,9 +1,12 @@
 import Serialiser from "esserializer";
 import User from "./userModel";
-import RedisConnection from "src/connections/RedisConnection";
+import RedisConnection from "../../connections/RedisConnection";
 
 const redisClient = RedisConnection.getConnection();
 class UserDao {
+  id: string;
+  username: string;
+  roomCode: string;
   static create(id: string, username: string, roomCode: string) {
     const newUser = new User(id, username, roomCode);
     return newUser;
@@ -11,7 +14,7 @@ class UserDao {
 
   static async save(user: User) {
     return new Promise((resolve, reject) => {
-      const userId = user.id;
+      const userId = user.getId;
       const serialisedUser = Serialiser.serialize(user);
       redisClient.set(`USER:${userId}`, serialisedUser, (err) => {
         if (err) {
@@ -41,12 +44,8 @@ class UserDao {
           reject(err);
         }
         try {
-          if (!reply) {
-            resolve(reply);
-          } else {
-            const user = Serialiser.deserialize(reply, [User]);
-            resolve(user);
-          }
+          const user = Serialiser.deserialize(reply, [User]);
+          resolve(user);
         } catch (err) {
           reject(err);
         }

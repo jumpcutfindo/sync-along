@@ -1,4 +1,8 @@
 class Room {
+  roomCode: string;
+  owner: string;
+  users: Set<string>;
+  userCount: number;
   constructor(roomCode, owner) {
     this.roomCode = roomCode;
     this.users = new Set();
@@ -18,6 +22,14 @@ class Room {
 
   getUsers() {
     return this.users;
+  }
+
+  getRoomCode() {
+    return this.roomCode;
+  }
+
+  getOwner() {
+    return this.owner;
   }
 
   empty() {
