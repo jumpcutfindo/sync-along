@@ -4,7 +4,7 @@
  */
 
 import {generateRoomCode} from "./utils";
-import {doesRoomExist,addUserToRoom,getUsersInRoom,addUserToRoomCache} from "./roomRepo";
+import {doesRoomExist,addUserToRoom,getUsersInRoom,addUserToRoomCache, isOwner, removeUserFromRoom, removeUserFromRoomCache, getRoomStatus} from "./roomRepo";
 import {NO_USERNAME_PROVIDED, NO_ROOM_PROVIDED, ERROR_JOINING_ROOM,MISSING_ROOM_CODE_USERNAME,ROOM_NOT_FOUND, SUCCESSFULL_LEFT_ROOM} from "./constants";
 import {IO, SocketType} from "server";
 import {getCurrentUser} from "services/chat/chatDao";
@@ -132,7 +132,7 @@ class RoomController {
         await removeUserFromRoomCache(username);
         this.socket.leave(room);
         const roomStatus = await getRoomStatus(room);
-        this.io.to(room, roomStatus);
+        this.io.to(room).emit("room/update", JSON.stringify(roomStatus));
       }
     }
   }

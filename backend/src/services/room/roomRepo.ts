@@ -29,14 +29,8 @@
  * })
  */
 
-import RedisConnection from "../../connections/RedisConnection";
 import RoomDao from "./roomDao";
-import {ROOM_NOT_FOUND} from "./constants";
-import Room from "services/room/model";
 import UserDao from "services/room/userDao";
-import User from "services/room/userModel";
-
-const redisClient = RedisConnection.getConnection();
 
 export const doesRoomExist = async (room) => {
   return RoomDao.exists(room);
@@ -44,16 +38,20 @@ export const doesRoomExist = async (room) => {
 
 export const addUserToRoom = async (userId, room) => {
   return new Promise(async (resolve, reject) => {
-    const roomExists = await doesRoomExist(room);
-    if (roomExists) {
-      const roomObj = await RoomDao.find(room);
-      roomObj.addUser(userId);
-      await RoomDao.save(room);
-      resolve(roomObj);
-    } else {
-      const newRoom = RoomDao.create(userId, room);
-      await RoomDao.save(newRoom);
-      resolve(newRoom);
+    try {
+      const roomExists = await doesRoomExist(room);
+      if (roomExists) {
+        const roomObj = await RoomDao.find(room);
+        roomObj.addUser(userId);
+        await RoomDao.save(room);
+        resolve(roomObj);
+      } else {
+        const newRoom = RoomDao.create(userId, room);
+        await RoomDao.save(newRoom);
+        resolve(newRoom);
+      }
+    } catch (err) {
+      reject(err);
     }
   });
 };
@@ -103,6 +101,11 @@ export const removeUserFromRoom = async (userId, room) => {
     }
   })
 }
+
 export const removeUserFromRoomCache = async (userId) => {
   return UserDao.delete(userId);
+}
+
+export const getRoomStatus = async (room) => {
+  return RoomDao.find(room);
 }
