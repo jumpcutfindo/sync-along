@@ -1,4 +1,4 @@
-import {Song} from "./song";
+import Song from "./song";
 interface IPlaylist {
   roomCode: string;
   songs: Song[];

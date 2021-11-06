@@ -7,7 +7,7 @@ import {generateRoomCode} from "./utils";
 import {doesRoomExist,addUserToRoom,getUsersInRoom,addUserToRoomCache, isOwner, removeUserFromRoom, removeUserFromRoomCache, getRoomStatus} from "./roomRepo";
 import {NO_USERNAME_PROVIDED, NO_ROOM_PROVIDED, ERROR_JOINING_ROOM,MISSING_ROOM_CODE_USERNAME,ROOM_NOT_FOUND, SUCCESSFUL_LEFT_ROOM, ERROR_LEFT_ROOM} from "./constants";
 import {IO, SocketType} from "server";
-import {getCurrentUser} from "../chat/chatDao";
+import {getUser} from "./roomRepo";
 
 /* 
 Room Info needed:
@@ -105,7 +105,7 @@ class RoomController {
   handleLeaveRoom = async (_: unknown, callback) => {
     console.log("in leave room")
     try {
-      const {room} = await getCurrentUser(this.socket.id);
+      const {room} = await getUser(this.socket.id);
       const isOwnerOfRoom = await isOwner(this.socket.id, room);
       if (isOwnerOfRoom) {
         const users = await getUsersInRoom(room);

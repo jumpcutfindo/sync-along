@@ -8,12 +8,16 @@ class User {
     this.room = room;
   }
 
-  get getId() {
+  getId() {
     return this.id;
   }
 
-  get getRoom() {
+  getRoom() {
     return this.room;
+  }
+
+  getUsername() {
+    return this.username;
   }
 }
 

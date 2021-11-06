@@ -1,5 +1,5 @@
 import Song from "models/song";
-import PlaylistModel from "./playlistDao";
+import PlaylistDao from "./playlistDao";
 
 export const addSongToPlaylist = async (url: string, room: string) => {
   return new Promise(async (resolve, reject) => {
@@ -24,10 +24,3 @@ export const addSongToPlaylist = async (url: string, room: string) => {
   }
   });
 }
-
-const getPlaylistState = (playlist) => {
-  return JSON.stringify({
-    playlist: playlist.songs,
-    current: playlist.activeSong,
-  });
-};

@@ -69,6 +69,10 @@ export const getUsersInRoom = async (roomCode): Promise<Set<string>> => {
   });
 }
 
+export const getUser = async (id: string) => {
+  return UserDao.find(id);
+};
+
 export const addUserToRoomCache = async (id, username, room) => {
   return new Promise((resolve, reject) => {
     const user = UserDao.create(id, username, room);

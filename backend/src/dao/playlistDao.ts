@@ -33,12 +33,8 @@ class PlaylistDao {
           reject(err);
         }
         try {
-          if (!reply) {
-            resolve(reply);
-          } else {
-            const playlist = Serialiser.deserialize(reply, [Playlist, Song]);
-            resolve(playlist);
-          }
+          const playlist = Serialiser.deserialize(reply, [Playlist, Song]);
+          resolve(playlist);
         } catch (err) {
           reject(err);
         }
