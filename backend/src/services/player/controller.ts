@@ -11,7 +11,7 @@ class PlayerController {
     this.io = io;
   }
 
-  async handleAddPlaylist({ url }: { url: string}) {
+  handleAddPlaylist = async ({ url }: { url: string}) => {
     const user = await RoomRepo.getUser(this.socket.id);
     if (user) {
       const playlist = await PlayerRepo.addSongToPlaylist(url, user.room);
@@ -19,7 +19,7 @@ class PlayerController {
     }
   }
 
-  async handleRemovePlaylist({id}: {id: number}) {
+  handleRemovePlaylist = async ({id}: {id: number}) => {
     const user = await RoomRepo.getUser(this.socket.id);
     if (user) {
       const playlist = await PlayerRepo.removeSongFromPlaylist(id, user.room);
@@ -28,7 +28,7 @@ class PlayerController {
     }
   };
 
-  async handleSelectPlaylist({id}: {id: number}) {
+  handleSelectPlaylist = async ({id}: {id: number}) => {
     const user = await RoomRepo.getUser(this.socket.id);
     if (user) {
       const playlist = await PlayerRepo.setActiveSongInPlaylist(id, user.room);
@@ -37,7 +37,7 @@ class PlayerController {
     }
   }
 
-  async handleNextPlaylist() {
+  handleNextPlaylist = async () => {
     const user = await RoomRepo.getUser(this.socket.id);
     if (user) {
       const playlist = await PlayerRepo.playNextSong(user.room);
@@ -47,7 +47,7 @@ class PlayerController {
     }
   }
 
-  async handlePrevPlaylist() {
+  handlePrevPlaylist = async () => {
     const user = await RoomRepo.getUser(this.socket.id);
     if (user) {
       const playlist = await PlayerRepo.playPreviousSong(user.room);

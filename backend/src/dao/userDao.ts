@@ -14,7 +14,7 @@ class UserDao {
 
   static async save(user: User) {
     return new Promise((resolve, reject) => {
-      const userId = user.getId;
+      const userId = user.getId();
       const serialisedUser = Serialiser.serialize(user);
       redisClient.set(`USER:${userId}`, serialisedUser, (err) => {
         if (err) {

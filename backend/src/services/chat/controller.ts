@@ -18,7 +18,7 @@ class ChatController implements IChatController {
     this.socket = socket;
   }
 
-  async handleChatMessage(message: string) {
+  handleChatMessage = async (message: string) => {
     const user = await RoomRepo.getUser(this.socket.id);
     if (user) {
       this.io.to(user.getRoom()).emit("message", formatMessage(user.getUsername(), message));

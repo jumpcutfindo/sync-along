@@ -30,7 +30,7 @@ class RoomController {
     this.io = io;
   }
   
-  async handleCreateRoom({username}, callback) {
+  handleCreateRoom = async ({username}, callback) => {
     if (!username) {
       return callback({
         status: 400, 
@@ -43,7 +43,6 @@ class RoomController {
     while (await RoomRepo.doesRoomExist(generatedCode)) {
       generatedCode = generateRoomCode();
     }
-    console.log(this.socket);
     RoomRepo.addUserToRoom(this.socket.id, generatedCode)
       .then(() => RoomRepo.addUserToRoomCache(this.socket.id, username, generatedCode))
       .then(() => this.socket.join(generatedCode))
@@ -58,7 +57,7 @@ class RoomController {
       }));
   };
 
-  async handleJoinRoom({username, room}, callback) {
+  handleJoinRoom = async ({username, room}, callback) => {
     if (!(username && room)) {
       return callback({
         status: 400,
@@ -102,8 +101,7 @@ class RoomController {
     }
   }
 
-  async handleLeaveRoom(_: unknown, callback) {
-    console.log("in leave room")
+  handleLeaveRoom = async (_: unknown, callback) => {
     try {
       const {room} = await RoomRepo.getUser(this.socket.id);
       const isOwnerOfRoom = await RoomRepo.isOwner(this.socket.id, room);
