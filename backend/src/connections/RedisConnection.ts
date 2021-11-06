@@ -1,24 +1,24 @@
-import {createClient} from "redis";
+import { createClient } from "redis";
 
 type RedisConn = ReturnType<typeof createClient>;
 class RedisConnection {
-  private static connection: RedisConn;
+    private static connection: RedisConn;
 
-  public static getConnection(): RedisConn {
-    if (!this.connection) {
-      this.connection = createClient({
-        url: process.env.REDIS_URL,
-      });
+    public static getConnection(): RedisConn {
+        if (!this.connection) {
+            this.connection = createClient({
+                url: process.env.REDIS_URL,
+            });
+        }
+        return this.connection;
     }
-    return this.connection;  
-  }
 
-  public static disconnect() {
-    if (this.connection) {
-      this.connection.quit();
-      this.connection = undefined;
+    public static disconnect() {
+        if (this.connection) {
+            this.connection.quit();
+            this.connection = undefined;
+        }
     }
-  }
 }
 
 export default RedisConnection;

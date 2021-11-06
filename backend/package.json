@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/src/server.js",
-    "dev": "nodemon -e ts,js --exec ts-node -r tsconfig-paths/register ./src/server.ts"
+    "dev": "nodemon -e ts,js --exec ts-node -r tsconfig-paths/register ./src/server.ts",
+    "format": "prettier --write src/**/*.ts",
+    "lint": "tsc --noEmit && eslint src/**/*.ts"
   },
   "author": "CS3219 Team 6",
   "dependencies": {
@@ -29,7 +31,14 @@
     "@types/node": "^16.11.6",
     "@types/redis": "^2.8.32",
     "@types/socket.io": "^3.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.3.0",
+    "@typescript-eslint/parser": "^5.3.0",
+    "eslint-config-airbnb-typescript": "^15.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-prettier": "^4.0.0",
     "nodemon": "^2.0.14",
+    "prettier": "^2.4.1",
     "ts-node": "^10.4.0",
     "tsconfig-paths": "^3.11.0"
   }
