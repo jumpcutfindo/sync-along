@@ -18,8 +18,6 @@ import initRoomService from './services/room/index';
 // Import Databases and Resources
 import MongodbConnection from "./connections/MongodbConnection";
 
-//app.use('/playlist', playlistRoute);
-
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
