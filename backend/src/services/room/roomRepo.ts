@@ -29,8 +29,8 @@
  * })
  */
 
-import RoomDao from "./roomDao";
-import UserDao from "./userDao";
+import RoomDao from "../../dao/roomDao";
+import UserDao from "../../dao/userDao";
 
 export const doesRoomExist = async (room) => {
   return RoomDao.exists(room);

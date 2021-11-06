@@ -1,7 +1,7 @@
 import {IO, SocketType} from "server";
 import {resetSongProgress} from "services/player";
 import {getCurrentUser} from "utils/users";
-import {addSongToPlaylist, getPlaylistState} from "./playerDao";
+import {addSongToPlaylist, getPlaylistState} from "../../dao/playerDao";
 
 class PlayerController {
   io: IO;

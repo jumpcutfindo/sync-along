@@ -1,13 +1,13 @@
 import Serialiser from "esserializer";
-import Playlist from "./playlist";
-import Song from "./song";
+import Playlist from "../models/playlist";
+import Song from "../models/song";
 import RedisConnection from "src/connections/RedisConnection";
 
 const redisClient = RedisConnection.getConnection();
 /**
  * A DAO for the Playlist
  */
-class PlaylistModel {
+class PlaylistDao {
   static create(roomCode: string) {
     const newPlaylist = new Playlist(roomCode);
     return newPlaylist;
@@ -58,4 +58,4 @@ class PlaylistModel {
   };
 }
 
-export default PlaylistModel;
+export default PlaylistDao;

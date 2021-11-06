@@ -1,6 +1,6 @@
 import Serialiser from "esserializer";
-import User from "./userModel";
-import RedisConnection from "../../connections/RedisConnection";
+import User from "../models/user";
+import RedisConnection from "../connections/RedisConnection";
 
 const redisClient = RedisConnection.getConnection();
 class UserDao {

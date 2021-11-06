@@ -1,5 +1,5 @@
-import Song from "services/player/song";
-import PlaylistModel from "./model";
+import Song from "models/song";
+import PlaylistModel from "./playlistDao";
 
 export const addSongToPlaylist = async (url: string, room: string) => {
   return new Promise(async (resolve, reject) => {

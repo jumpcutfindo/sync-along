@@ -1,8 +1,8 @@
 import Serialiser from "esserializer";
-import Room from "./model";
+import Room from "../models/room";
 
-import { ROOM_NOT_FOUND } from "./constants";
-import RedisConnection from "../../connections/RedisConnection";
+import { ROOM_NOT_FOUND } from "../services/room/constants";
+import RedisConnection from "../connections/RedisConnection";
 
 const redisClient = RedisConnection.getConnection();
 class RoomDao {
