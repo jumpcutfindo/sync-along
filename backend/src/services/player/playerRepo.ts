@@ -1,8 +1,9 @@
 import PlaylistDao from "dao/playlistDao"
 import Song from "models/song";
+import Playlist from "models/playlist";
 
 class PlayerRepo {
-  static async addSongToPlaylist(url: string, room: string) {
+  static async addSongToPlaylist(url: string, room: string): Promise<Playlist> {
   return new Promise(async (resolve, reject) => {
     try {
       const playlist = await PlaylistDao.find(room);

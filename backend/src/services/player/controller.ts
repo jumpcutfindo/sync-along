@@ -1,6 +1,6 @@
 import {IO, SocketType} from "server";
 import {resetSongProgress} from "services/player";
-import {getUser} from "../room/roomRepo";
+import RoomRepo from "../room/roomRepo";
 import PlayerRepo from "./playerRepo";
 import {getPlaylistState} from "./utils";
 class PlayerController {
@@ -12,7 +12,7 @@ class PlayerController {
   }
 
   async handleAddPlaylist({ url }: { url: string}) {
-    const user = await getUser(this.socket.id);
+    const user = await RoomRepo.getUser(this.socket.id);
     if (user) {
       const playlist = await PlayerRepo.addSongToPlaylist(url, user.room);
       this.io.to(user.getRoom()).emit("playlist/update", getPlaylistState(playlist));
@@ -20,7 +20,7 @@ class PlayerController {
   }
 
   async handleRemovePlaylist({id}: {id: number}) {
-    const user = await getUser(this.socket.id);
+    const user = await RoomRepo.getUser(this.socket.id);
     if (user) {
       const playlist = await PlayerRepo.removeSongFromPlaylist(id, user.room);
       
@@ -29,7 +29,7 @@ class PlayerController {
   };
 
   async handleSelectPlaylist({id}: {id: number}) {
-    const user = await getUser(this.socket.id);
+    const user = await RoomRepo.getUser(this.socket.id);
     if (user) {
       const playlist = await PlayerRepo.setActiveSongInPlaylist(id, user.room);
       // TODO: add reset song progress
@@ -38,7 +38,7 @@ class PlayerController {
   }
 
   async handleNextPlaylist() {
-    const user = await getUser(this.socket.id);
+    const user = await RoomRepo.getUser(this.socket.id);
     if (user) {
       const playlist = await PlayerRepo.playNextSong(user.room);
       resetSongProgress(this.io, this.socket);
@@ -48,9 +48,9 @@ class PlayerController {
   }
 
   async handlePrevPlaylist() {
-    const user = await getUser(this.socket.id);
+    const user = await RoomRepo.getUser(this.socket.id);
     if (user) {
-      const playlist = PlayerRepo.playPreviousSong(user.room);
+      const playlist = await PlayerRepo.playPreviousSong(user.room);
       resetSongProgress(this.io, this.socket);
       this.io.to(user.room).emit("playlist/update", getPlaylistState(playlist));
     }
