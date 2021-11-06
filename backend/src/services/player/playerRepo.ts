@@ -1,6 +1,6 @@
-import PlaylistDao from "dao/playlistDao"
-import Song from "models/song";
-import Playlist from "models/playlist";
+import PlaylistDao from "src/dao/playlistDao";
+import Song from "src/models/song";
+import Playlist from "src/models/playlist";
 
 class PlayerRepo {
   static async addSongToPlaylist(url: string, room: string): Promise<Playlist> {

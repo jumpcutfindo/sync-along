@@ -10,7 +10,8 @@ dotenv.config();
 
 // Import Routes
 import initChatService from './services/chat/index';
-import {initPlayerService,initPlaylistService} from './services/player';
+import {initPlaylistService} from './services/player';
+import initPlayerService from './services/player/index';
 import initUserService from './services/user/index';
 import initRoomService from './services/room/index';
 

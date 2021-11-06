@@ -1,4 +1,4 @@
-import Song from "models/song";
+import Song from "src/models/song";
 import PlaylistDao from "./playlistDao";
 
 export const addSongToPlaylist = async (url: string, room: string) => {

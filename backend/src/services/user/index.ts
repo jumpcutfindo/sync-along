@@ -2,7 +2,7 @@
  * Defining routes for the User API
  */
 
-import {AppEntryHandler} from "server";
+import {AppEntryHandler} from "src/server";
 import UserController from "./controller";
 
 const REGISTER_API = "/register";

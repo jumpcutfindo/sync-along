@@ -2,7 +2,7 @@
  * Defining endpoints for the room chat service
  */
 
-import {ServiceEntryHandler} from "server";
+import {ServiceEntryHandler} from "src/server";
 
 import ChatController from "./controller";
 const CLIENT_CHAT_MESSAGE_EVENT = "chat/message";

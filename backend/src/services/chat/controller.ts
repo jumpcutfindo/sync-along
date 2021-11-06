@@ -1,6 +1,6 @@
 import {formatMessage} from "./utils";
 import RoomRepo from "../room/roomRepo";
-import {IO, SocketType} from "../../server";
+import {IO, SocketType} from "src/server";
 /**
  * A Controller that handles chat messages from web clients
  */

@@ -6,7 +6,7 @@
 import {generateRoomCode} from "./utils";
 import RoomRepo from "./roomRepo";
 import {NO_USERNAME_PROVIDED, NO_ROOM_PROVIDED, ERROR_JOINING_ROOM,MISSING_ROOM_CODE_USERNAME,ROOM_NOT_FOUND, SUCCESSFUL_LEFT_ROOM, ERROR_LEFT_ROOM} from "./constants";
-import {IO, SocketType} from "server";
+import {IO, SocketType} from "src/server";
 
 /* 
 Room Info needed:
@@ -43,6 +43,7 @@ class RoomController {
     while (await RoomRepo.doesRoomExist(generatedCode)) {
       generatedCode = generateRoomCode();
     }
+    console.log(this.socket);
     RoomRepo.addUserToRoom(this.socket.id, generatedCode)
       .then(() => RoomRepo.addUserToRoomCache(this.socket.id, username, generatedCode))
       .then(() => this.socket.join(generatedCode))

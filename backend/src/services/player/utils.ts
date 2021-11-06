@@ -1,5 +1,5 @@
-import Playlist from "models/playlist";
-import Song from "models/song";
+import Playlist from "src/models/playlist";
+import Song from "src/models/song";
 
 type PlaylistState = {
   playlist: Song[];

@@ -1,5 +1,5 @@
-import {IO, SocketType} from "server";
-import {resetSongProgress} from "services/player";
+import {IO, SocketType} from "src/server";
+import {resetSongProgress} from "../player";
 import RoomRepo from "../room/roomRepo";
 import PlayerRepo from "./playerRepo";
 import {getPlaylistState} from "./utils";

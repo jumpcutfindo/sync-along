@@ -1,7 +1,7 @@
 /**
  * Defining endpoints for the room player service
  */
-import {ServiceEntryHandler} from "server";
+import {ServiceEntryHandler} from "src/server";
 import PlayerController from "./controller";
 
 const ADD_PLAYLIST = "playlist/add";

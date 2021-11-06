@@ -3,10 +3,10 @@
  * Interacts with the RoomDao and UserDao classes
  */
 
-import RoomDao from "../../dao/roomDao";
-import UserDao from "../../dao/userDao";
+import RoomDao from "src/dao/roomDao";
+import UserDao from "src/dao/userDao";
 
-import Room from "../../models/room";
+import Room from "src/models/room";
 class RoomRepo {
   static async doesRoomExist(room) {
     return RoomDao.exists(room);
