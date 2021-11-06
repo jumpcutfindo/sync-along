@@ -4,9 +4,10 @@
  */
 
 import {generateRoomCode} from "./utils";
-import {doesRoomExist,addUserToRoom,getUsersInRoom,addUserToRoomCache} from "./roomDao";
-import {NO_USERNAME_PROVIDED,ERROR_JOINING_ROOM,MISSING_ROOM_CODE_USERNAME,ROOM_NOT_FOUND} from "./constants";
+import {doesRoomExist,addUserToRoom,getUsersInRoom,addUserToRoomCache} from "./roomRepo";
+import {NO_USERNAME_PROVIDED, NO_ROOM_PROVIDED, ERROR_JOINING_ROOM,MISSING_ROOM_CODE_USERNAME,ROOM_NOT_FOUND, SUCCESSFULL_LEFT_ROOM} from "./constants";
 import {IO, SocketType} from "server";
+import {getCurrentUser} from "services/chat/chatDao";
 
 /* 
 Room Info needed:
@@ -98,6 +99,41 @@ class RoomController {
         isSuccessful: false,
         message: ERROR_JOINING_ROOM,
       });
+    }
+  }
+
+  handleLeaveRoom = async ({room}, callback) => {
+    if (!room) {
+      return callback({
+        status: 400,
+        isSuccessful: false,
+        message: NO_ROOM_PROVIDED,
+      });
+    }
+
+    try {
+      const {username, room} = await getCurrentUser(this.socket.id);
+      const isOwnerOfRoom = await isOwner(username, room);
+      if (isOwnerOfRoom) {
+        const users = await getUsersInRoom(room);
+        for (const user of users) {
+          await removeUserFromRoom(user, room);
+          await removeUserFromRoomCache(user);
+        }
+        this.io.in(room).emit("leaveRoom");
+        this.io.in(room).socketsLeave(room);
+        callback({
+          status: 200,
+          isSuccessful: true,
+          message: SUCCESSFULL_LEFT_ROOM,
+        });
+      } else {
+        await removeUserFromRoom(username, room);
+        await removeUserFromRoomCache(username);
+        this.socket.leave(room);
+        const roomStatus = await getRoomStatus(room);
+        this.io.to(room, roomStatus);
+      }
     }
   }
 
