@@ -15,15 +15,23 @@ interface IPlaylist {
 }
 
 class Playlist implements IPlaylist {
-  roomCode;
-  songs;
-  activeSong;
-  nextId;
+  roomCode :string;
+  songs: Song[];
+  activeSong: Song;
+  nextId: number;
   constructor(roomCode: string) {
       this.roomCode = roomCode;
       this.songs = [];
       this.activeSong = undefined;
       this.nextId = 0;
+  }
+
+  getSongs() {
+      return this.songs;
+  }
+
+  getActiveSong() {
+      return this.activeSong;
   }
 
   addSong(song: Song) {
