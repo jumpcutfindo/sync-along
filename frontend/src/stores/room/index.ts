@@ -12,8 +12,15 @@ import {
     updateRoomAction,
 } from "./actions";
 
+interface User {
+    username: string;
+    isOwner: boolean;
+}
+
 interface RoomStore {
     roomCode?: string;
+    users?: User[];
+    userCount?: number;
 }
 
 const initialState: RoomStore = {};
@@ -95,12 +102,18 @@ export const roomSlice = createSlice({
         storeRoomCode(state, action) {
             state.roomCode = action.payload;
         },
+        resetRoom(state, action) {
+            state.roomCode = undefined;
+            state.users = undefined;
+            state.userCount = undefined;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(updateRoom, (state, action) => {
             const { users, userCount } = action.payload;
 
-            console.log(users, userCount);
+            state.users = users;
+            state.userCount = userCount;
         });
     },
 });
