@@ -79,7 +79,6 @@ class RoomController {
                 message: ROOM_NOT_FOUND,
             });
         }
-
         try {
             await RoomRepo.addUserToRoom(this.socket.id, room);
             await RoomRepo.addUserToRoomCache(this.socket.id, username, room);
@@ -91,18 +90,9 @@ class RoomController {
             return callback({
                 status: 200,
                 isSuccessful: true,
-                playlist: [],
-                player: {
-                    state: "pause",
-                    time: 0,
-                },
             });
         } catch (err) {
-            return callback({
-                status: 400,
-                isSuccessful: false,
-                message: ERROR_JOINING_ROOM,
-            });
+            console.log(err);
         }
     };
 

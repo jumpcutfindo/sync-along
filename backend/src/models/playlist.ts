@@ -25,6 +25,10 @@ class Playlist implements IPlaylist {
         this.nextId = 0;
     }
 
+    getRoomCode() {
+        return this.roomCode;
+    }
+
     getSongs() {
         return this.songs;
     }
@@ -45,8 +49,8 @@ class Playlist implements IPlaylist {
             return song.getId() === Number(id);
         });
         this.songs = this.songs.filter((s) => s.getId() !== Number(id));
-        if (songToRemove === this.activeSong) {
-            this.activeSong = this.songs?.[0];
+        if (songToRemove.getId() === this.activeSong.getId()) {
+            this.activeSong = this.songs.length === 0 ? undefined : this.songs[0];
         }
     }
 

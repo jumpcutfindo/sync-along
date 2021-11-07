@@ -16,8 +16,8 @@ class StatusDispatcher {
   };
 
   dispatchPlaylistUpdate = async (room: string) => {
-    const playerStatus = await PlaylistRepo.getPlaylistUpdateStatus(room);
-    this.io.to(room).emit("playlist/update", playerStatus);
+    const playlistStatus = await PlaylistRepo.getPlaylistUpdateStatus(room);
+    this.io.to(room).emit("playlist/update", playlistStatus);
   };
 
   dispatchRoomUpdate = async (room: string): Promise<void> => {

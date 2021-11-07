@@ -15,7 +15,7 @@ class PlaylistDao {
 
     static async save(playlist: Playlist) {
         return new Promise((resolve, reject) => {
-            const room = playlist.roomCode;
+            const room = playlist.getRoomCode();
             const serialisedPlaylist = Serialiser.serialize(playlist);
             redisClient.set(`PLAYLIST:${room}`, serialisedPlaylist, (err) => {
                 if (err) {
