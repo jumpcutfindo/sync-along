@@ -1,71 +1,88 @@
-import {Song} from "./song";
+import Song from "./song";
 interface IPlaylist {
-  roomCode: string;
-  songs: Song[];
-  activeSong: Song;
-  nextId: number;
+    roomCode: string;
+    songs: Song[];
+    activeSong: Song;
+    nextId: number;
 
-  addSong;
-  removeSong;
-  setActiveSong;
-  getNextId();
-  nextSong();
-  prevSong();
-
+    addSong;
+    removeSong;
+    setActiveSong;
+    getNextId();
+    nextSong();
+    prevSong();
 }
 
 class Playlist implements IPlaylist {
-  roomCode;
-  songs;
-  activeSong;
-  nextId;
-  constructor(roomCode: string) {
-      this.roomCode = roomCode;
-      this.songs = [];
-      this.activeSong = undefined;
-      this.nextId = 0;
-  }
+    roomCode: string;
+    songs: Song[];
+    activeSong: Song;
+    nextId: number;
+    constructor(roomCode: string) {
+        this.roomCode = roomCode;
+        this.songs = [];
+        this.activeSong = undefined;
+        this.nextId = 0;
+    }
 
-  addSong(song: Song) {
-      this.songs.push(song);
+    getSongs() {
+        return this.songs;
+    }
 
-      if (!this.activeSong && this.songs.length > 0) this.activeSong = this.songs[0];
-  }
+    getActiveSong() {
+        return this.activeSong;
+    }
 
-  removeSong(id: number) {
-      const songToRemove = this.songs.find(song => song.id === id);
+    addSong(song: Song) {
+        this.songs.push(song);
 
-      if (songToRemove === this.activeSong) {
-          this.activeSong = this.songs[0];
-      }
+        if (!this.activeSong && this.songs.length > 0)
+            this.activeSong = this.songs[0];
+    }
 
-      this.songs = this.songs.filter(s => s.id !== id);
-  }
+    removeSong(id: number) {
+        const songToRemove = this.songs.find((song) => {
+            return song.getId() === Number(id);
+        });
+        if (songToRemove === this.activeSong) {
+            this.activeSong = this.songs[0];
+        }
 
-  setActiveSong(id: number) {
-      this.activeSong = this.songs.find(song => song.id === id);
-  }
+        this.songs = this.songs.filter((s) => s.getId() !== Number(id));
+    }
 
-  getNextId() {
-      const temp = this.nextId++;
-      return temp.toString();
-  }
+    setActiveSong(id: number) {
+        this.activeSong = this.songs.find(
+            (song) => song.getId() === Number(id)
+        );
+    }
 
-  nextSong() {
-      if (!this.activeSong) return;
-      const nextIndex = this.songs.findIndex(song => this.activeSong.id === song.id) + 1;
+    getNextId() {
+        const temp = this.nextId++;
+        return temp;
+    }
 
-      if (nextIndex >= this.songs.length) this.activeSong = this.songs[0];
-      else this.activeSong = this.songs[nextIndex];
-  }
+    nextSong() {
+        if (!this.activeSong) return;
+        const nextIndex =
+            this.songs.findIndex(
+                (song) => this.activeSong.getId() === song.getId()
+            ) + 1;
 
-  prevSong() {
-      if (!this.activeSong) return;
+        if (nextIndex >= this.songs.length) this.activeSong = this.songs[0];
+        else this.activeSong = this.songs[nextIndex];
+    }
 
-      const prevIndex = this.songs.findIndex(song => this.activeSong.id === song.id) - 1;
-      if (prevIndex < 0) this.activeSong = this.songs[0];
-      else this.activeSong = this.songs[prevIndex];
-  }
+    prevSong() {
+        if (!this.activeSong) return;
+
+        const prevIndex =
+            this.songs.findIndex(
+                (song) => this.activeSong.getId() === song.getId()
+            ) - 1;
+        if (prevIndex < 0) this.activeSong = this.songs[0];
+        else this.activeSong = this.songs[prevIndex];
+    }
 }
 
 export default Playlist;

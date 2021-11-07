@@ -1,14 +1,8 @@
-const {
-    Player, getPlayerUpdateData
-} = require("../utils/player");
+const { Player, getPlayerUpdateData } = require("../utils/player");
 
-const {
-    Song, Playlist, getPlaylistUpdateData
-} = require("../utils/playlist");
+const { Song, Playlist, getPlaylistUpdateData } = require("../utils/playlist");
 
-const {
-    getCurrentUser,
-} = require("../utils/users");
+const { getCurrentUser } = require("../utils/users");
 
 const roomPlayerMap = {};
 const roomPlaylistMap = {};
@@ -21,9 +15,12 @@ export const initPlaylistService = (io, socket) => {
 
         if (user) {
             const roomPlaylist = roomPlaylistMap[user.room];
-            roomPlaylist.addSong(new Song(roomPlaylist.getNextId(), url))
+            roomPlaylist.addSong(new Song(roomPlaylist.getNextId(), url));
 
-            io.to(user.room).emit("playlist/update", getPlaylistUpdateData(roomPlaylist));
+            io.to(user.room).emit(
+                "playlist/update",
+                getPlaylistUpdateData(roomPlaylist)
+            );
         }
     });
 
@@ -34,8 +31,11 @@ export const initPlaylistService = (io, socket) => {
         if (user) {
             const roomPlaylist = roomPlaylistMap[user.room];
             roomPlaylist.removeSong(id);
-            
-            io.to(user.room).emit("playlist/update", getPlaylistUpdateData(roomPlaylist));
+
+            io.to(user.room).emit(
+                "playlist/update",
+                getPlaylistUpdateData(roomPlaylist)
+            );
         }
     });
 
@@ -48,7 +48,10 @@ export const initPlaylistService = (io, socket) => {
             roomPlaylist.setActiveSong(id);
             resetSongProgress(io, socket);
 
-            io.to(user.room).emit("playlist/update", getPlaylistUpdateData(roomPlaylist));
+            io.to(user.room).emit(
+                "playlist/update",
+                getPlaylistUpdateData(roomPlaylist)
+            );
         }
     });
 
@@ -60,11 +63,14 @@ export const initPlaylistService = (io, socket) => {
             const roomPlaylist = roomPlaylistMap[user.room];
             roomPlaylist.nextSong();
             resetSongProgress(io, socket);
-            
-            io.to(user.room).emit("playlist/update", getPlaylistUpdateData(roomPlaylist));
+
+            io.to(user.room).emit(
+                "playlist/update",
+                getPlaylistUpdateData(roomPlaylist)
+            );
         }
     });
-    
+
     socket.on("playlist/prev", (undefined, callback) => {
         const user = getCurrentUser(socket.id);
 
@@ -73,8 +79,11 @@ export const initPlaylistService = (io, socket) => {
             const roomPlaylist = roomPlaylistMap[user.room];
             roomPlaylist.prevSong();
             resetSongProgress(io, socket);
-            
-            io.to(user.room).emit("playlist/update", getPlaylistUpdateData(roomPlaylist));
+
+            io.to(user.room).emit(
+                "playlist/update",
+                getPlaylistUpdateData(roomPlaylist)
+            );
         }
     });
 };
@@ -90,7 +99,10 @@ export const initPlayerService = (io, socket) => {
             roomPlayer.scrubTo(time);
             roomPlayer.setPlaying(true);
 
-            io.to(user.room).emit("player/update", getPlayerUpdateData(roomPlayer));
+            io.to(user.room).emit(
+                "player/update",
+                getPlayerUpdateData(roomPlayer)
+            );
         }
     });
 
@@ -104,7 +116,10 @@ export const initPlayerService = (io, socket) => {
             roomPlayer.scrubTo(time);
             roomPlayer.setPlaying(false);
 
-            io.to(user.room).emit("player/update", getPlayerUpdateData(roomPlayer));
+            io.to(user.room).emit(
+                "player/update",
+                getPlayerUpdateData(roomPlayer)
+            );
         }
     });
 
@@ -118,20 +133,27 @@ export const initPlayerService = (io, socket) => {
             roomPlayer.scrubTo(time);
             roomPlayer.setPlaying(true);
 
-            io.to(user.room).emit("player/update", getPlayerUpdateData(roomPlayer));
+            io.to(user.room).emit(
+                "player/update",
+                getPlayerUpdateData(roomPlayer)
+            );
         }
     });
 
     socket.on("player/complete", (time, callback) => {
         const user = getCurrentUser(socket.id);
-        
+
         console.log(`player/complete called by ${user.id}`);
 
         if (user) {
             const roomPlayer = roomPlayerMap[user.room];
             roomPlayer.addToWaiting();
 
-            if (roomPlayer.canContinuePlaying(io.sockets.adapter.rooms.get(user.room).size)) {
+            if (
+                roomPlayer.canContinuePlaying(
+                    io.sockets.adapter.rooms.get(user.room).size
+                )
+            ) {
                 playlistNext(io, socket);
             }
         }
@@ -139,9 +161,14 @@ export const initPlayerService = (io, socket) => {
 };
 
 export const addRoomPlaylistEntry = (roomCode) => {
-    if(!roomPlaylistMap[roomCode]) roomPlaylistMap[roomCode] = new Playlist(roomCode);
+    if (!roomPlaylistMap[roomCode])
+        roomPlaylistMap[roomCode] = new Playlist(roomCode);
 
-    console.log(`Added a room-playlist mapping, roomPlaylistMap now has ${Object.keys(roomPlaylistMap)}`);
+    console.log(
+        `Added a room-playlist mapping, roomPlaylistMap now has ${Object.keys(
+            roomPlaylistMap
+        )}`
+    );
 };
 
 export const playlistNext = (io, socket) => {
@@ -151,14 +178,19 @@ export const playlistNext = (io, socket) => {
         const roomPlaylist = roomPlaylistMap[user.room];
         roomPlaylist.nextSong();
         resetSongProgress(io, socket);
-    
-        io.to(user.room).emit("playlist/update", getPlaylistUpdateData(roomPlaylist));
+
+        io.to(user.room).emit(
+            "playlist/update",
+            getPlaylistUpdateData(roomPlaylist)
+        );
     }
 };
 
 export const removeRoomPlaylistEntry = (roomCode) => {
     delete roomPlaylistMap[roomCode];
-    console.log(`Removed a room-playlist mapping, roomPlaylistMap looks like this: ${roomPlaylistMap}`);
+    console.log(
+        `Removed a room-playlist mapping, roomPlaylistMap looks like this: ${roomPlaylistMap}`
+    );
 };
 
 export const resetSongProgress = (io, socket) => {
@@ -174,5 +206,9 @@ export const resetSongProgress = (io, socket) => {
 export const addRoomPlayerEntry = (roomCode) => {
     if (!roomPlayerMap[roomCode]) roomPlayerMap[roomCode] = new Player();
 
-    console.log(`Added a room-player mapping, roomPlayerMap now has ${Object.keys(roomPlayerMap)}`);
+    console.log(
+        `Added a room-player mapping, roomPlayerMap now has ${Object.keys(
+            roomPlayerMap
+        )}`
+    );
 };

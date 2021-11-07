@@ -7,15 +7,14 @@
       "moduleResolution": "node",
       "sourceMap": true,
       "outDir": "dist",
+      "forceConsistentCasingInFileNames": true,
+      "allowSyntheticDefaultImports": true,
       "baseUrl": ".",
       "paths": {
-          "*": [
-              "node_modules/*",
-              "src/*"
-          ]
+        "src/*": ["./src/*"]
       }
   },
   "include": [
-      "src/**/*"
+      "src"
   ]
 }

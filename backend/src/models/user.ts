@@ -1,20 +1,24 @@
 class User {
-  id: string;
-  username: string;
-  room: string;
-  constructor(id, username, room) {
-    this.id = id;
-    this.username = username;
-    this.room = room;
-  }
+    id: string;
+    username: string;
+    room: string;
+    constructor(id, username, room) {
+        this.id = id;
+        this.username = username;
+        this.room = room;
+    }
 
-  get getId() {
-    return this.id;
-  }
+    getId() {
+        return this.id;
+    }
 
-  get getRoom() {
-    return this.room;
-  }
+    getRoom() {
+        return this.room;
+    }
+
+    getUsername() {
+        return this.username;
+    }
 }
 
 export default User;
