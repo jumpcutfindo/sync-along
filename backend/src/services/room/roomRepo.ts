@@ -9,6 +9,7 @@ import RoomDao from "src/dao/roomDao";
 import UserDao from "src/dao/userDao";
 
 type RoomStatus = {
+    isValidRoom: boolean;
     users: {
         username: string;
         isOwner: boolean;
@@ -109,6 +110,16 @@ class RoomRepo {
         return UserDao.delete(userId);
     }
 
+    static async isRoomFull(room): Promise<boolean> {
+        try {
+            const foundRoom = await RoomDao.find(room);
+            return foundRoom.isFull();
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    }
+
     static async getRoomStatus(room): Promise<RoomStatus> {
         return new Promise(async (resolve, reject) => {
             try {
@@ -124,6 +135,7 @@ class RoomRepo {
                     });
                 }
                 resolve({
+                    isValidRoom: true,
                     users,
                     userCount: foundRoom.userCount,
                 });

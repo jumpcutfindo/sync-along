@@ -12,6 +12,7 @@ import {
     ROOM_NOT_FOUND,
     SUCCESSFUL_LEFT_ROOM,
     ERROR_LEFT_ROOM,
+    ROOM_IS_FULL,
 } from "./constants";
 import { IO, SocketType } from "src/server";
 import StatusDispatcher from "src/StatusDispatcher";
@@ -81,17 +82,24 @@ class RoomController {
             });
         }
         try {
+            const isRoomFull = await RoomRepo.isRoomFull(room);
+            if (isRoomFull) {
+                return callback({
+                    status: 400,
+                    isSuccessful: false,
+                    message: ROOM_IS_FULL,
+                })
+            }
             await RoomRepo.addUserToRoom(this.socket.id, room);
             await RoomRepo.addUserToRoomCache(this.socket.id, username, room);
             this.socket.join(room);
-            await this.statusDispatcher.dispatchRoomUpdate(room);
-            await this.statusDispatcher.dispatchPlayerUpdate(room);
-            await this.statusDispatcher.dispatchPlaylistUpdate(room);
-
-            return callback({
+            callback({
                 status: 200,
                 isSuccessful: true,
             });
+            await this.statusDispatcher.dispatchRoomUpdate(room);
+            await this.statusDispatcher.dispatchPlayerUpdate(room);
+            await this.statusDispatcher.dispatchPlaylistUpdate(room);
         } catch (err) {
             console.log(err);
         }
@@ -107,7 +115,7 @@ class RoomController {
                     await RoomRepo.removeUserFromRoom(user, room);
                     await RoomRepo.removeUserFromRoomCache(user);
                 }
-                this.io.in(room).emit("leaveRoom");
+                await this.statusDispatcher.dispatchRoomUpdate(room);
                 this.io.in(room).socketsLeave(room);
                 callback({
                     status: 200,

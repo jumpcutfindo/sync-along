@@ -3,6 +3,8 @@ class Room {
     owner: string;
     users: Set<string>;
     userCount: number;
+
+    static MAX_ROOM_CAPACITY = 10;
     constructor(roomCode, owner) {
         this.roomCode = roomCode;
         this.users = new Set();
@@ -34,6 +36,10 @@ class Room {
 
     empty() {
         return this.userCount === 0;
+    }
+
+    isFull() {
+        return this.userCount === Room.MAX_ROOM_CAPACITY;
     }
 }
 
