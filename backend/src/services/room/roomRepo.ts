@@ -6,8 +6,6 @@
 import RoomDao from "src/dao/roomDao";
 import UserDao from "src/dao/userDao";
 
-import Room from "src/models/room";
-
 type RoomStatus = {
     users: {
         username: string;

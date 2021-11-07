@@ -9,11 +9,11 @@ dotenv.config();
 
 
 // Import Routes
-import initChatService from './services/chat/index';
-import {initPlaylistService} from './services/player';
-import initPlayerService from './services/player/index';
-import initUserService from './services/user/index';
-import initRoomService from './services/room/index';
+import initChatService from './services/chat';
+import initPlaylistService from './services/playlist';
+import initPlayerService from './services/player';
+import initUserService from './services/user';
+import initRoomService from './services/room';
 
 
 // Import Databases and Resources

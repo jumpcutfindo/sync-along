@@ -10,17 +10,16 @@ class PlayerRepo {
         return new Promise(async (resolve, reject) => {
             try {
                 const playlist = await PlaylistDao.find(room);
-
                 if (!playlist) {
                     const newPlaylist = await PlaylistDao.create(room);
-                    const newSong = new Song(0, url);
+                    const newSong = new Song(newPlaylist.getNextId(), url);
                     newPlaylist.addSong(newSong);
                     PlaylistDao.save(newPlaylist)
                         .then(() => resolve(newPlaylist))
                         .catch((err) => reject(err));
                 } else {
                     playlist.addSong(
-                        new Song(Number(playlist.getNextId()), url)
+                        new Song(playlist.getNextId(), url)
                     );
                     PlaylistDao.save(playlist)
                         .then(() => resolve(playlist))
@@ -33,10 +32,14 @@ class PlayerRepo {
     }
 
     static async removeSongFromPlaylist(id: number, room: string) {
-        const playlist = await PlaylistDao.find(room);
-        playlist.removeSong(id);
-        await PlaylistDao.save(playlist);
-        return playlist;
+        try {
+            const playlist = await PlaylistDao.find(room);
+            playlist.removeSong(id);
+            await PlaylistDao.save(playlist);
+            return playlist;
+        } catch (err) {
+            throw err;
+        }
     }
 
     static async setActiveSongInPlaylist(id: number, room: string) {
