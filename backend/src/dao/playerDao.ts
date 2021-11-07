@@ -1,26 +1,56 @@
-import Song from "src/models/song";
-import PlaylistDao from "./playlistDao";
+import Serialiser from "esserializer";
+import Player from "src/models/player";
+import RedisConnection from "src/connections/RedisConnection";
 
-export const addSongToPlaylist = async (url: string, room: string) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const playlist = await PlaylistModel.find(room);
+const redisClient = RedisConnection.getConnection();
+/**
+ * A DAO for the Music Player
+ */
+class PlayerDao {
+    static create(roomCode: string) {
+        const newPlayer = new Player(roomCode);
+        return newPlayer;
+    }
 
-            if (!playlist) {
-                const newPlaylist = await PlaylistModel.create(room);
-                const newSong = new Song(0, url);
-                newPlaylist.addSong(newSong);
-                PlaylistModel.save(newPlaylist)
-                    .then(() => resolve(newPlaylist))
-                    .catch((err) => reject(err));
-            } else {
-                playlist.addSong(new Song(Number(playlist.getNextId()), url));
-                PlaylistModel.save(playlist)
-                    .then(() => resolve(playlist))
-                    .catch((err) => reject(err));
-            }
-        } catch (err) {
-            reject(err);
-        }
-    });
-};
+    static async save(player: Player) {
+        return new Promise((resolve, reject) => {
+            const room = player.getRoomCode;
+            const serialisedPlayer = Serialiser.serialize(player);
+            redisClient.set(`PLAYER:${room}`, serialisedPlayer, (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(true);
+            });
+        });
+    }
+
+    static async find(room: string): Promise<Player> {
+        return new Promise((resolve, reject) => {
+            redisClient.get(`PLAYER:${room}`, (err, reply) => {
+                if (err) {
+                    reject(err);
+                }
+                try {
+                    const player = Serialiser.deserialize(reply, [Player]);
+                    resolve(player);
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        });
+    }
+
+    static async delete(room: string) {
+        return new Promise((resolve, reject) => {
+            redisClient.del(`PLAYER:${room}`, (err, reply) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(reply);
+            });
+        });
+    }
+}
+
+export default PlayerDao;

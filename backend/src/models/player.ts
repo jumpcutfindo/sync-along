@@ -1,4 +1,5 @@
 interface IPlayer {
+    roomCode: string;
     lastScrubTime: number;
     lastUpdateTime: Date;
     isPlaying: boolean;
@@ -10,15 +11,21 @@ interface IPlayer {
     canContinuePlaying: (userCount: number) => boolean;
 }
 class Player implements IPlayer {
+    roomCode;
     lastScrubTime;
     lastUpdateTime;
     isPlaying;
     waiting;
-    constructor() {
+    constructor(roomCode: string) {
+        this.roomCode = roomCode;
         this.lastScrubTime = 0;
         this.lastUpdateTime = Date.now();
         this.isPlaying = false;
         this.waiting = 0;
+    }
+
+    getRoomCode() {
+        return this.roomCode;
     }
 
     scrubTo(time) {

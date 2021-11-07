@@ -1,8 +1,6 @@
 import { IO, SocketType } from "src/server";
-import { resetSongProgress } from "../player";
-import RoomRepo from "../room/roomRepo";
+import RoomRepo from "src/services/room/roomRepo";
 import PlayerRepo from "./playerRepo";
-import { getPlaylistState } from "./utils";
 class PlayerController {
     io: IO;
     socket: SocketType;
@@ -11,65 +9,49 @@ class PlayerController {
         this.io = io;
     }
 
-    handleAddPlaylist = async ({ url }: { url: string }) => {
+    handlePlayPlayer = async (time: number) => {
         const user = await RoomRepo.getUser(this.socket.id);
+        console.log(`player/play called by ${user.id}`);
         if (user) {
-            const playlist = await PlayerRepo.addSongToPlaylist(url, user.room);
-            this.io
-                .to(user.getRoom())
-                .emit("playlist/update", getPlaylistState(playlist));
+            await PlayerRepo.play(user.room, time);
+            // update player
+            await this.dispatchUpdatePlayer(user.room);
         }
     };
 
-    handleRemovePlaylist = async ({ id }: { id: number }) => {
+    handlePausePlayer = async (time: number) => {
         const user = await RoomRepo.getUser(this.socket.id);
+        console.log(`player/pause called by ${user.id}`);
         if (user) {
-            const playlist = await PlayerRepo.removeSongFromPlaylist(
-                id,
-                user.room
-            );
-
-            this.io
-                .to(user.room)
-                .emit("playlist/update", getPlaylistState(playlist));
+            await PlayerRepo.pause(user.room, time);
+            // update player
+            await this.dispatchUpdatePlayer(user.room);
         }
     };
 
-    handleSelectPlaylist = async ({ id }: { id: number }) => {
+    handleScrubPlayer = async (time: number) => {
         const user = await RoomRepo.getUser(this.socket.id);
+        console.log(`player/scrub called by ${user.id}`);
         if (user) {
-            const playlist = await PlayerRepo.setActiveSongInPlaylist(
-                id,
-                user.room
-            );
-            // TODO: add reset song progress
-            this.io
-                .to(user.room)
-                .emit("playlist/update", getPlaylistState(playlist));
+            await PlayerRepo.scrub(user.room, time);
+            // update player
+            await this.dispatchUpdatePlayer(user.room);
         }
     };
 
-    handleNextPlaylist = async () => {
+    handleCompletePlayer = async () => {
         const user = await RoomRepo.getUser(this.socket.id);
+        console.log(`player/scrub called by ${user.id}`);
         if (user) {
-            const playlist = await PlayerRepo.playNextSong(user.room);
-            resetSongProgress(this.io, this.socket);
-
-            this.io
-                .to(user.room)
-                .emit("playlist/update", getPlaylistState(playlist));
+            await PlayerRepo.complete(user.room);
+            // update player
+            await this.dispatchUpdatePlayer(user.room);
         }
     };
 
-    handlePrevPlaylist = async () => {
-        const user = await RoomRepo.getUser(this.socket.id);
-        if (user) {
-            const playlist = await PlayerRepo.playPreviousSong(user.room);
-            resetSongProgress(this.io, this.socket);
-            this.io
-                .to(user.room)
-                .emit("playlist/update", getPlaylistState(playlist));
-        }
+    dispatchUpdatePlayer = async (room: string) => {
+        const playerStatus = await PlayerRepo.getPlayerUpdateStatus(room);
+        this.io.to(room).emit("player/update", playerStatus);
     };
 }
 

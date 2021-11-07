@@ -42,7 +42,7 @@ class Playlist implements IPlaylist {
 
     removeSong(id: number) {
         const songToRemove = this.songs.find((song) => {
-            return song.getId() === Number(id)
+            return song.getId() === Number(id);
         });
         if (songToRemove === this.activeSong) {
             this.activeSong = this.songs[0];
@@ -52,18 +52,22 @@ class Playlist implements IPlaylist {
     }
 
     setActiveSong(id: number) {
-        this.activeSong = this.songs.find((song) => song.getId() === Number(id));
+        this.activeSong = this.songs.find(
+            (song) => song.getId() === Number(id)
+        );
     }
 
     getNextId() {
         const temp = this.nextId++;
-        return temp.toString();
+        return temp;
     }
 
     nextSong() {
         if (!this.activeSong) return;
         const nextIndex =
-            this.songs.findIndex((song) => this.activeSong.getId() === song.getId()) + 1;
+            this.songs.findIndex(
+                (song) => this.activeSong.getId() === song.getId()
+            ) + 1;
 
         if (nextIndex >= this.songs.length) this.activeSong = this.songs[0];
         else this.activeSong = this.songs[nextIndex];
@@ -73,7 +77,9 @@ class Playlist implements IPlaylist {
         if (!this.activeSong) return;
 
         const prevIndex =
-            this.songs.findIndex((song) => this.activeSong.getId() === song.getId()) - 1;
+            this.songs.findIndex(
+                (song) => this.activeSong.getId() === song.getId()
+            ) - 1;
         if (prevIndex < 0) this.activeSong = this.songs[0];
         else this.activeSong = this.songs[prevIndex];
     }
