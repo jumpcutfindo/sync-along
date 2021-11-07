@@ -21,7 +21,7 @@ class Playlist implements IPlaylist {
     constructor(roomCode: string) {
         this.roomCode = roomCode;
         this.songs = [];
-        this.activeSong = undefined;
+        this.activeSong = null;
         this.nextId = 0;
     }
 
@@ -50,7 +50,7 @@ class Playlist implements IPlaylist {
         });
         this.songs = this.songs.filter((s) => s.getId() !== Number(id));
         if (songToRemove.getId() === this.activeSong.getId()) {
-            this.activeSong = this.songs.length === 0 ? undefined : this.songs[0];
+            this.activeSong = this.songs.length === 0 ? null : this.songs[0];
         }
     }
 

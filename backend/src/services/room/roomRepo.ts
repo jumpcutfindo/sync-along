@@ -123,6 +123,14 @@ class RoomRepo {
     static async getRoomStatus(room): Promise<RoomStatus> {
         return new Promise(async (resolve, reject) => {
             try {
+                const roomExists = await RoomDao.exists(room);
+                if (!roomExists) {
+                    return resolve({
+                        isValidRoom: false,
+                        users: [],
+                        userCount: 0,
+                    })
+                }
                 const foundRoom = await RoomDao.find(room);
                 const roomUsers = foundRoom.getUsers();
                 const users = [];
@@ -134,7 +142,7 @@ class RoomRepo {
                         isOwner: userId === roomOwner,
                     });
                 }
-                resolve({
+                return resolve({
                     isValidRoom: true,
                     users,
                     userCount: foundRoom.userCount,
