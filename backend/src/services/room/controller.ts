@@ -14,7 +14,7 @@ import {
     ERROR_LEFT_ROOM,
 } from "./constants";
 import { IO, SocketType } from "src/server";
-import StatusDispatcher from "src/statusDispatcher";
+import StatusDispatcher from "src/StatusDispatcher";
 
 class RoomController {
     io: IO;
