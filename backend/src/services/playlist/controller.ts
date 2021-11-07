@@ -33,6 +33,7 @@ class PlaylistController {
                     id,
                     user.room
                 );
+                this.resetSongProgress(user.room);
                 this.statusDispatcher.dispatchPlaylistUpdate(user.room);
             }
         } catch (err) {

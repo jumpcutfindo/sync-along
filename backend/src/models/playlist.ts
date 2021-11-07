@@ -44,11 +44,10 @@ class Playlist implements IPlaylist {
         const songToRemove = this.songs.find((song) => {
             return song.getId() === Number(id);
         });
-        if (songToRemove === this.activeSong) {
-            this.activeSong = this.songs[0];
-        }
-
         this.songs = this.songs.filter((s) => s.getId() !== Number(id));
+        if (songToRemove === this.activeSong) {
+            this.activeSong = this.songs?.[0];
+        }
     }
 
     setActiveSong(id: number) {
