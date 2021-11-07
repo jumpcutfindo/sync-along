@@ -2,13 +2,16 @@ import { IO, SocketType } from "src/server";
 // import { resetSongProgress } from "../player";
 import RoomRepo from "../room/roomRepo";
 import PlaylistRepo from "./playlistRepo";
-import { getPlaylistState } from "./utils";
+import PlayerRepo from "../player/playerRepo";
+import StatusDispatcher from "src/statusDispatcher";
 class PlaylistController {
     io: IO;
     socket: SocketType;
+    statusDispatcher: StatusDispatcher;
     constructor(io: IO, socket: SocketType) {
         this.socket = socket;
         this.io = io;
+        this.statusDispatcher = new StatusDispatcher(io, socket);
     }
 
     handleAddPlaylist = async ({ url }: { url: string }) => {
@@ -18,9 +21,7 @@ class PlaylistController {
                 url,
                 user.room
             );
-            this.io
-                .to(user.getRoom())
-                .emit("playlist/update", getPlaylistState(playlist));
+            this.statusDispatcher.dispatchPlaylistUpdate(user.room);
         }
     };
 
@@ -32,10 +33,7 @@ class PlaylistController {
                     id,
                     user.room
                 );
-
-                this.io
-                    .to(user.room)
-                    .emit("playlist/update", getPlaylistState(playlist));
+                this.statusDispatcher.dispatchPlaylistUpdate(user.room);
             }
         } catch (err) {
             console.log("error");
@@ -50,10 +48,8 @@ class PlaylistController {
                 id,
                 user.room
             );
-            // TODO: add reset song progress
-            this.io
-                .to(user.room)
-                .emit("playlist/update", getPlaylistState(playlist));
+            this.resetSongProgress(user.room);
+            this.statusDispatcher.dispatchPlaylistUpdate(user.room);
         }
     };
 
@@ -61,11 +57,8 @@ class PlaylistController {
         const user = await RoomRepo.getUser(this.socket.id);
         if (user) {
             const playlist = await PlaylistRepo.playNextSong(user.room);
-            // resetSongProgress(this.io, this.socket);
-
-            this.io
-                .to(user.room)
-                .emit("playlist/update", getPlaylistState(playlist));
+            this.resetSongProgress(user.room);
+            this.statusDispatcher.dispatchPlaylistUpdate(user.room);
         }
     };
 
@@ -73,12 +66,15 @@ class PlaylistController {
         const user = await RoomRepo.getUser(this.socket.id);
         if (user) {
             const playlist = await PlaylistRepo.playPreviousSong(user.room);
-            // resetSongProgress(this.io, this.socket);
-            this.io
-                .to(user.room)
-                .emit("playlist/update", getPlaylistState(playlist));
+            this.resetSongProgress(user.room);
+            this.statusDispatcher.dispatchPlaylistUpdate(user.room);
         }
     };
+
+    resetSongProgress = async (room: string) => {
+        const player = await PlayerRepo.resetSong(room);
+        await this.statusDispatcher.dispatchPlayerUpdate(room);
+    }
 }
 
 export default PlaylistController;

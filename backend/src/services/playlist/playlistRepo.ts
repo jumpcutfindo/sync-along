@@ -1,6 +1,7 @@
 import PlaylistDao from "src/dao/playlistDao";
 import Song from "src/models/song";
 import Playlist from "src/models/playlist";
+import {getPlaylistState} from "src/services/playlist/utils";
 
 class PlaylistRepo {
     static async addSongToPlaylist(
@@ -59,6 +60,11 @@ class PlaylistRepo {
         playlist.prevSong();
         await PlaylistDao.save(playlist);
         return playlist;
+    }
+
+    static async getPlaylistUpdateStatus(room: string) {
+        const playlist = await PlaylistDao.find(room);
+        return getPlaylistState(playlist);
     }
 }
 

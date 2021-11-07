@@ -1,12 +1,15 @@
 import { IO, SocketType } from "src/server";
 import RoomRepo from "src/services/room/roomRepo";
+import StatusDispatcher from "src/statusDispatcher";
 import PlayerRepo from "./playerRepo";
 class PlayerController {
     io: IO;
     socket: SocketType;
+    statusDispatcher: StatusDispatcher;
     constructor(io: IO, socket: SocketType) {
         this.socket = socket;
         this.io = io;
+        this.statusDispatcher = new StatusDispatcher(io, socket);
     }
 
     handlePlayPlayer = async (time: number) => {
@@ -15,7 +18,7 @@ class PlayerController {
         if (user) {
             await PlayerRepo.play(user.room, time);
             // update player
-            await this.dispatchUpdatePlayer(user.room);
+            this.statusDispatcher.dispatchPlayerUpdate(user.room);
         }
     };
 
@@ -25,7 +28,7 @@ class PlayerController {
         if (user) {
             await PlayerRepo.pause(user.room, time);
             // update player
-            await this.dispatchUpdatePlayer(user.room);
+            this.statusDispatcher.dispatchPlayerUpdate(user.room);
         }
     };
 
@@ -35,7 +38,7 @@ class PlayerController {
         if (user) {
             await PlayerRepo.scrub(user.room, time);
             // update player
-            await this.dispatchUpdatePlayer(user.room);
+            this.statusDispatcher.dispatchPlayerUpdate(user.room);
         }
     };
 
@@ -45,13 +48,8 @@ class PlayerController {
         if (user) {
             await PlayerRepo.complete(user.room);
             // update player
-            await this.dispatchUpdatePlayer(user.room);
+            this.statusDispatcher.dispatchPlayerUpdate(user.room);
         }
-    };
-
-    dispatchUpdatePlayer = async (room: string) => {
-        const playerStatus = await PlayerRepo.getPlayerUpdateStatus(room);
-        this.io.to(room).emit("player/update", playerStatus);
     };
 }
 

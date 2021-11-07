@@ -3,6 +3,8 @@
  * Interacts with the RoomDao and UserDao classes
  */
 
+import PlayerDao from "src/dao/playerDao";
+import PlaylistDao from "src/dao/playlistDao";
 import RoomDao from "src/dao/roomDao";
 import UserDao from "src/dao/userDao";
 
@@ -30,6 +32,8 @@ class RoomRepo {
                 } else {
                     const newRoom = RoomDao.create(userId, room);
                     await RoomDao.save(newRoom);
+                    await PlaylistDao.save(PlaylistDao.create(room));
+                    await PlayerDao.save(PlayerDao.create(room));
                     resolve(newRoom);
                 }
             } catch (err) {

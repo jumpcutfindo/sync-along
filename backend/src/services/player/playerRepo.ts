@@ -31,6 +31,13 @@ class PlayerRepo {
         return player;
     }
 
+    static async resetSong(room: string) {
+        const player = await PlayerDao.find(room);
+        player.scrubTo(0);
+        await PlayerDao.save(player);
+        return player;
+    }
+
     static async getPlayerUpdateStatus(room: string) {
         const player = await PlayerDao.find(room);
         return JSON.stringify(player);

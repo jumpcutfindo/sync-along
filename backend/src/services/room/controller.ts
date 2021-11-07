@@ -7,7 +7,6 @@ import { generateRoomCode } from "./utils";
 import RoomRepo from "./roomRepo";
 import {
     NO_USERNAME_PROVIDED,
-    NO_ROOM_PROVIDED,
     ERROR_JOINING_ROOM,
     MISSING_ROOM_CODE_USERNAME,
     ROOM_NOT_FOUND,
@@ -15,27 +14,16 @@ import {
     ERROR_LEFT_ROOM,
 } from "./constants";
 import { IO, SocketType } from "src/server";
-
-/* 
-Room Info needed:
-number of users in the room
-current playlist: []
-current song: {
-  link: Youtube Link,
-  title: Title,
-}
-player: {
-  state: play/pause,
-  time: currentTime,
-}
-*/
+import StatusDispatcher from "src/statusDispatcher";
 
 class RoomController {
     io: IO;
     socket: SocketType;
+    statusDispatcher: StatusDispatcher;
     constructor(io: IO, socket: SocketType) {
         this.socket = socket;
         this.io = io;
+        this.statusDispatcher = new StatusDispatcher(io, socket);
     }
 
     handleCreateRoom = async ({ username }, callback) => {
@@ -95,14 +83,14 @@ class RoomController {
         try {
             await RoomRepo.addUserToRoom(this.socket.id, room);
             await RoomRepo.addUserToRoomCache(this.socket.id, username, room);
-            const users = await RoomRepo.getUsersInRoom(room);
             this.socket.join(room);
+            await this.statusDispatcher.dispatchRoomUpdate(room);
+            await this.statusDispatcher.dispatchPlayerUpdate(room);
+            await this.statusDispatcher.dispatchPlaylistUpdate(room);
 
             return callback({
                 status: 200,
                 isSuccessful: true,
-                room,
-                users,
                 playlist: [],
                 player: {
                     state: "pause",
@@ -139,7 +127,7 @@ class RoomController {
                 await RoomRepo.removeUserFromRoom(this.socket.id, room);
                 await RoomRepo.removeUserFromRoomCache(this.socket.id);
                 this.socket.leave(room);
-                await this.dispatchRoomUpdate(room);
+                await this.statusDispatcher.dispatchRoomUpdate(room);
             }
         } catch {
             return callback({
@@ -148,11 +136,6 @@ class RoomController {
                 message: ERROR_LEFT_ROOM,
             });
         }
-    };
-
-    dispatchRoomUpdate = async (room: string): Promise<void> => {
-        const roomStatus = await RoomRepo.getRoomStatus(room);
-        this.io.to(room).emit("room/update", roomStatus);
     };
 }
 
