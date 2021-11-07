@@ -8,7 +8,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "src/hooks/typedReduxHooks";
-import { receiveRoomUpdates } from "src/stores/room";
+import { leaveRoom, receiveRoomUpdates } from "src/stores/room";
 
 import "./index.css";
 

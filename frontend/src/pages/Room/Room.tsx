@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
+
+import { useAppSelector } from "src/hooks/typedReduxHooks";
+import { useDispatch } from "react-redux";
+import { leaveRoom } from "src/stores/room";
 
 import ChatComponent from "./Chat";
 import PlayerComponent from "./Player";
@@ -8,6 +12,13 @@ import RoomInfoComponent from "./RoomInfo";
 import "./Room.css";
 
 const RoomScreen: React.FC = () => {
+    const dispatch = useDispatch();
+    const roomCode = useAppSelector((state) => state.room.roomCode);
+
+    useEffect(() => {
+        if (roomCode === undefined) dispatch(leaveRoom());
+    }, [dispatch, roomCode]);
+
     return (
         <div className="RoomScreen d-flex w-100 h-100">
             <div className="PlayerColumn d-flex flex-column h-100">

@@ -26,10 +26,9 @@ interface RoomStore {
 const initialState: RoomStore = {};
 
 export const updateRoom = createAction(updateRoomAction, (data: any) => {
-    const { users } = data;
-    const { userCount } = data;
+    const { users, userCount, isValidRoom } = data;
 
-    const payload = { users, userCount };
+    const payload = { users, userCount, isValidRoom };
 
     return { payload };
 });
@@ -112,10 +111,14 @@ export const roomSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(updateRoom, (state, action) => {
-            const { users, userCount } = action.payload;
+            const { users, userCount, isValidRoom } = action.payload;
+            console.log(action.payload);
 
-            state.users = users;
-            state.userCount = userCount;
+            if (!isValidRoom) state.roomCode = undefined;
+            else {
+                state.users = users;
+                state.userCount = userCount;
+            }
         });
     },
 });
