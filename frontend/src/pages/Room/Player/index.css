@@ -40,3 +40,9 @@
     background-color: #fff !important;
     margin-top: -3px !important;
 }
+
+@media only screen and (max-width: 1200px) {
+    .player-progress-text {
+        display: none !important;
+    }
+}
