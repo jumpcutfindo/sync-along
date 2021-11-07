@@ -13,8 +13,8 @@ import {
 } from "./actions";
 
 interface User {
-    username: string;
-    isOwner: boolean;
+    username?: string;
+    isOwner?: boolean;
 }
 
 interface RoomStore {
@@ -25,8 +25,10 @@ interface RoomStore {
 
 const initialState: RoomStore = {};
 
-export const updateRoom = createAction(updateRoomAction, (data) => {
-    const { users, userCount } = JSON.parse(data);
+export const updateRoom = createAction(updateRoomAction, (data: any) => {
+    const { users } = data;
+    const { userCount } = data;
+
     const payload = { users, userCount };
 
     return { payload };
@@ -90,7 +92,7 @@ export const receiveRoomUpdates = createAsyncThunk<
     undefined,
     { extra: SocketClient }
 >(updateRoomAction, (_, { dispatch, extra: socketClient }) => {
-    return socketClient.on("playlist/update", (data) => {
+    return socketClient.on("room/update", (data) => {
         dispatch(updateRoom(data));
     });
 });
