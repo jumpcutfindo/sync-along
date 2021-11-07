@@ -14,7 +14,7 @@ class PlayerDao {
 
     static async save(player: Player) {
         return new Promise((resolve, reject) => {
-            const room = player.getRoomCode;
+            const room = player.getRoomCode();
             const serialisedPlayer = Serialiser.serialize(player);
             redisClient.set(`PLAYER:${room}`, serialisedPlayer, (err) => {
                 if (err) {
