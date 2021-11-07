@@ -1,6 +1,6 @@
 import { IO, SocketType } from "src/server";
 import RoomRepo from "src/services/room/roomRepo";
-import StatusDispatcher from "src/statusDispatcher";
+import StatusDispatcher from "src/StatusDispatcher";
 import PlayerRepo from "./playerRepo";
 class PlayerController {
     io: IO;

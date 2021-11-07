@@ -12,6 +12,7 @@ import {
     pauseSong,
     playSong,
     receivePlayerUpdates,
+    resetPlayer,
     seekSong,
     setPlayerVolume,
     startPlayer,
@@ -215,10 +216,12 @@ const PlayerComponent: React.FC = () => {
 
     const onNextPressed = () => {
         dispatch(nextSong());
+        dispatch(resetPlayer());
     };
 
     const onPrevPressed = () => {
         dispatch(prevSong());
+        dispatch(resetPlayer());
     };
 
     const onSeekSong = (value: number) => {

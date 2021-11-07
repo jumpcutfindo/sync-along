@@ -3,7 +3,7 @@ import { IO, SocketType } from "src/server";
 import RoomRepo from "../room/roomRepo";
 import PlaylistRepo from "./playlistRepo";
 import PlayerRepo from "../player/playerRepo";
-import StatusDispatcher from "src/statusDispatcher";
+import StatusDispatcher from "src/StatusDispatcher";
 class PlaylistController {
     io: IO;
     socket: SocketType;
