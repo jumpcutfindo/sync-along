@@ -22,6 +22,7 @@ class StatusDispatcher {
 
   dispatchRoomUpdate = async (room: string): Promise<void> => {
     const roomStatus = await RoomRepo.getRoomStatus(room);
+    console.log(roomStatus);
     this.io.to(room).emit("room/update", roomStatus);
   };
 }

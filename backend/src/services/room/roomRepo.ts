@@ -116,7 +116,7 @@ class RoomRepo {
                 const roomUsers = foundRoom.getUsers();
                 const users = [];
                 const roomOwner = foundRoom.getOwner();
-                for (const userId in roomUsers) {
+                for (const userId of roomUsers) {
                     const userInRoom = await UserDao.find(userId);
                     users.push({
                         username: userInRoom.getUsername(),
