@@ -1,17 +1,29 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 
 import Types from "Types";
 import SocketClient from "src/services/socket/SocketClient";
 
 import { PlayerState } from "src/stores/app/player";
 import { PlaylistState } from "src/stores/app/playlist";
-import { createRoomAction, joinRoomAction, leaveRoomAction } from "./actions";
+import {
+    createRoomAction,
+    joinRoomAction,
+    leaveRoomAction,
+    updateRoomAction,
+} from "./actions";
 
 interface RoomStore {
     roomCode?: string;
 }
 
 const initialState: RoomStore = {};
+
+export const updateRoom = createAction(updateRoomAction, (data) => {
+    const { users, userCount } = JSON.parse(data);
+    const payload = { users, userCount };
+
+    return { payload };
+});
 
 type JoinRoomArgs = {
     username: string;
@@ -58,17 +70,6 @@ export const joinRoom = createAsyncThunk<
     });
 });
 
-type LeaveRoomArgs = () => void;
-
-export const leaveRoomListener = createAsyncThunk<
-    unknown,
-    LeaveRoomArgs,
-    { extra: SocketClient }
->(leaveRoomAction, async (leaveRoomCallback, thunkApi) => {
-    const socketClient = thunkApi.extra;
-    return socketClient.on("leaveRoom", leaveRoomCallback);
-});
-
 export const leaveRoom = createAsyncThunk<void, void, { extra: SocketClient }>(
     leaveRoomAction,
     async (_, thunkApi) => {
@@ -77,6 +78,16 @@ export const leaveRoom = createAsyncThunk<void, void, { extra: SocketClient }>(
     }
 );
 
+export const receiveRoomUpdates = createAsyncThunk<
+    unknown,
+    undefined,
+    { extra: SocketClient }
+>(updateRoomAction, (_, { dispatch, extra: socketClient }) => {
+    return socketClient.on("playlist/update", (data) => {
+        dispatch(updateRoom(data));
+    });
+});
+
 export const roomSlice = createSlice({
     name: "room",
     initialState,
@@ -84,6 +95,13 @@ export const roomSlice = createSlice({
         storeRoomCode(state, action) {
             state.roomCode = action.payload;
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(updateRoom, (state, action) => {
+            const { users, userCount } = action.payload;
+
+            console.log(users, userCount);
+        });
     },
 });
 

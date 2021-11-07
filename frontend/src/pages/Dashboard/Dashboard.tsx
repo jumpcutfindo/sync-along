@@ -9,7 +9,6 @@ import {
     joinRoom,
     CreateRoomResponse,
     createRoom,
-    leaveRoomListener,
 } from "src/stores/room";
 import LoadingButton from "src/utils/LoadingButton";
 import { setToastMessage } from "src/stores/app/toasts";
@@ -50,7 +49,6 @@ const JoinRoomModal: React.FC<{
                         }
                     } else {
                         dispatch(storeRoomCode(room));
-                        dispatch(leaveRoomListener(navToDashboard));
                         navToRoom(room);
                     }
                     setIsLoading(false);
