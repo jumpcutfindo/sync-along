@@ -91,6 +91,8 @@ class RoomRepo {
                 foundRoom.removeUser(userId);
                 if (foundRoom.empty()) {
                     const res = await RoomDao.delete(room);
+                    await PlayerDao.delete(room);
+                    await PlaylistDao.delete(room);
                     resolve(res);
                 } else {
                     const res = await RoomDao.save(foundRoom);
