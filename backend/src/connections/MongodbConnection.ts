@@ -1,4 +1,5 @@
 import mongoose, { Connection } from "mongoose";
+import { MONGODB_CONNECTION_URL } from "../constants/env";
 
 type MongoConnection = Connection;
 
@@ -7,9 +8,14 @@ const MongodbConnection = class {
 
     public static async getConnection(): Promise<MongoConnection> {
         if (!this.connection) {
-            await mongoose.connect(process.env.DB_CONNECTION, () =>
-                console.log("MongoDB database Ready!")
-            );
+            try {
+                await mongoose.connect(MONGODB_CONNECTION_URL, () =>
+                    console.log("MongoDB connection established")
+                );
+            } catch (err) {
+                console.log("Error in connecting to MongoDB database");
+                console.log(err);
+            }
             this.connection = mongoose.connection;
         }
         return this.connection;

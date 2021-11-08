@@ -47,6 +47,15 @@ spec:
           #     port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          env:
+          - name: REDIS_HOST
+            value: "redis-13406.c1.asia-northeast1-1.gce.cloud.redislabs.com"
+          - name: REDIS_PORT
+            value: "13406"
+          - name: REDIS_PASSWORD
+            value: "HOBL9WbJWOuNUaFBnTFPBxS49sVFQSyu"
+          - name: MONGODB_CONNECTION_URL
+            value: "mongodb+srv://admin:admin@cluster0.csain.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

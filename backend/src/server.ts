@@ -54,7 +54,7 @@ export type ServiceEntryHandler = (io: IO, socket: Socket) => void;
 export type AppEntryHandler = (app: Express) => void;
 
 // Initialise Connections
-// const mongodbConnection = MongodbConnection.getConnection();
+const mongodbConnection = MongodbConnection.getConnection();
 
 initUserService(app);
 // Run when client connects
