@@ -14,7 +14,7 @@ class PlayerController {
 
     handlePlayPlayer = async (time: number) => {
         const user = await RoomRepo.getUser(this.socket.id);
-        console.log(`player/play called by ${user.getId()}`);
+        console.log(`player/play called by ${user.id}`);
         if (user) {
             await PlayerRepo.play(user.room, time);
             // update player
@@ -24,7 +24,7 @@ class PlayerController {
 
     handlePausePlayer = async (time: number) => {
         const user = await RoomRepo.getUser(this.socket.id);
-        console.log(`player/pause called by ${user.getId()}`);
+        console.log(`player/pause called by ${user.id}`);
         if (user) {
             await PlayerRepo.pause(user.room, time);
             // update player
@@ -34,7 +34,7 @@ class PlayerController {
 
     handleScrubPlayer = async (time: number) => {
         const user = await RoomRepo.getUser(this.socket.id);
-        console.log(`player/scrub called by ${user.getId()}`);
+        console.log(`player/scrub called by ${user.id}`);
         if (user) {
             await PlayerRepo.scrub(user.room, time);
             // update player
@@ -44,9 +44,9 @@ class PlayerController {
 
     handleCompletePlayer = async () => {
         const user = await RoomRepo.getUser(this.socket.id);
-        console.log(`player/complete called by ${user.getId()}`);
+        console.log(`player/complete called by ${user.id}`);
         if (user) {
-            await PlayerRepo.complete(user.room);
+            const player = await PlayerRepo.complete(user.room);
             this.statusDispatcher.dispatchPlayerUpdate(user.room);
             this.statusDispatcher.dispatchPlaylistUpdate(user.room);
         }

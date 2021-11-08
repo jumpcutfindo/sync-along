@@ -49,10 +49,7 @@ class RoomController {
                 )
             )
             .then(() => this.socket.join(generatedCode))
-            .then(() => {
-                console.log("generating room update");
-                this.statusDispatcher.dispatchRoomUpdate(generatedCode)
-            })
+            .then(() => this.statusDispatcher.dispatchRoomUpdate(generatedCode))
             .then(() =>
                 callback({
                     status: 200,
