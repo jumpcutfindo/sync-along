@@ -112,7 +112,6 @@ export const roomSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(updateRoom, (state, action) => {
             const { users, userCount, isValidRoom } = action.payload;
-            console.log(action.payload);
 
             if (!isValidRoom) state.roomCode = undefined;
             else {
