@@ -1,5 +1,4 @@
-import { formatMessage } from "./utils";
-import RoomRepo from "../room/roomRepo";
+import ChatService from "src/services/chat/service";
 import { IO, SocketType } from "src/server";
 /**
  * A Controller that handles chat messages from web clients
@@ -8,22 +7,27 @@ import { IO, SocketType } from "src/server";
 interface IChatController {
     io: IO;
     socket: SocketType;
+    service: ChatService;
     handleChatMessage: (message: string) => Promise<void>;
 }
 class ChatController implements IChatController {
     io: IO;
     socket: SocketType;
+    service: ChatService;
     constructor(io: IO, socket: SocketType) {
         this.io = io;
         this.socket = socket;
+        this.service = new ChatService();
     }
 
     handleChatMessage = async (message: string) => {
-        const user = await RoomRepo.getUser(this.socket.id);
-        if (user) {
-            this.io
-                .to(user.getRoom())
-                .emit("message", formatMessage(user.getUsername(), message));
+        if (message.length !== 0) {
+            const {room, message: formattedMessage} = await this.service.handleChatMessage(this.socket.id, message);
+            if (room) {
+                this.io
+                    .to(room)
+                    .emit("message", formattedMessage);
+            }
         }
     };
 }

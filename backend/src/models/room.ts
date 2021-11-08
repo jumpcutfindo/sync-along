@@ -34,6 +34,10 @@ class Room {
         return this.owner;
     }
 
+    getUserCount() {
+        return this.userCount;
+    }
+
     empty() {
         return this.userCount === 0;
     }

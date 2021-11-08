@@ -103,7 +103,7 @@ export const roomSlice = createSlice({
         storeRoomCode(state, action) {
             state.roomCode = action.payload;
         },
-        resetRoom(state, action) {
+        resetRoom(state) {
             state.roomCode = undefined;
             state.users = undefined;
             state.userCount = undefined;
@@ -112,7 +112,6 @@ export const roomSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(updateRoom, (state, action) => {
             const { users, userCount, isValidRoom } = action.payload;
-            console.log(action.payload);
 
             if (!isValidRoom) state.roomCode = undefined;
             else {
@@ -126,4 +125,4 @@ export const roomSlice = createSlice({
 export const selectRoomCode = (state: Types.RootState) => state.room.roomCode;
 
 export const roomReducer = roomSlice.reducer;
-export const { storeRoomCode } = roomSlice.actions;
+export const { storeRoomCode, resetRoom } = roomSlice.actions;

@@ -1,3 +1,5 @@
+import { validateYouTubeUrl } from "./utils/playlist";
+
 const { Player, getPlayerUpdateData } = require("../utils/player");
 
 const { Song, Playlist, getPlaylistUpdateData } = require("../utils/playlist");
@@ -15,12 +17,15 @@ export const initPlaylistService = (io, socket) => {
 
         if (user) {
             const roomPlaylist = roomPlaylistMap[user.room];
-            roomPlaylist.addSong(new Song(roomPlaylist.getNextId(), url));
 
-            io.to(user.room).emit(
-                "playlist/update",
-                getPlaylistUpdateData(roomPlaylist)
-            );
+            if (validateYouTubeUrl(url)) {
+                roomPlaylist.addSong(new Song(roomPlaylist.getNextId(), url));
+
+                io.to(user.room).emit(
+                    "playlist/update",
+                    getPlaylistUpdateData(roomPlaylist)
+                );
+            }
         }
     });
 

@@ -49,13 +49,13 @@ class RoomController {
                 )
             )
             .then(() => this.socket.join(generatedCode))
-            .then(() => this.statusDispatcher.dispatchRoomUpdate(generatedCode))
             .then(() =>
                 callback({
                     status: 200,
                     code: generatedCode,
                 })
             )
+            .then(async () => await this.statusDispatcher.dispatchRoomUpdate(generatedCode))
             .catch(() =>
                 callback({
                     status: 400,
@@ -88,7 +88,7 @@ class RoomController {
                     status: 400,
                     isSuccessful: false,
                     message: ROOM_IS_FULL,
-                })
+                });
             }
             await RoomRepo.addUserToRoom(this.socket.id, room);
             await RoomRepo.addUserToRoomCache(this.socket.id, username, room);
@@ -136,6 +136,12 @@ class RoomController {
             });
         }
     };
+
+    handleDisconnect = async (reason: string) => {
+        console.log(reason);
+        // passing in a no-op call back to reuse the function for disconnecting the user
+        this.handleLeaveRoom(undefined, (status) => console.log(status))
+    }
 }
 
 export default RoomController;

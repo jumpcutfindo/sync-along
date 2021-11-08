@@ -1,7 +1,7 @@
 import PlaylistDao from "src/dao/playlistDao";
 import Song from "src/models/song";
 import Playlist from "src/models/playlist";
-import {getPlaylistState} from "src/services/playlist/utils";
+import { getPlaylistState } from "src/services/playlist/utils";
 
 class PlaylistRepo {
     static async addSongToPlaylist(

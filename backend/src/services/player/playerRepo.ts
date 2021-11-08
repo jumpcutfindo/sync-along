@@ -1,4 +1,6 @@
 import PlayerDao from "src/dao/playerDao";
+import RoomDao from "src/dao/roomDao";
+import PlaylistRepo from "src/services/playlist/playlistRepo";
 class PlayerRepo {
     static async play(room: string, time: number) {
         const player = await PlayerDao.find(room);
@@ -28,6 +30,12 @@ class PlayerRepo {
         const player = await PlayerDao.find(room);
         player.addToWaiting();
         await PlayerDao.save(player);
+        const foundRoom = await RoomDao.find(room);
+        const userCount = foundRoom.getUserCount();
+        if (player.canContinuePlaying(userCount)) {
+            console.log("playing next song");
+            await PlaylistRepo.playNextSong(room);
+        }
         return player;
     }
 

@@ -1,4 +1,4 @@
-class User {
+class UserSession {
     id: string;
     username: string;
     room: string;
@@ -21,4 +21,4 @@ class User {
     }
 }
 
-export default User;
+export default UserSession;
