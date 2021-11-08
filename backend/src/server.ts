@@ -22,7 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // set up security
-app.use(cors());
+app.use(cors({
+	    origin: true, credentials: true}));
 app.use(
     session({
         secret: "secret",
