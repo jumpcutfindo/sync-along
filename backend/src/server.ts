@@ -22,13 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // set up security
-app.use(
-    cors({
-        origin: FRONTEND_URL,
-        methods: ["GET", "POST"],
-        credentials: true,
-    })
-);
+app.use(cors());
 app.use(
     session({
         secret: "secret",

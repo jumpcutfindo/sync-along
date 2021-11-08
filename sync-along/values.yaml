@@ -10,7 +10,7 @@ backend-component:
     name: backend-deployment
     image:
       repository: backend
-      pullPolicy: IfNotPresent
+      pullPolicy: Never
       # Overrides the image tag whose default is the chart appVersion.
       tag: latest
   service:
@@ -24,7 +24,7 @@ frontend-component:
     name: frontend-deployment
     image:
       repository: frontend
-      pullPolicy: IfNotPresent
+      pullPolicy: Never
       # Overrides the image tag whose default is the chart appVersion.
       tag: latest
   service:

@@ -5,7 +5,7 @@
     "main": "dist/src/server.js",
     "scripts": {
         "build": "tsc",
-        "start": "node dist/src/server.ts",
+        "start": "node dist/server.ts",
         "dev": "nodemon -e ts,js --exec ts-node -r tsconfig-paths/register ./src/server.ts",
         "format": "prettier --write src/**/**/**/**.ts",
         "lint": "tsc --noEmit && eslint src/**/*.ts",
