@@ -5,7 +5,11 @@ import userApi from "src/services/user";
 import useNavigator from "src/hooks/useNavigator";
 
 import { appLogout } from "src/stores/app";
-import { storeRoomCode, leaveRoom as leaveRoomAction, resetRoom } from "src/stores/room";
+import {
+    storeRoomCode,
+    leaveRoom as leaveRoomAction,
+    resetRoom,
+} from "src/stores/room";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { setToastMessage, toastSlice } from "src/stores/app/toasts";

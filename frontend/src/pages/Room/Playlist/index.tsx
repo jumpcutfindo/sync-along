@@ -217,7 +217,7 @@ const Playlist: React.FC = () => {
     }
 
     return (
-        <div className="Playlist d-flex-column w-100 overflow-auto">
+        <div className="Playlist flex-grow-1">
             {mediaViews}
             <p className="my-2">End of list.</p>
         </div>
@@ -226,7 +226,7 @@ const Playlist: React.FC = () => {
 
 const PlaylistComponent: React.FC = () => {
     return (
-        <div className="PlaylistComponent d-flex-column h-100">
+        <div className="PlaylistComponent d-flex flex-column h-100">
             <PlaylistHeader />
             <hr className="my-0" />
             <Playlist />
