@@ -136,6 +136,12 @@ class RoomController {
             });
         }
     };
+
+    handleDisconnect = async (reason: string) => {
+        console.log(reason);
+        // passing in a no-op call back to reuse the function for disconnecting the user
+        this.handleLeaveRoom(undefined, (status) => console.log(status))
+    }
 }
 
 export default RoomController;
