@@ -8,8 +8,8 @@ COPY package*.json ./
 RUN npm install
 COPY src src/
 COPY tsconfig.json tsconfig.json
-# RUN npm build
+RUN npm run build
 # front-end is running on port 3000
 EXPOSE 3000 
 # RUN npm install -g serve
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "prod"]
