@@ -4,9 +4,8 @@
 
 import { ServiceEntryHandler } from "src/server";
 
-import ChatController from "./controller";
+import ChatController from "src/controllers/chat";
 const CLIENT_CHAT_MESSAGE_EVENT = "chat/message";
-const SERVER_CHAT_MESSAGE_EVENT = "message";
 
 const initChatService: ServiceEntryHandler = (io, socket) => {
     const chatController = new ChatController(io, socket);
