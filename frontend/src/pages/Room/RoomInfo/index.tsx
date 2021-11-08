@@ -8,7 +8,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "src/hooks/typedReduxHooks";
-import { receiveRoomUpdates } from "src/stores/room";
+import { leaveRoom, receiveRoomUpdates } from "src/stores/room";
 
 import "./index.css";
 
@@ -31,13 +31,14 @@ const UserInfoComponent: React.FC = () => {
     const getDetails = () => {
         return (
             <div>
-                <p className="m-1">
+                <p className="user-title my-2">
                     {users?.map((user, index) => {
                         let output = user.username;
 
                         if (user.isOwner) output += " (Owner)";
 
-                        if (userCount && index !== userCount - 1) output += ",";
+                        if (userCount && index !== userCount - 1)
+                            output += ", ";
 
                         return output;
                     })}

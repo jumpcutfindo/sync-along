@@ -41,9 +41,9 @@ const JoinRoomModal: React.FC<{
             setIsLoading(true);
             dispatch(joinRoom({ username: user.name, room }))
                 .then((response: any) => {
-                    if (response.error) {
-                        if (response.error.data?.message) {
-                            setErrorMessage(response.error.data.message);
+                    if (response.payload.status !== 200) {
+                        if (response.payload.message) {
+                            setErrorMessage(response.payload.message);
                         } else {
                             setErrorMessage("Unable to join room.");
                         }
