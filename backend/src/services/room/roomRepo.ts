@@ -1,12 +1,12 @@
 /**
  * A Repository for interacting with the underlying Room Session Cache - in Redis
- * Interacts with the RoomDao and UserDao classes
+ * Interacts with the RoomDao, UserSessionDao, PlaylistDao and PlayerDao classes
  */
 
 import PlayerDao from "src/dao/playerDao";
 import PlaylistDao from "src/dao/playlistDao";
 import RoomDao from "src/dao/roomDao";
-import UserDao from "src/dao/userDao";
+import UserSessionDao from "src/dao/userSessionDao";
 
 type RoomStatus = {
     isValidRoom: boolean;
@@ -57,13 +57,13 @@ class RoomRepo {
     }
 
     static async getUser(id: string) {
-        return UserDao.find(id);
+        return UserSessionDao.find(id);
     }
 
     static async addUserToRoomCache(id, username, room) {
         return new Promise((resolve, reject) => {
-            const user = UserDao.create(id, username, room);
-            UserDao.save(user)
+            const user = UserSessionDao.create(id, username, room);
+            UserSessionDao.save(user)
                 .then((res) => resolve(res))
                 .catch((err) => {
                     console.log(err);
@@ -107,7 +107,7 @@ class RoomRepo {
     }
 
     static async removeUserFromRoomCache(userId): Promise<unknown> {
-        return UserDao.delete(userId);
+        return UserSessionDao.delete(userId);
     }
 
     static async isRoomFull(room): Promise<boolean> {
@@ -129,14 +129,14 @@ class RoomRepo {
                         isValidRoom: false,
                         users: [],
                         userCount: 0,
-                    })
+                    });
                 }
                 const foundRoom = await RoomDao.find(room);
                 const roomUsers = foundRoom.getUsers();
                 const users = [];
                 const roomOwner = foundRoom.getOwner();
                 for (const userId of roomUsers) {
-                    const userInRoom = await UserDao.find(userId);
+                    const userInRoom = await UserSessionDao.find(userId);
                     users.push({
                         username: userInRoom.getUsername(),
                         isOwner: userId === roomOwner,

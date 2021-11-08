@@ -25,7 +25,7 @@ export const initPlaylistService = (io, socket) => {
                     "playlist/update",
                     getPlaylistUpdateData(roomPlaylist)
                 );
-            } 
+            }
         }
     });
 

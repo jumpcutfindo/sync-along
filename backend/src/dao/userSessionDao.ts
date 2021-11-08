@@ -1,18 +1,18 @@
 import Serialiser from "esserializer";
-import User from "src/models/user";
+import UserSession from "src/models/userSession";
 import RedisConnection from "src/connections/RedisConnection";
 
 const redisClient = RedisConnection.getConnection();
-class UserDao {
+class UserSessionDao {
     id: string;
     username: string;
     roomCode: string;
     static create(id: string, username: string, roomCode: string) {
-        const newUser = new User(id, username, roomCode);
+        const newUser = new UserSession(id, username, roomCode);
         return newUser;
     }
 
-    static async save(user: User) {
+    static async save(user: UserSession) {
         return new Promise((resolve, reject) => {
             const userId = user.getId();
             const serialisedUser = Serialiser.serialize(user);
@@ -25,26 +25,14 @@ class UserDao {
         });
     }
 
-    // static async exists(roomCode: string) {
-    //   return new Promise((resolve, reject) =>
-    //     redisClient.exists(`ROOM:${roomCode}`, (err, reply) => {
-    //       if (err) {
-    //         reject(err);
-    //       } else {
-    //         resolve(reply === 1);
-    //       }
-    //     })
-    //   );
-    // }
-
-    static async find(userId: string): Promise<User> {
+    static async find(userId: string): Promise<UserSession> {
         return new Promise((resolve, reject) => {
             redisClient.get(`USER:${userId}`, (err, reply) => {
                 if (err) {
                     reject(err);
                 }
                 try {
-                    const user = Serialiser.deserialize(reply, [User]);
+                    const user = Serialiser.deserialize(reply, [UserSession]);
                     resolve(user);
                 } catch (err) {
                     reject(err);
@@ -65,4 +53,4 @@ class UserDao {
     }
 }
 
-export default UserDao;
+export default UserSessionDao;

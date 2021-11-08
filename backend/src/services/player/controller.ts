@@ -44,11 +44,11 @@ class PlayerController {
 
     handleCompletePlayer = async () => {
         const user = await RoomRepo.getUser(this.socket.id);
-        console.log(`player/scrub called by ${user.id}`);
+        console.log(`player/complete called by ${user.id}`);
         if (user) {
-            await PlayerRepo.complete(user.room);
-            // update player
+            const player = await PlayerRepo.complete(user.room);
             this.statusDispatcher.dispatchPlayerUpdate(user.room);
+            this.statusDispatcher.dispatchPlaylistUpdate(user.room);
         }
     };
 }

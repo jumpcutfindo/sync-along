@@ -88,7 +88,7 @@ class RoomController {
                     status: 400,
                     isSuccessful: false,
                     message: ROOM_IS_FULL,
-                })
+                });
             }
             await RoomRepo.addUserToRoom(this.socket.id, room);
             await RoomRepo.addUserToRoomCache(this.socket.id, username, room);

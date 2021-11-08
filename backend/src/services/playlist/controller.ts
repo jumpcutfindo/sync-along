@@ -4,6 +4,8 @@ import RoomRepo from "../room/roomRepo";
 import PlaylistRepo from "./playlistRepo";
 import PlayerRepo from "../player/playerRepo";
 import StatusDispatcher from "src/StatusDispatcher";
+
+import { validateYouTubeUrl } from "src/utils/playlist";
 class PlaylistController {
     io: IO;
     socket: SocketType;
@@ -15,13 +17,15 @@ class PlaylistController {
     }
 
     handleAddPlaylist = async ({ url }: { url: string }) => {
-        const user = await RoomRepo.getUser(this.socket.id);
-        if (user) {
-            const playlist = await PlaylistRepo.addSongToPlaylist(
-                url,
-                user.room
-            );
-            this.statusDispatcher.dispatchPlaylistUpdate(user.room);
+        if (validateYouTubeUrl(url)) {
+            const user = await RoomRepo.getUser(this.socket.id);
+            if (user) {
+                const playlist = await PlaylistRepo.addSongToPlaylist(
+                    url,
+                    user.room
+                );
+                this.statusDispatcher.dispatchPlaylistUpdate(user.room);
+            }
         }
     };
 
@@ -33,7 +37,6 @@ class PlaylistController {
                     id,
                     user.room
                 );
-                this.resetSongProgress(user.room);
                 this.statusDispatcher.dispatchPlaylistUpdate(user.room);
             }
         } catch (err) {
@@ -75,7 +78,7 @@ class PlaylistController {
     resetSongProgress = async (room: string) => {
         const player = await PlayerRepo.resetSong(room);
         await this.statusDispatcher.dispatchPlayerUpdate(room);
-    }
+    };
 }
 
 export default PlaylistController;
