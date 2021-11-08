@@ -20,10 +20,6 @@ spec:
       labels:
         {{- include "sync-along.selectorLabels" . | nindent 8 }}
     spec:
-      volumes:
-        - name: task-pv-volume
-          persistentVolumeClaim:
-            claimName: task-pv-claim
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -51,9 +47,6 @@ spec:
           #     port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          volumeMounts:
-            - mountPath: "/src/database/"
-              name: task-pv-volume
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -17,13 +17,15 @@ import initRoomService from "./services/room";
 // Import Databases and Resources
 import MongodbConnection from "./connections/MongodbConnection";
 
+import { FRONTEND_URL } from "./constants/env";
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // set up security
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL,
+        origin: FRONTEND_URL,
         methods: ["GET", "POST"],
         credentials: true,
     })
@@ -40,7 +42,7 @@ app.use(
 const server = http.createServer(app);
 const io = new Server<any, any>(server, {
     cors: {
-        origin: process.env.FRONTEND_URL,
+        origin: FRONTEND_URL,
         methods: ["GET", "POST"],
     },
 });
