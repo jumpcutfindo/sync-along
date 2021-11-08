@@ -4,6 +4,7 @@ import { Server, Socket } from "socket.io";
 import session from "express-session";
 import cors from "cors";
 import dotenv from "dotenv";
+import { FRONTEND_URL } from './constants/env';
 const app = express();
 dotenv.config();
 
@@ -16,8 +17,6 @@ import initRoomService from "./services/room";
 
 // Import Databases and Resources
 import MongodbConnection from "./connections/MongodbConnection";
-
-import { FRONTEND_URL } from "./constants/env";
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -70,4 +69,8 @@ app.get('/', (req, res) => {
 });
 const PORT = process.env.PORT || 4001;
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`${FRONTEND_URL} Frontend URL`);
+});
+console.log("Hi");

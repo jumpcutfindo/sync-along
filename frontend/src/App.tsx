@@ -14,6 +14,7 @@ import ToastComponent from "./utils/Toast";
 import DashboardControls from "./pages/Dashboard/Controls/DashboardControls";
 import { PrivateRoute, PublicRoute, RoomRoute } from "./router/routes";
 
+console.log("Hi");
 const App: React.FC = () => {
     return (
         <div className="App d-flex">

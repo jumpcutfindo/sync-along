@@ -20,7 +20,14 @@ echo "docker build . -t frontend"
 docker build . -t frontend
 echo "---Frontend built---"
 
+docker tag frontend baodinh/frontend:latest
+docker push baodinh/frontend:latest
+
+docker tag backend baodinh/backend:latest
+docker push baodinh/backend:latest
+
 echo "cd ~/cs3219-project-ay2122-2122-s1-g6/sync-along"
 cd ~/cs3219-project-ay2122-2122-s1-g6/sync-along
 echo "helm install chart . -f values.yaml"
 echo "Helm chart built"
+
