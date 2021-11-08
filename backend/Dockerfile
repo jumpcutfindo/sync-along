@@ -6,8 +6,10 @@ WORKDIR /src
 # Copy current directory package.json and package-lock.json to the container file
 COPY package*.json ./ 
 RUN npm install
-COPY . .
-RUN npm build
-# backend is running on port 4001
-EXPOSE 4001
-CMD ["npm", "run", "prod"]
+COPY src src/
+COPY tsconfig.json tsconfig.json
+# RUN npm build
+# front-end is running on port 3000
+EXPOSE 3000 
+# RUN npm install -g serve
+CMD ["npm", "run", "dev"]
