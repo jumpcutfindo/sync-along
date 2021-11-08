@@ -8,7 +8,8 @@
         "start": "node dist/src/server.ts",
         "dev": "nodemon -e ts,js --exec ts-node -r tsconfig-paths/register ./src/server.ts",
         "format": "prettier --write src/**/**/**/**.ts",
-        "lint": "tsc --noEmit && eslint src/**/*.ts"
+        "lint": "tsc --noEmit && eslint src/**/*.ts",
+        "prod": "node -r tsconfig-paths/register dist/server.js"
     },
     "author": "CS3219 Team 6",
     "dependencies": {
