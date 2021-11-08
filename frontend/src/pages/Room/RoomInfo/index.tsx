@@ -6,24 +6,42 @@ import {
     faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
-import { useAppSelector } from "src/hooks/typedReduxHooks";
+import React, { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "src/hooks/typedReduxHooks";
+import { leaveRoom, receiveRoomUpdates } from "src/stores/room";
 
 import "./index.css";
 
 const UserInfoComponent: React.FC = () => {
+    const dispatch = useAppDispatch();
     const [showDetails, setShowDetails] = useState(false);
 
     const toggleShowDetails = () => {
         setShowDetails(!showDetails);
     };
 
+    useEffect(() => {
+        dispatch(receiveRoomUpdates()).catch(() => console.log("error"));
+    }, [dispatch]);
+
+    const users = useAppSelector((state) => state.room.users);
+    const userCount = useAppSelector((state) => state.room.userCount);
+
     // TODO: Add a listing of all members in the room, highlight host and current user
     const getDetails = () => {
         return (
             <div>
-                <p className="m-0">
-                    These are the details of the users in the room
+                <p className="user-title my-2">
+                    {users?.map((user, index) => {
+                        let output = user.username;
+
+                        if (user.isOwner) output += " (Owner)";
+
+                        if (userCount && index !== userCount - 1)
+                            output += ", ";
+
+                        return output;
+                    })}
                 </p>
             </div>
         );
@@ -45,7 +63,9 @@ const UserInfoComponent: React.FC = () => {
                     <p className="m-0 user-title flex-grow-1 text-start">
                         Users
                     </p>
-                    <p className="m-0 user-title my-auto me-2">9 / 10</p>
+                    <p className="m-0 user-title my-auto me-2">
+                        {userCount} / 10
+                    </p>
                     <FontAwesomeIcon
                         className="my-auto me-1"
                         icon={showDetails ? faCaretUp : faCaretDown}

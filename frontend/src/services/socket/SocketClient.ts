@@ -66,7 +66,7 @@ class SocketClient {
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     emit<EmitArgs, EmitResponse>(
         event: string,
-        data: EmitArgs
+        data?: EmitArgs
     ): Promise<EmitResponse> {
         return new Promise((resolve, reject) => {
             if (!this.socket) {

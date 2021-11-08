@@ -10,7 +10,6 @@ interface IPlaylist {
     getNextId();
     nextSong();
     prevSong();
-
 }
 export class Playlist implements IPlaylist {
     roomCode;
@@ -27,21 +26,22 @@ export class Playlist implements IPlaylist {
     addSong(song: Song) {
         this.songs.push(song);
 
-        if (!this.activeSong && this.songs.length > 0) this.activeSong = this.songs[0];
+        if (!this.activeSong && this.songs.length > 0)
+            this.activeSong = this.songs[0];
     }
 
     removeSong(id: number) {
-        const songToRemove = this.songs.find(song => song.id === id);
+        const songToRemove = this.songs.find((song) => song.id === id);
 
         if (songToRemove === this.activeSong) {
             this.activeSong = this.songs[0];
         }
 
-        this.songs = this.songs.filter(s => s.id !== id);
+        this.songs = this.songs.filter((s) => s.id !== id);
     }
 
     setActiveSong(id: number) {
-        this.activeSong = this.songs.find(song => song.id === id);
+        this.activeSong = this.songs.find((song) => song.id === id);
     }
 
     getNextId() {
@@ -51,7 +51,8 @@ export class Playlist implements IPlaylist {
 
     nextSong() {
         if (!this.activeSong) return;
-        const nextIndex = this.songs.findIndex(song => this.activeSong.id === song.id) + 1;
+        const nextIndex =
+            this.songs.findIndex((song) => this.activeSong.id === song.id) + 1;
 
         if (nextIndex >= this.songs.length) this.activeSong = this.songs[0];
         else this.activeSong = this.songs[nextIndex];
@@ -60,7 +61,8 @@ export class Playlist implements IPlaylist {
     prevSong() {
         if (!this.activeSong) return;
 
-        const prevIndex = this.songs.findIndex(song => this.activeSong.id === song.id) - 1;
+        const prevIndex =
+            this.songs.findIndex((song) => this.activeSong.id === song.id) - 1;
         if (prevIndex < 0) this.activeSong = this.songs[0];
         else this.activeSong = this.songs[prevIndex];
     }
@@ -82,6 +84,6 @@ export class Song implements ISong {
 export function getPlaylistUpdateData(playlist) {
     return JSON.stringify({
         playlist: playlist.songs,
-        current: playlist.activeSong 
+        current: playlist.activeSong,
     });
-};
+}

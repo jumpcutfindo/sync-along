@@ -1,49 +1,48 @@
-import http from 'http';
-import express, {Express} from 'express';
-import { Server, Socket } from 'socket.io';
+import http from "http";
+import express, { Express } from "express";
+import { Server, Socket } from "socket.io";
 import session from "express-session";
 import cors from "cors";
 import dotenv from "dotenv";
 const app = express();
 dotenv.config();
 
-
 // Import Routes
-import initChatService from './services/chat/index';
-import {initPlayerService,initPlaylistService} from './services/player';
-import initUserService from './services/user/index';
-import initRoomService from './services/room/index';
-
+import initChatService from "./services/chat";
+import initPlayerService from "./services/player";
+import initPlaylistService from "./services/playlist";
+import initUserService from "./services/user";
+import initRoomService from "./services/room";
 
 // Import Databases and Resources
 import MongodbConnection from "./connections/MongodbConnection";
-
-//app.use('/playlist', playlistRoute);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // set up security
-app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  methods: [ "GET", "POST" ],
-  credentials: true,
-}));
 app.use(
-  session({
-    secret: "secret",
-    resave: false,
-    cookie: { secure: false, path: "/" }, // cookie expires in 8 hours
-    saveUninitialized: false,
-  })
+    cors({
+        origin: process.env.FRONTEND_URL,
+        methods: ["GET", "POST"],
+        credentials: true,
+    })
+);
+app.use(
+    session({
+        secret: "secret",
+        resave: false,
+        cookie: { secure: false, path: "/" }, // cookie expires in 8 hours
+        saveUninitialized: false,
+    })
 );
 
 const server = http.createServer(app);
 const io = new Server<any, any>(server, {
-  cors: {
-    origin: process.env.FRONTEND_URL,
-    methods: ["GET", "POST"],
-  },
+    cors: {
+        origin: process.env.FRONTEND_URL,
+        methods: ["GET", "POST"],
+    },
 });
 
 export type IO = typeof io;
@@ -57,11 +56,11 @@ export type AppEntryHandler = (app: Express) => void;
 
 initUserService(app);
 // Run when client connects
-io.on('connection', socket => {
-  initRoomService(io, socket);
-  initChatService(io, socket);
-  initPlaylistService(io, socket);
-  initPlayerService(io, socket);
+io.on("connection", (socket) => {
+    initRoomService(io, socket);
+    initChatService(io, socket);
+    initPlaylistService(io, socket);
+    initPlayerService(io, socket);
 });
 
 app.get('/', (req, res) => {

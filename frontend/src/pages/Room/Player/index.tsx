@@ -12,6 +12,7 @@ import {
     pauseSong,
     playSong,
     receivePlayerUpdates,
+    resetPlayer,
     seekSong,
     setPlayerVolume,
     startPlayer,
@@ -49,14 +50,11 @@ const PlayerInfo: React.FC<{
     }
 
     return (
-        <div className="d-flex player-info flex-grow-1 text-start me-2">
-            <p className="my-auto">
+        <div className="d-flex flex-grow-1 player-info text-start">
+            <p className="ms-3 my-auto">
                 {currentMedia ? currentMedia.name : "No media selected!"}
             </p>
-            <div
-                className="d-flex player-progress-text flex-grow-1 justify-content-end"
-                style={{ visibility: mediaDuration ? "visible" : "hidden" }}
-            >
+            <div className="d-flex player-progress-text flex-grow-1 justify-content-end">
                 <p className="my-auto">{progressText}</p>
             </div>
         </div>
@@ -108,10 +106,10 @@ const PlayerButtons: React.FC<{
     };
 
     return (
-        <div className="d-flex flex-column my-auto mx-3">
-            <div className="d-flex player-buttons justify-content-end mb-2">
+        <div className="d-flex flex-column my-auto mx-2">
+            <div className="d-flex player-buttons justify-content-between">
                 <FontAwesomeIcon
-                    className="player-control-button my-auto me-3"
+                    className="player-control-button my-auto"
                     icon={faStepBackward}
                     size="2x"
                     color="white"
@@ -119,7 +117,7 @@ const PlayerButtons: React.FC<{
                 />
                 {!isPlaying ? (
                     <FontAwesomeIcon
-                        className="player-control-button"
+                        className="player-control-button mx-2"
                         icon={faPlayCircle}
                         size="3x"
                         color="white"
@@ -127,7 +125,7 @@ const PlayerButtons: React.FC<{
                     />
                 ) : (
                     <FontAwesomeIcon
-                        className="player-control-button"
+                        className="player-control-button mx-2"
                         icon={faPauseCircle}
                         size="3x"
                         color="white"
@@ -135,7 +133,7 @@ const PlayerButtons: React.FC<{
                     />
                 )}
                 <FontAwesomeIcon
-                    className="player-control-button my-auto ms-3"
+                    className="player-control-button my-auto"
                     icon={faStepForward}
                     size="2x"
                     color="white"
@@ -151,7 +149,7 @@ const PlayerButtons: React.FC<{
                     onClick={toggleMute}
                 />
                 <Slider
-                    className="my-auto"
+                    className="d-flex my-auto"
                     value={volume * 100}
                     onChange={onSeekVolume}
                 />
@@ -215,10 +213,12 @@ const PlayerComponent: React.FC = () => {
 
     const onNextPressed = () => {
         dispatch(nextSong());
+        dispatch(resetPlayer());
     };
 
     const onPrevPressed = () => {
         dispatch(prevSong());
+        dispatch(resetPlayer());
     };
 
     const onSeekSong = (value: number) => {
@@ -244,21 +244,23 @@ const PlayerComponent: React.FC = () => {
                 <Slider value={sliderProgress} onChange={onSeekSong} />
             </div>
 
-            <div className="d-flex flex-grow-1 player-holder px-3">
+            <div className="d-flex player-holder flex-grow-1">
                 <PlayerInfo
                     currentProgress={sliderProgress}
                     mediaDuration={ref.current?.getDuration()}
                     currentMedia={currentMedia}
                 />
-                <PlayerButtons
-                    volume={volume}
-                    onVolumeChanged={onVolumeChange}
-                    isLoaded={currentMedia !== null}
-                    isPlaying={isPlaying}
-                    onPlayPressed={onPlayPressed}
-                    onNextPressed={onNextPressed}
-                    onPrevPressed={onPrevPressed}
-                />
+                <div className="d-flex justify-content-end px-2">
+                    <PlayerButtons
+                        volume={volume}
+                        onVolumeChanged={onVolumeChange}
+                        isLoaded={currentMedia !== null}
+                        isPlaying={isPlaying}
+                        onPlayPressed={onPlayPressed}
+                        onNextPressed={onNextPressed}
+                        onPrevPressed={onPrevPressed}
+                    />
+                </div>
             </div>
 
             <ReactPlayer
