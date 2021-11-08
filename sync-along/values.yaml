@@ -9,10 +9,10 @@ backend-component:
   deployment:
     name: backend-deployment
     image:
-      repository: backend
+      repository: baodinh/backend
       pullPolicy: IfNotPresent
       # Overrides the image tag whose default is the chart appVersion.
-      tag: latest
+      tag: 1.0.2
   service:
     name: backend-svc
     type: LoadBalancer
@@ -23,10 +23,10 @@ frontend-component:
   deployment:
     name: frontend-deployment
     image:
-      repository: frontend
+      repository: baodinh/frontend
       pullPolicy: IfNotPresent
       # Overrides the image tag whose default is the chart appVersion.
-      tag: latest
+      tag: 1.0.2
   service:
     name: frontend-svc
     type: LoadBalancer
