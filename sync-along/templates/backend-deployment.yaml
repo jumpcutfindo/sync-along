@@ -56,6 +56,8 @@ spec:
             value: "HOBL9WbJWOuNUaFBnTFPBxS49sVFQSyu"
           - name: MONGODB_CONNECTION_URL
             value: "mongodb+srv://admin:admin@cluster0.csain.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+          - name: FRONTEND_URL
+            value: "http://frontend-svc:3000"
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
