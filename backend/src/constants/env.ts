@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable import/prefer-default-export */
-const FRONTEND_URL = `http://frontend-svc:${process.env.FRONTEND_SVC_SERVICE_PORT}`;
+const FRONTEND_URL = `http://frontend-svc:3000`;
 
 const REDIS_HOST = process.env.REDIS_HOST;
 const REDIS_PORT = parseInt(process.env.REDIS_PORT);
