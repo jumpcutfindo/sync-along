@@ -74,3 +74,4 @@ server.listen(PORT, () => {
     console.log(`${FRONTEND_URL} Frontend URL`);
 });
 console.log("Hi");
+console.log(`Backend URL ${BACKEND_URL}`);
