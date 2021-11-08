@@ -11,6 +11,8 @@ import {
     validateRegistrationInput,
 } from "src/utils/validation/validator";
 
+import { BACKEND_URL } from "src/constants/env";
+
 import userApi from "src/services/user";
 import useInputState from "src/hooks/useInputState";
 import { useDispatch } from "react-redux";
@@ -86,7 +88,7 @@ export const RegisterModalContent: React.FC<{
             <h2 className="mb-4">Register</h2>
             <p>
                 Register a new account on Sync-Along and gain access to all our
-                features!
+                features! {BACKEND_URL}
             </p>
             <form onSubmit={registrationHandler}>
                 <input

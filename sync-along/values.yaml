@@ -9,7 +9,7 @@ backend-component:
   deployment:
     name: backend-deployment
     image:
-      repository: baodinh/backend
+      repository: backend
       pullPolicy: IfNotPresent
       # Overrides the image tag whose default is the chart appVersion.
       tag: latest
@@ -23,7 +23,7 @@ frontend-component:
   deployment:
     name: frontend-deployment
     image:
-      repository: baodinh/frontend
+      repository: frontend
       pullPolicy: IfNotPresent
       # Overrides the image tag whose default is the chart appVersion.
       tag: latest
