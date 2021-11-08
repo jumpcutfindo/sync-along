@@ -49,13 +49,13 @@ class RoomController {
                 )
             )
             .then(() => this.socket.join(generatedCode))
-            .then(() => this.statusDispatcher.dispatchRoomUpdate(generatedCode))
             .then(() =>
                 callback({
                     status: 200,
                     code: generatedCode,
                 })
             )
+            .then(async () => await this.statusDispatcher.dispatchRoomUpdate(generatedCode))
             .catch(() =>
                 callback({
                     status: 400,
