@@ -153,7 +153,9 @@ const PlaylistItem: React.FC<{
             <div className="my-auto mx-2">
                 <p className="video-index m-0">#{index + 1}</p>
             </div>
-            <div className="video-thumbnail" />
+            <div className="video-thumbnail">
+                <img src={media.thumbnail} alt="Thumbnail of video" />
+            </div>
             <div className="d-flex flex-column align-content-start text-start ms-2 flex-grow-1">
                 <div>
                     <p className="video-title my-0">{media.name}</p>

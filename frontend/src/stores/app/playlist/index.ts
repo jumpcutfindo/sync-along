@@ -39,7 +39,6 @@ const initialState: PlaylistState = {
 };
 
 export const updatePlaylist = createAction(updatePlaylistAction, (data) => {
-    console.log(data);
     const { playlist, current } = JSON.parse(data);
 
     const payload = { playlist, current };
