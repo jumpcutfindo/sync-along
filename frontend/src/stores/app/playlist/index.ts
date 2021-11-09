@@ -22,6 +22,7 @@ import {
 export interface Media {
     id: string;
     url: string;
+    thumbnail: string;
     name: string;
 }
 
@@ -38,6 +39,7 @@ const initialState: PlaylistState = {
 };
 
 export const updatePlaylist = createAction(updatePlaylistAction, (data) => {
+    console.log(data);
     const { playlist, current } = JSON.parse(data);
 
     const payload = { playlist, current };
@@ -114,7 +116,8 @@ export const playlistSlice = createSlice({
                 return {
                     id: song.id,
                     url: song.url,
-                    name: song.url,
+                    name: song.title,
+                    thumbnail: song.thumbnail,
                 };
             });
 
