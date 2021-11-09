@@ -8,6 +8,7 @@ import {
     receivePlaylistUpdates,
     selectSong,
     removeSong,
+    resetPlaylist,
 } from "src/stores/app/playlist";
 
 import { Overlay } from "react-bootstrap";
@@ -17,6 +18,7 @@ import useInputState from "src/hooks/useInputState";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { validateAddMedia } from "src/utils/validation/validator";
+import { resetPlayer } from "src/stores/app/player";
 
 const AddMediaButton: React.FC = () => {
     const ref = useRef(null);
@@ -195,8 +197,15 @@ const Playlist: React.FC = () => {
     };
 
     useEffect(() => {
-        dispatch(receivePlaylistUpdates()).catch(() => console.log("error"));
-    }, [dispatch]);
+        dispatch(receivePlaylistUpdates())
+            .then((response) => {
+                if (medias.length === 0) {
+                    dispatch(resetPlayer());
+                    dispatch(resetPlaylist());
+                }
+            })
+            .catch(() => console.log("error"));
+    }, [dispatch, medias]);
 
     const mediaViews = medias.map((media: Media, index: number) => (
         <PlaylistItem
