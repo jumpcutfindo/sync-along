@@ -2,6 +2,7 @@ import PlaylistDao from "src/dao/playlistDao";
 import Song from "src/models/song";
 import Playlist from "src/models/playlist";
 import { getPlaylistState } from "src/services/playlist/utils";
+import YouTubeAPI from "src/utils/youtube";
 
 class PlaylistRepo {
     static async addSongToPlaylist(
@@ -11,15 +12,21 @@ class PlaylistRepo {
         return new Promise(async (resolve, reject) => {
             try {
                 const playlist = await PlaylistDao.find(room);
+
                 if (!playlist) {
                     const newPlaylist = await PlaylistDao.create(room);
                     const newSong = new Song(newPlaylist.getNextId(), url);
-                    newPlaylist.addSong(newSong);
+                    const populatedSong = await YouTubeAPI.populateSong(newSong);
+
+                    newPlaylist.addSong(populatedSong);
                     PlaylistDao.save(newPlaylist)
                         .then(() => resolve(newPlaylist))
                         .catch((err) => reject(err));
                 } else {
-                    playlist.addSong(new Song(playlist.getNextId(), url));
+                    const newSong = new Song(playlist.getNextId(), url);
+                    const populatedSong = await YouTubeAPI.populateSong(newSong);
+
+                    playlist.addSong(populatedSong);
                     PlaylistDao.save(playlist)
                         .then(() => resolve(playlist))
                         .catch((err) => reject(err));
