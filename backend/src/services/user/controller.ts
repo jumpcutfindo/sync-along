@@ -16,6 +16,8 @@ import {
     ERROR_CREATING_USER,
     USER_REGISTRATION_SUCCESS,
     USER_DOES_NOT_EXIST_ERROR,
+    INVALID_CREDENTIALS,
+    ERROR_LOGGING_IN,
 } from "./constants";
 
 class UserController {
@@ -67,7 +69,7 @@ class UserController {
         }
     }
 
-    static handleUserLogin(req, res) {
+    static async handleUserLogin(req, res) {
         const { username, password } = req.body;
         if (requiredFieldsMissing(username, password)) {
             return res.status(401).json({
@@ -77,14 +79,22 @@ class UserController {
         }
 
         UserRepo.doesUserExist(username)
-            .then((isUserFound) => {
+            .then(async (isUserFound) => {
                 if (isUserFound) {
-                    req.session.isLoggedIn = true;
-                    req.session.username = username;
-                    return res.status(200).json({
-                        isSuccessful: true,
-                        username,
-                    });
+                    const authenticated = await UserRepo.checkUserCredentials(username, password);
+                    if (authenticated) {
+                        req.session.isLoggedIn = true;
+                        req.session.username = username;
+                        return res.status(200).json({
+                            isSuccessful: true,
+                            username,
+                        });
+                    } else {
+                        return res.status(401).json({
+                            isSuccessful: false,
+                            message: INVALID_CREDENTIALS,
+                        });
+                    }
                 } else {
                     return res.status(401).json({
                         isSuccessful: false,
@@ -96,7 +106,7 @@ class UserController {
                 console.log(err);
                 return res.status(400).json({
                     isSuccessful: false,
-                    message: ERROR_CREATING_USER,
+                    message: ERROR_LOGGING_IN,
                 });
             });
     }

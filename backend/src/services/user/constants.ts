@@ -8,3 +8,6 @@ export const ERROR_CREATING_USER =
     "An error occurred while trying to register the user.";
 export const USER_REGISTRATION_SUCCESS = "User Registration is successful.";
 export const USER_DOES_NOT_EXIST_ERROR = "The user does not exist in this app.";
+export const INVALID_CREDENTIALS = "Invalid credentials. Please try again.";
+export const ERROR_LOGGING_IN = "An error occurred while trying to log in.";
+export const SERVER_ERROR = "An error occurred in the server.";
