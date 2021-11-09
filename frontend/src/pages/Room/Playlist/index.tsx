@@ -197,15 +197,8 @@ const Playlist: React.FC = () => {
     };
 
     useEffect(() => {
-        dispatch(receivePlaylistUpdates())
-            .then((response) => {
-                if (medias.length === 0) {
-                    dispatch(resetPlayer());
-                    dispatch(resetPlaylist());
-                }
-            })
-            .catch(() => console.log("error"));
-    }, [dispatch, medias]);
+        dispatch(receivePlaylistUpdates()).catch(() => console.log("error"));
+    }, [dispatch]);
 
     const mediaViews = medias.map((media: Media, index: number) => (
         <PlaylistItem
