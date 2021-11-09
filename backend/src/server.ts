@@ -4,6 +4,7 @@ import { Server, Socket } from "socket.io";
 import session from "express-session";
 import cors from "cors";
 import dotenv from "dotenv";
+import { FRONTEND_URL } from './constants/env';
 const app = express();
 dotenv.config();
 
@@ -21,13 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // set up security
-app.use(
-    cors({
-        origin: process.env.FRONTEND_URL,
-        methods: ["GET", "POST"],
-        credentials: true,
-    })
-);
+app.use(cors({
+	    origin: true, credentials: true}));
 app.use(
     session({
         secret: "secret",
@@ -40,7 +36,7 @@ app.use(
 const server = http.createServer(app);
 const io = new Server<any, any>(server, {
     cors: {
-        origin: process.env.FRONTEND_URL,
+        origin: true,
         methods: ["GET", "POST"],
     },
 });
@@ -63,6 +59,13 @@ io.on("connection", (socket) => {
     initPlayerService(io, socket);
 });
 
+app.get('/', (req, res) => {
+  res.send('Backend running successful');
+});
 const PORT = process.env.PORT || 4001;
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`${FRONTEND_URL} Frontend URL`);
+});
+console.log("Hi");

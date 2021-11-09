@@ -1,4 +1,5 @@
 import { createClient } from "redis";
+import { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } from "../constants/env";
 
 type RedisConn = ReturnType<typeof createClient>;
 class RedisConnection {
@@ -6,9 +7,22 @@ class RedisConnection {
 
     public static getConnection(): RedisConn {
         if (!this.connection) {
-            this.connection = createClient({
-                url: process.env.REDIS_URL,
+            const client = createClient({
+                host: REDIS_HOST,
+                port: REDIS_PORT,
+                password: REDIS_PASSWORD
             });
+
+            client.on('error', (err) => {
+                console.log('Redis connection fails: ', err);
+                console.log('Error: ', err);
+            });
+
+            client.on('connect', () => {
+                console.log('Redis connection established');
+            });
+
+            this.connection = client;
         }
         return this.connection;
     }

@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable import/prefer-default-export */
-export const BACKEND_URL =
-    process.env.REACT_APP_BACKEND_URL || "http://localhost:4001";
+
+const BACKEND_URL_CONTENT = "http://18.142.138.130:4001/"
+export const BACKEND_URL = BACKEND_URL_CONTENT;
