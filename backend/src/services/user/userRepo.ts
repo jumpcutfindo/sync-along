@@ -29,6 +29,19 @@ class UserRepo {
                 .catch((err) => reject(err))
         );
     }
+
+    static async checkUserCredentials(username, password) {
+        try {
+            const newlyCreatedUser = await User.findOne({ username });
+            if (!newlyCreatedUser) {
+                return false;
+            }
+            const validPassword = await bcrypt.compare(password, newlyCreatedUser.password);
+            return validPassword;
+        } catch (err) {
+            throw err;
+        }
+    }
 }
 
 export default UserRepo;
