@@ -22,6 +22,7 @@ import {
 export interface Media {
     id: string;
     url: string;
+    thumbnail: string;
     name: string;
 }
 
@@ -108,18 +109,23 @@ export const playlistSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(updatePlaylist, (state, action) => {
             const { playlist, current } = action.payload;
+            console.log(current);
 
             // Update the current playlist with the data from the server
             state.media = playlist.map((song: any) => {
                 return {
                     id: song.id,
                     url: song.url,
-                    name: song.url,
+                    name: song.title,
+                    thumbnail: song.thumbnail,
                 };
             });
 
             // Avoid having to search if there isn't a song set to play
-            if (!current) return;
+            if (!current) {
+                state.current = null;
+                return;
+            }
 
             // If there is a song set to play, try to find it and play it on our end
             const currentSong = state.media.find(
