@@ -10,4 +10,3 @@ This project is structured as a monolithic repository with three directories:
 
 - `frontend` - a React app which hosts the UI to this app. Detailed instructions pertaining this app can be found in there.
 - `backend` - a NodeJS app, written in Typescript which hosts the backend to this app. Detailed instructions pertaining this app can be found in there.
-- `sync-along` - a folder hosting YAML files and other scripts used for deployment
