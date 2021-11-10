@@ -1,6 +1,21 @@
 # frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), with Yarn as the package manager of choice.
+This hosts the frontend app of Sync-along. It was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), with Yarn as the package manager of choice.
+
+## Setting up
+
+To set up the app:
+
+1. Clone the repo
+2. Switch to the `/frontend/` app
+3. Run `yarn` to install dependencies
+4. Add a `.env` file to the `/frontend` folder, with the following configurations:
+
+```
+BACKEND_ENV_URL= # include backend env url here
+```
+
+5. Run `yarn start` to start the frontend app. Note that this depends on the backend app (also in this repository) to work.
 
 ## File Structure
 
@@ -15,6 +30,14 @@ src
 +-- components        # shared components used across the entire application
 |
 +-- pages             # individual pages seen by users of the app
+|
++-- hooks             # hooks shared across the entire app
+|
++-- router             # routes used in the app
+|
++-- services             # APIs and Redux middleware for handling socket connections
+|
++-- stores             # Redux stores
 ```
 
 Most of the code is kept inside the `pages` folder, which hosts a folder for each page. Each folder should contain domain specific code for a given page. For example, if we wanted to have a Login page, then we would hae a folder at `src/pages/Login`, which can host the React component, logic and styles for login-related functionality.
